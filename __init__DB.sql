@@ -19,6 +19,7 @@ FOREIGN KEY (TC_NO) REFERENCES calisan(TC_NO)
 
 create table ogretmen(
 TC_NO char(11) not null,
+PART_MI bool not null,
 primary KEY(TC_NO),
 FOREIGN KEY (TC_NO) REFERENCES calisan(TC_NO)
 );
