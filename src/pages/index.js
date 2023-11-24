@@ -8,13 +8,13 @@ function Exciting() {
 
 function Ogrenci() {
   return (
-    <>
+    <center>
       <Link href='/Ogrenci'>
         <button className='button'>
-          Mal Beyzek!!!
+          Öğrenci
         </button>
       </Link>
-    </>
+    </center>
   );
 }
 
