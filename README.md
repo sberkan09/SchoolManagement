@@ -8,3 +8,5 @@ $ cd SchoolManagement
 ```
 $ npm run dev
 ```
+
+https://school-management-pied.vercel.app/
