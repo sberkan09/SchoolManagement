@@ -11,7 +11,7 @@ function Ogrenci() {
     <>
       <Link href='/Ogrenci'>
         <button className='button'>
-          Öğrenci
+          Mal Beyzek
         </button>
       </Link>
     </>
