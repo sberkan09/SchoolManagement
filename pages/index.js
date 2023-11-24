@@ -6,8 +6,20 @@ function Exciting() {
   return <h1>Exciting</h1>
 }
 
+function Ogrenci() {
+  return (
+    <>
+      <Link href='/Ogrenci'>
+        <button className='button'>
+          Öğrenci
+        </button>
+      </Link>
+    </>
+  );
+}
+
 export default function Home() {
   return (
-    Exciting()
+      <Ogrenci/>
   );
 }
