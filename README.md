@@ -1,22 +1,42 @@
 # SchoolManagement
-### Kurulum
+## Kurulum
 node.js version 18 or higher
 
 
-Sadece başlangıçta ya da `package.json` güncelllendiğinde
+Sadece başlangıçta ya da `package.json` güncellendiğinde
 ```
 $ npm i pkg.json
 ```
 komutunu çalıştırın.
 
 
-### Çalıştırma
+## Çalıştırma
 
 ```
 $ npm run dev
 ```
 
-### Git
+## Git
+### Farklı branch üzerinde çalışma
+Güncellemeleri `main`'den farklı branch üzerinde yapacaksanız, öncelikle
+```
+git branch <branch-name>
+git checkout <branch-name>
+```
+komutlarını çalıştırın.
+
+Github'a yükleyeceğiniz zaman
+```
+git add <file name>
+git commit -m <commit message>
+git pull
+git push --set-upstream origin <branch-name>
+```
+komutlarını çalıştırın. `<branch-name>`'den `main`'e merge etmeyi unutmayın.
+Merge için
+1. Github `Pull requests` sekmesinden `New pull request`'e tıklayın.
+2. Çalıştığınız branch'i seçin.
+
 Kod üzerinde çalışmanız bittiğinde
 
 ```
@@ -27,4 +47,6 @@ git push
 ```
 komutlarını çalıştırın. Yüklediğiniz kodda çakışma olmadığına dikkat edin.
 
-https://school-management-pied.vercel.app/
+## Deploy
+Github `main` branch üzerindeki kod her merge'den sonra otomatik olarak build edilip aşağıdaki websitesinde sergilenmektedir.
+> https://school-management-pied.vercel.app/
