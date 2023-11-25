@@ -17,6 +17,17 @@ $ npm run dev
 ```
 
 ## Git
+### `main` branch üzerinde çalışma
+Kod üzerinde çalışmanız bittiğinde
+
+```
+git add <file name>
+git commit -m <commit message>
+git pull
+git push
+```
+komutlarını çalıştırın. Yüklediğiniz kodda çakışma olmadığına dikkat edin.
+
 ### Farklı branch üzerinde çalışma
 Güncellemeleri `main`'den farklı branch üzerinde yapacaksanız, öncelikle
 ```
@@ -35,17 +46,11 @@ git push --set-upstream origin <branch-name>
 komutlarını çalıştırın. `<branch-name>`'den `main`'e merge etmeyi unutmayın.
 Merge için
 1. Github `Pull requests` sekmesinden `New pull request`'e tıklayın.
-2. Çalıştığınız branch'i seçin.
-
-Kod üzerinde çalışmanız bittiğinde
-
-```
-git add <file name>
-git commit -m <commit message>
-git pull
-git push
-```
-komutlarını çalıştırın. Yüklediğiniz kodda çakışma olmadığına dikkat edin.
+1. Çalıştığınız branch'i seçin.
+1. Açılan `Comparing Changes` ekranından değişikliklerinizi kontrol edin.
+1. `Create pull request`'e tıklayın.
+1. `Title` ve `Description` girin, ardından `Create pull request`'e tıklayın.
+1. `Pull requests` sekmesinden PR seçip merge'leyin.
 
 ## Deploy
 Github `main` branch üzerindeki kod her merge'den sonra otomatik olarak build edilip aşağıdaki websitesinde sergilenmektedir.
