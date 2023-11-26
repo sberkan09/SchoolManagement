@@ -11,7 +11,7 @@ Yapılma Durumu | api url | açıklama
 + | api/calisan/temizlikGetir | tüm temzilik personeli listesini ve TC_NOsuna gore temizlik personeli getir
 + | api/veli/veliGetir | ogrenci TC_NOya gore veli getirir (view olusturdum)
 + | api/veli/subeVeliGetir | bir subedeki tum ogrencilerin velilerini getirir
-- | api/ders/talepGetir | hangi derse ne kadar talep olmus doner
++ | api/ders/talepGetir | hangi derse ne kadar talep olmus doner
 - | api/ogrenci/ogrenciMusaitlikGetir | tum ogrencilerin ve bir dersi talep eden ogrencilerin musaitlik tablosunu doner
 - | api/ogretmen/ogretmenMusaitlikGetir | part-time ogretmenlerin yeterli talep olan dersler icin musaitligini getirir
 - | api/ders/dersSaatiUygunGetir | dersi talep eden ogrenci ve dersi veren ogretmenin musait oldugu ortak saatleri getirir (count)
