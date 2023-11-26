@@ -36,9 +36,9 @@ function OgrenciList() {
 
 export default function Ogrenci() {
     return (
-        <>
+        <div>
             <OgrenciList/>
-        </>
+        </div>
     );
   }
   
