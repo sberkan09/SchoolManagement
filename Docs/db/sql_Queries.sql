@@ -10,6 +10,11 @@ from aktif as a left outer join ogrenci as ogr on (a.TC_NO = ogr.TC_NO);
 select *
 from mezun as m left outer join ogrenci as ogr on (a.TC_NO = m.TC_NO);
 
+#TC_NO = 1 olan ogrenciler
+select *
+from ogrenci
+where TC_NO = '1'; 
+
 #Tum calisanlar
 select *
 from calisan;
