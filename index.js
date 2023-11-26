@@ -30,7 +30,7 @@ app.get("/api/ogrenci/ogrencileriGetir", (req, res) => {
 });
 
 //Aktif ogrencileri getir
-//TC_NOsuna gore aktif ogrecnileri doner
+//TC_NOsuna gore aktif ogrencileri doner
 app.get("/api/ogrenci/aktifOgrencileriGetir", (req, res) => {
   const { TC_NO } = req.query;
   if ((TC_NO = undefined)) {
@@ -51,18 +51,16 @@ app.get("/api/ogrenci/aktifOgrencileriGetir", (req, res) => {
         res.json(data[0]);
       })
       .catch((error) =>
-        console.error(
-          `/api/ogrenci/aktifOgrencileriGetir = '${TC_NO}'`,
-          error
-        )
+        console.error(`/api/ogrenci/aktifOgrencileriGetir = '${TC_NO}'`, error)
       );
   }
 });
 
 //Mezunlari getir
+//TC_NOsuna gore mezun ogrencileri doner
 app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
   const { TC_NO } = req.query;
-  if(TC_NO = undefined){
+  if ((TC_NO = undefined)) {
     db.query(
       "select * from mezun as m left outer join ogrenci as ogr on (a.TC_NO = m.TC_NO);"
     )
@@ -72,8 +70,7 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
       .catch((error) =>
         console.error("/api/ogrenci/mezunOgrencileriGetir", error)
       );
-  }
-  else{
+  } else {
     db.query(
       `select * from mezun as m left outer join ogrenci as ogr on (a.TC_NO = m.TC_NO) where TC_NO = '${TC_NO}';`
     )
@@ -84,17 +81,41 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
         console.error(`/api/ogrenci/mezunOgrencileriGetir = '${TC_NO}'`, error)
       );
   }
-  
 });
 
 // tum calisanlari doner
+//TC_NOsuna gore calisanlari doner
 app.get("/api/calisan/calisanlariGetir", (req, res) => {
-  db.query("select * from ogrenci;")
-    .then((data) => {
-      res.json(data[0]);
-    })
-    .catch((error) => console.error("/api/ogrenci/ogrencileriGetir", error));
+  const { TC_NO } = req.query;
+  if ((TC_NO = undefined)) {
+    db.query("select * from calisan;")
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/calisan/calisanlariGetir", error));
+  } else {
+    db.query(`select * from calisan where TC_NO = '${TC_NO}';`)
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/calisan/calisanGetir = '${TC_NO}'`, error)
+      );
+  }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.listen(3306, () => {
   console.log("this is develop branch");
