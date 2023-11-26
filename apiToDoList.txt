@@ -1,5 +1,5 @@
 Yapılma Durumu | api url | açıklama
-- | api/ogrenci/ogrencileriGetir | tüm öğrenci listesini getir
-- | api/ogrenci/ogrenci&TC_NO=1 | TC_NO = 1 olan öğrenciyi getir
-- | api/ogrenci/aktifOgrencileriGetir | tüm aktif öğrencileri getir
-- | api/ogrenci/mezunOgrencileriGetir | tüm mezun öğrencileri getir
++ | api/ogrenci/ogrencileriGetir | tüm öğrenci listesini getir
+? | api/ogrenci/ogrenci&TC_NO=1 | TC_NO = 1 olan öğrenciyi getir
++ | api/ogrenci/aktifOgrencileriGetir | tüm aktif öğrencileri getir
++ | api/ogrenci/mezunOgrencileriGetir | tüm mezun öğrencileri getir
