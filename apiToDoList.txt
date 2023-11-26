@@ -2,5 +2,25 @@ Yapılma Durumu | api url | açıklama
 + | api/ogrenci/ogrencileriGetir | tüm öğrenci listesini ve TC_NOsuna gore ogrenciyi getir
 + | api/ogrenci/aktifOgrencileriGetir | tüm aktif öğrencileri TC_NOsuna gore ogrenciyi getir
 + | api/ogrenci/mezunOgrencileriGetir | tüm mezun öğrencileri TC_NOsuna gore ogrenciyi getir
++ | api/ogrenci/aktifOgrenciEkle | yeni ogrenci ekler
++ | api/ogrenci/mezunEt | aktif ogrenciyi mezun eder
+! | api/ogrenci/aktifOgrenciSil | aktif ogrenciyi sil (TC_NOya gore) VELI TABLOSUNDAN SILINMIYOR
 + | api/calisan/calisanGetir | tüm calisan listesini ve TC_NOsuna gore calisani getir
++ | api/calisan/idareciGetir | tüm idareci listesini ve TC_NOsuna gore idareci getir
++ | api/calisan/ogretmenGetir | tüm ogretmen listesini part-time bilgisine gore ogretmen getir
++ | api/calisan/temizlikGetir | tüm temzilik personeli listesini ve TC_NOsuna gore temizlik personeli getir
++ | api/veli/veliGetir | ogrenci TC_NOya gore veli getirir (view olusturdum)
++ | api/veli/subeVeliGetir | bir subedeki tum ogrencilerin velilerini getirir
+- | api/ders/talepGetir | hangi derse ne kadar talep olmus doner
+- | api/ogrenci/ogrenciMusaitlikGetir | tum ogrencilerin ve bir dersi talep eden ogrencilerin musaitlik tablosunu doner
+- | api/ogretmen/ogretmenMusaitlikGetir | part-time ogretmenlerin yeterli talep olan dersler icin musaitligini getirir
+- | api/ders/dersSaatiUygunGetir | dersi talep eden ogrenci ve dersi veren ogretmenin musait oldugu ortak saatleri getirir (count)
+- | api/gider/sabitGiderGetir | sabit giderleri doner
+- | api/gider/sabitGiderEkle | yeni sabit gider girisi
+- | api/gider/degiskenGiderGetir | degisken giderleri doner
+- | api/gider/degiskenGiderEkle | degisken gider ekler
+- | api/malzeme/subeMalzemeGetir | subelere ait ihtiyac malzemeleri ve stoklarini getirir
+- | api/genel/bilgileriGetir | filtrelemeye gore view getirir (SON PARAGRAF?????)
+
+
 
