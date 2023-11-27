@@ -4,15 +4,20 @@ import TableList from '../components/TableList';
 
 function Calisanlar() {
   const [rows, setRows] = React.useState([]);
+
   React.useEffect(() => {
     (async function getData() {
-      await axios.get('http://localhost:3006/api/calisan/calisanlariGetir').then((response) => {
+      try {
+        const response = await axios.get('http://localhost:3006/api/calisan/calisanlariGetir');
         setRows(response.data);
-      });
-    }());
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }()); // Move the invocation inside the parentheses
   }, []);
 
-  return (<TableList rows={{ rows: rows }} />);
+  // Pass the 'rows' directly as a prop, not as an object property
+  return <TableList rows={rows} />;
 }
 
 function CalisanlarPage() {

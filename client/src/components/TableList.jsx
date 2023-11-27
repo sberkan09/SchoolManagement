@@ -1,43 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 
-function List(rows) {
-  console.log(rows);
+function List({ rows }) {
   return (
     <>
-      {rows.map((row) => (
-        <div>
+      {rows.map((row, index) => (
+        <div key={index}>
           <div>
             <p>
-              <Link to="/Ogrenci/123">
-                <button type="button">
-                  Ogrenci
-                </button>
-              </Link>
+              TC NO: {row.TC_NO}
             </p>
             <p>
-              TC NO:
-              {row.TC_NO}
+              İsim: {row.ISIM}
             </p>
             <p>
-              İsim:
-              {row.ISIM}
+              Soyisim: {row.SOYISIM}
             </p>
             <p>
-              Soyisim:
-              {row.SOYISIM}
+              Adres: {row.ADRES}
             </p>
             <p>
-              Adres:
-              {row.ADRES}
+              Tel No: {row.TEL_NO}
             </p>
             <p>
-              Tel No:
-              {row.TEL_NO}
-            </p>
-            <p>
-              E-Posta:
-              {row.E_POSTA}
+              E-Posta: {row.E_POSTA}
             </p>
             <br />
           </div>
