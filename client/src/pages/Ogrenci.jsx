@@ -7,7 +7,7 @@ function Ogrenci() {
 
   return (
     <div>
-      TC No is { TC_NO }
+      TC No is {TC_NO}
     </div>
   );
 }

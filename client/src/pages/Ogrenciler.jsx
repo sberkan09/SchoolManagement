@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { Link, useParams } from 'react-router-dom';
 
-function Ogrenci() {
+function Ogrenciler() {
   const [rows, setRows] = React.useState([]);
   React.useEffect(() => {
     (async function getData() {
@@ -18,9 +18,9 @@ function Ogrenci() {
         <div>
           <div>
             <p>
-              <Link to="/Veli/123">
+              <Link to="/Ogrenci/123">
                 <button type="button">
-                  Veli
+                  Ogrenci
                 </button>
               </Link>
             </p>
@@ -59,7 +59,7 @@ function Ogrenci() {
 function OgrencilerPage() {
   return (
     <div>
-      <Ogrenci />
+      <Ogrenciler />
     </div>
   );
 }
