@@ -2,11 +2,14 @@ const bp = require("body-parser");
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const db = require("./database");
+var cors = require('cors')
+
 
 const app = express();
 
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
+app.use(cors());
 
 //Ogrencileri getir
 //TC_NOsuna gore ogrencileri getir

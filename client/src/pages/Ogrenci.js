@@ -1,51 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import axios from 'axios';
 
 function OgrenciList() {
-  const [dataResponse, setDataResponse] = useState([]);
-  useEffect(() => {
-    async function getPageData() {
-      const apiUrl = '/api/ogrenci/ogrencileriGetir';
-      const response = await fetch(apiUrl);
-      const res = await response.json();
-      setDataResponse(res.students);
-    }
-    getPageData();
+  const [ogrenci, setOgrenci] = React.useState(null);
+  React.useEffect(() => {
+    (async function getData() {
+      await axios.get('http://localhost:3006/api/ogrenci/ogrencileriGetir').then((response) => {
+        setOgrenci(response.data);
+      });
+    }());
   }, []);
+
+  if (!ogrenci) return null;
+
+  console.log(ogrenci);
+
   return (
-    <div className="App">
-      {dataResponse.map((dataObj) => {
-        const a = (
-          <div>
-            <p>
-              TC NO:
-              {dataObj.TC_NO}
-            </p>
-            <p>
-              İsim:
-              {dataObj.ISIM}
-            </p>
-            <p>
-              Soyisim:
-              {dataObj.SOYISIM}
-            </p>
-            <p>
-              Adres:
-              {dataObj.ADRES}
-            </p>
-            <p>
-              Tel No:
-              {dataObj.TEL_NO}
-            </p>
-            <p>
-              E-Posta:
-              {dataObj.E_POSTA}
-            </p>
-            <br />
-          </div>
-        );
-        return a;
-      })}
+    <div>
+      <div>
+        <p>
+          TC NO:
+          {ogrenci.TC_NO}
+        </p>
+        <p>
+          İsim:
+          {ogrenci.ISIM}
+        </p>
+        <p>
+          Soyisim:
+          {ogrenci.SOYISIM}
+        </p>
+        <p>
+          Adres:
+          {ogrenci.ADRES}
+        </p>
+        <p>
+          Tel No:
+          {ogrenci.TEL_NO}
+        </p>
+        <p>
+          E-Posta:
+          {ogrenci.E_POSTA}
+        </p>
+        <br />
+      </div>
     </div>
   );
 }
