@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Link, useParams } from 'react-router-dom';
+import TableList from '../components/TableList';
 
 function Ogrenciler() {
   const [rows, setRows] = React.useState([]);
@@ -12,48 +12,7 @@ function Ogrenciler() {
     }());
   }, []);
 
-  return (
-    <>
-      {rows.map((row) => (
-        <div>
-          <div>
-            <p>
-              <Link to="/Ogrenci/123">
-                <button type="button">
-                  Ogrenci
-                </button>
-              </Link>
-            </p>
-            <p>
-              TC NO:
-              {row.TC_NO}
-            </p>
-            <p>
-              İsim:
-              {row.ISIM}
-            </p>
-            <p>
-              Soyisim:
-              {row.SOYISIM}
-            </p>
-            <p>
-              Adres:
-              {row.ADRES}
-            </p>
-            <p>
-              Tel No:
-              {row.TEL_NO}
-            </p>
-            <p>
-              E-Posta:
-              {row.E_POSTA}
-            </p>
-            <br />
-          </div>
-        </div>
-      ))}
-    </>
-  );
+  return <TableList rows={rows} />;
 }
 
 function OgrencilerPage() {

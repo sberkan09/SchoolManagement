@@ -1,4 +1,5 @@
+INSERT INTO ucret_tablosu (SAAT, UCRET) VALUES ('6', '60');
+INSERT INTO ucret_tablosu (SAAT, UCRET) VALUES ('10', '100');
 INSERT INTO ucret_tablosu (SAAT, UCRET) VALUES ('11', '110');
-INSERT INTO ucret_tablosu (SAAT, UCRET) VALUES ('13', '130');
 INSERT INTO ucret_tablosu (SAAT, UCRET) VALUES ('14', '140');
-INSERT INTO ucret_tablosu (SAAT, UCRET) VALUES ('16', '160');
+INSERT INTO ucret_tablosu (SAAT, UCRET) VALUES ('19', '190');

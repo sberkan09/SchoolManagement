@@ -3,29 +3,72 @@ import PropTypes from 'prop-types';
 
 function FilterableTableList({ rows }) {
   const [filteredData, setFilteredData] = useState(rows);
-  const [filter, setFilter] = useState('');
+  const [filterTCNO, setFilterTCNO] = useState('');
+  const [filterIsim, setFilterIsim] = useState('');
+  const [filterSoyisim, setFilterSoyisim] = useState('');
+  const [filterTelNo, setFilterTelNo] = useState('');
+  const [filterEPosta, setFilterEPosta] = useState('');
+  const [filterDogumYili, setFilterDogumYili] = useState('');
 
   useEffect(() => {
-    // Filter the data based on the filter input value
+    // Filter the data based on the filter input value for each column
     const filtered = rows.filter((item) => (
-      item.TC_NO.toLowerCase().includes(filter.toLowerCase())
-      || item.ISIM.toLowerCase().includes(filter.toLowerCase())
-      || item.SOYISIM.toLowerCase().includes(filter.toLowerCase())
-      || item.ADRES.toLowerCase().includes(filter.toLowerCase())
-      || item.TEL_NO.toLowerCase().includes(filter.toLowerCase())
-      || item.E_POSTA.toLowerCase().includes(filter.toLowerCase())
+      item.TC_NO.toLowerCase().includes(filterTCNO.toLowerCase())
+      && item.ISIM.toLowerCase().includes(filterIsim.toLowerCase())
+      && item.SOYISIM.toLowerCase().includes(filterSoyisim.toLowerCase())
+      && item.TEL_NO.toLowerCase().includes(filterTelNo.toLowerCase())
+      && item.E_POSTA.toLowerCase().includes(filterEPosta.toLowerCase())
+      && String(item.DOGUM_YILI).includes(filterDogumYili)
     ));
 
     setFilteredData(filtered);
-  }, [rows, filter]);
+  }, [
+    rows,
+    filterTCNO,
+    filterIsim,
+    filterSoyisim,
+    filterTelNo,
+    filterEPosta,
+    filterDogumYili,
+  ]);
 
   return (
     <div>
       <input
         type="text"
-        placeholder="Filter by TC NO, İsim, Soyisim, Adres, Tel No, E-Posta"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
+        placeholder="Filter by TC NO"
+        value={filterTCNO}
+        onChange={(e) => setFilterTCNO(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Filter by İsim"
+        value={filterIsim}
+        onChange={(e) => setFilterIsim(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Filter by Soyisim"
+        value={filterSoyisim}
+        onChange={(e) => setFilterSoyisim(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Filter by Tel No"
+        value={filterTelNo}
+        onChange={(e) => setFilterTelNo(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Filter by E-Posta"
+        value={filterEPosta}
+        onChange={(e) => setFilterEPosta(e.target.value)}
+      />
+      <input
+        type="text"
+        placeholder="Filter by DOGUM_YILI"
+        value={filterDogumYili}
+        onChange={(e) => setFilterDogumYili(e.target.value)}
       />
 
       <table>
@@ -37,19 +80,19 @@ function FilterableTableList({ rows }) {
             <th>Adres</th>
             <th>Tel No</th>
             <th>E-Posta</th>
-            <th>YAS</th>
+            <th>DOGUM_YILI</th>
           </tr>
         </thead>
         <tbody>
           {filteredData.map((item) => (
-            <tr key={item.id}>
+            <tr key={item.TC_NO}>
               <td>{item.TC_NO}</td>
               <td>{item.ISIM}</td>
               <td>{item.SOYISIM}</td>
               <td>{item.ADRES}</td>
               <td>{item.TEL_NO}</td>
               <td>{item.E_POSTA}</td>
-              <td>{item.YAS}</td>
+              <td>{item.DOGUM_YILI}</td>
             </tr>
           ))}
         </tbody>
@@ -64,10 +107,10 @@ FilterableTableList.propTypes = {
       TC_NO: PropTypes.string.isRequired,
       ISIM: PropTypes.string.isRequired,
       SOYISIM: PropTypes.string.isRequired,
-      ADRES: PropTypes.string.isRequired,
+      ADRES: PropTypes.string,
       TEL_NO: PropTypes.string.isRequired,
       E_POSTA: PropTypes.string.isRequired,
-      YAS: PropTypes.number.isRequired,
+      DOGUM_YILI: PropTypes.number.isRequired,
     }),
   ).isRequired,
 };
