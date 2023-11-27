@@ -28,3 +28,4 @@ Yapılma Durumu | api url | açıklama
 - | api/veli/guncelle | veli bilgilerini gunceller
 part time maas
 maas update
+Aylık ve haftalık gider raporları oluşturmak. view
