@@ -11,9 +11,10 @@ Yapılma Durumu | api url | açıklama
 + | api/calisan/temizlikGetir | tüm temzilik personeli listesini ve TC_NOsuna gore temizlik personeli getir
 + | api/veli/veliGetir | ogrenci TC_NOya gore veli getirir (view olusturdum)
 + | api/veli/subeVeliGetir | bir subedeki tum ogrencilerin velilerini getirir
+- | api/veli/ogrencileriGetir | velinin ilişkili olduğu öğrencileri getir
 + | api/ders/talepGetir | hangi derse ne kadar talep olmus doner
-+ | api/ogrenci/ogrenciMusaitlikGetir | tum ogrencilerin veya TC_NOsu verilen ogrencinin musaitlik tablosunu doner
-+ | api/ogretmen/ogretmenMusaitlikGetir | part-time ogretmenlerin TC_NOsu'na gore musaitlik tablosunu doner
++ | api/ogrenci/ogrenciMusaitlikGetir | tum ogrencilerin ve bir dersi talep eden ogrencilerin musaitlik tablosunu doner
++ | api/ogretmen/ogretmenMusaitlikGetir | part-time ogretmenlerin yeterli talep olan dersler icin musaitligini getirir
 + | api/ders/dersSaatiUygunGetir | dersi talep eden ogrenci ve dersi veren ogretmenin musait oldugu ortak saatleri getirir (count)
 + | api/gider/sabitGiderGetir | sabit giderleri doner
 + | api/gider/sabitGiderEkle | yeni sabit gider girisi
@@ -21,3 +22,14 @@ Yapılma Durumu | api url | açıklama
 + | api/gider/degiskenGiderEkle | degisken gider ekler
 + | api/malzeme/subeMalzemeGetir | subelere ait ihtiyac malzemeleri ve stoklarini getirir
 - | api/genel/bilgileriGetir | filtrelemeye gore view getirir (SON PARAGRAF?????)
++ | api/ogrenci/filtre | ogrenci listesini filtreler
++ | api/calisan/filtre | calisan listesini filtreler
+- | api/ogrenci/guncelle | ogrenci bilgilerini gunceller
+- | api/ogretmen/guncelle | ogretmen bilgilerini gunceller
+- | api/veli/guncelle | veli bilgilerini gunceller
+- | api/sube/ogrencileriGetir | şubedeki öğrencileri getirir
+- | api/ders/tumDersleriGetir | tüm dersleri getirir
+- | api/ders/subeleriGetir | dersin şubelerini getirir
+part time maas
+maas update
+Aylık ve haftalık gider raporları oluşturmak. view
