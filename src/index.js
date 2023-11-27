@@ -302,7 +302,8 @@ app.get("/api/veli/subeVeliGetir", (req, res) => {
 app.get("/api/ders/talepGetir", (req, res) => {
   const { DERS_ADI } = req.query;
   if (DERS_ADI == undefined) {
-    db.query( //Tum derslerin taleplerini getir
+    db.query(
+      //Tum derslerin taleplerini getir
       `select Ders_ADI, Count(DERS_ID) as "Talep"
       from talep t left outer join ders d on (t.DERS_ID = d.DERS_ID)
       group by d.DERS_ADI
@@ -312,8 +313,9 @@ app.get("/api/ders/talepGetir", (req, res) => {
         res.json(data[0]);
       })
       .catch((error) => console.error("/api/ders/talepGetir", error));
-  } else { //Adi verilen dersin talebini getir
-    db.query( 
+  } else {
+    //Adi verilen dersin talebini getir
+    db.query(
       `select Ders_ADI, Count(DERS_ID) as "Talep"
       from talep t left outer join ders d on (t.DERS_ID = d.DERS_ID)
       where d.DERS_ID in (select DERS_ID
@@ -325,7 +327,122 @@ app.get("/api/ders/talepGetir", (req, res) => {
       .then((data) => {
         res.json(data[0]);
       })
-      .catch((error) => console.error(`/api/ders/talepGetir = '${DERS_ADI}'`, error));
+      .catch((error) =>
+        console.error(`/api/ders/talepGetir = '${DERS_ADI}'`, error)
+      );
+  }
+});
+
+//sabit giderleri getir
+app.get("/api/gider/sabitGiderGetir", (req, res) => {
+  const { GIDER_SABIT_MI } = req.query;
+  if (GIDER_SABIT_MI == "1") {
+    db.query(`select * gider where GIDER_SABIT_MI = 1;`)
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/gider/sabitGiderGetir", error));
+  } else {
+    console.error(`/api/gider/sabitGiderGetir => Sabit Gider Yok!`, error);
+  }
+});
+
+//sabit gider ekle
+app.get("/api/gider/sabitGiderEkle", (req, res) => {
+  const {
+    GIDER_ID,
+    GIDER_ADI,
+    GIDER_TUTAR,
+    GIDER_TARIH,
+    GIDER_SABIT_MI,
+  } = req.query;
+  if (GIDER_SABIT_MI == "1") {
+    db.query(
+      `insert into gider values('${GIDER_ID}', '${GIDER_ADI}', '${GIDER_TUTAR}', '${GIDER_TARIH}', '${GIDER_SABIT_MI}')`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/gider/sabitGiderEkle = '${GIDER_ID}'`, error)
+      );
+  } else {
+    console.error(
+      `/api/gider/sabitGiderEkle = '${GIDER_ID}' sabit gider degil.`,
+      error
+    );
+  }
+});
+
+//degisken giderleri getir
+app.get("/api/gider/degiskenGiderGetir", (req, res) => {
+  const { GIDER_SABIT_MI } = req.query;
+  if (GIDER_SABIT_MI == "0") {
+    db.query(`select * gider where GIDER_SABIT_MI = 0;`)
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/gider/degiskenGiderGetir", error));
+  } else {
+    console.error(
+      `/api/gider/degiskenGiderGetir => Degisken Gider Yok!`,
+      error
+    );
+  }
+});
+
+//degisken gider ekle
+app.get("/api/gider/degiskenGiderEkle", (req, res) => {
+  const {
+    GIDER_ID,
+    GIDER_ADI,
+    GIDER_TUTAR,
+    GIDER_TARIH,
+    GIDER_SABIT_MI,
+  } = req.query;
+  if (GIDER_SABIT_MI == "0") {
+    db.query(
+      `insert into gider values('${GIDER_ID}', '${GIDER_ADI}', '${GIDER_TUTAR}', '${GIDER_TARIH}', '${GIDER_SABIT_MI}')`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/gider/degiskenGiderEkle = '${GIDER_ID}'`, error)
+      );
+  } else {
+    console.error(
+      `/api/gider/degiskenGiderEkle = '${GIDER_ID}' sabit gider degil.`,
+      error
+    );
+  }
+});
+
+//sube malzeme listelerini getir
+app.get("/api/malzeme/subeMalzemeGetir", (req, res) => {
+  const { SUBE_ID } = req.query;
+  if (SUBE_ID == undefined) {
+    db.query(
+      `SELECT mk.SUBE_ID, mk.MALZEME_ID, m.MALZEME_ADI, m.STOK, m.MALZEME_BIRIM
+            FROM malzeme_kullanimi mk LEFT OUTER JOIN malzeme m ON (mk.MALZEME_ID = m.MALZEME_ID)`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/malzeme/subeMalzemeGetir", error));
+  } else {
+    db.query(
+      `SELECT mk.SUBE_ID, mk.MALZEME_ID, m.MALZEME_ADI, m.STOK, m.MALZEME_BIRIM
+            FROM malzeme_kullanimi mk LEFT OUTER JOIN malzeme m ON (mk.MALZEME_ID = m.MALZEME_ID)
+            WHERE mk.SUBE_ID = '${SUBE_ID}'`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(
+          `/api/malzeme/subeMalzemeGetir => '${SUBE_ID}' subesi icin malzeme bulunamadi!`, error)
+      );
   }
 });
 
