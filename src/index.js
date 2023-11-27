@@ -83,7 +83,7 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
   }
 });
 
-//Yeni Ogrenci ekle
+//Yeni Ogrenci ekle AKTIFTEN SIL
 app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
   const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = req.query;
   if (TC_NO == undefined) {
@@ -261,7 +261,7 @@ app.get("/api/veli/veliGetir", (req, res) => {
   const { TC_NO } = req.query;
   if (TC_NO == undefined) {
     db.query(
-      "create view Veliler as select v.TC_NO, a.OTC_NO, v.ISIM, v.SOYISIM, v.ADRES, v.TEL_NO, v.E_POSTA, a.YAKINLIK from veli as v left join aile_iliskisi as a on (v.TC_NO = a.VTC_NO)"
+      "create view Veliler as select * from veli as v left join aile_iliskisi as a on (v.TC_NO = a.VTC_NO)"
     )
       .then((data) => {
         res.json(data[0]);
@@ -287,7 +287,7 @@ app.get("/api/veli/veliGetir", (req, res) => {
 app.get("/api/veli/subeVeliGetir", (req, res) => {
   const { SUBE_ID } = req.query;
   db.query(
-    `create view SubeVeliler as select v.TC_NO, ai.OTC_NO, v.ISIM, v.SOYISIM, v.ADRES, v.TEL_NO, v.E_POSTA, ai.YAKINLIK 
+    `create view SubeVeliler as select *
       from ((ogrenci_katilir ok left outer join ogrenci o on (ok.TC_NO  = o.TC_NO)) left outer join aile_iliskisi ai on (o.TC_NO = ai.OTC_NO)) 
       left outer join veli v on (ai.VTC_NO = v.TC_NO) where ok.SUBE_ID = '${SUBE_ID}'`
   )
