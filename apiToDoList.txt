@@ -4,7 +4,7 @@ Yapılma Durumu | api url | açıklama
 + | api/ogrenci/mezunOgrencileriGetir | tüm mezun öğrencileri TC_NOsuna gore ogrenciyi getir
 + | api/ogrenci/aktifOgrenciEkle | yeni ogrenci ekler
 + | api/ogrenci/mezunEt | aktif ogrenciyi mezun eder
-! | api/ogrenci/aktifOgrenciSil | aktif ogrenciyi sil (TC_NOya gore) VELI TABLOSUNDAN SILINMIYOR
++ | api/ogrenci/aktifOgrenciSil | aktif ogrenciyi sil (TC_NOya gore) VELI TABLOSUNDAN SILINMIYOR(TRIGGER)
 + | api/calisan/calisanGetir | tüm calisan listesini ve TC_NOsuna gore calisani getir
 + | api/calisan/idareciGetir | tüm idareci listesini ve TC_NOsuna gore idareci getir
 + | api/calisan/ogretmenGetir | tüm ogretmen listesini part-time bilgisine gore ogretmen getir
@@ -12,9 +12,9 @@ Yapılma Durumu | api url | açıklama
 + | api/veli/veliGetir | ogrenci TC_NOya gore veli getirir (view olusturdum)
 + | api/veli/subeVeliGetir | bir subedeki tum ogrencilerin velilerini getirir
 + | api/ders/talepGetir | hangi derse ne kadar talep olmus doner
-- | api/ogrenci/ogrenciMusaitlikGetir | tum ogrencilerin ve bir dersi talep eden ogrencilerin musaitlik tablosunu doner
-- | api/ogretmen/ogretmenMusaitlikGetir | part-time ogretmenlerin yeterli talep olan dersler icin musaitligini getirir
-- | api/ders/dersSaatiUygunGetir | dersi talep eden ogrenci ve dersi veren ogretmenin musait oldugu ortak saatleri getirir (count)
++ | api/ogrenci/ogrenciMusaitlikGetir | tum ogrencilerin veya TC_NOsu verilen ogrencinin musaitlik tablosunu doner
++ | api/ogretmen/ogretmenMusaitlikGetir | part-time ogretmenlerin TC_NOsu'na gore musaitlik tablosunu doner
++ | api/ders/dersSaatiUygunGetir | dersi talep eden ogrenci ve dersi veren ogretmenin musait oldugu ortak saatleri getirir (count)
 + | api/gider/sabitGiderGetir | sabit giderleri doner
 + | api/gider/sabitGiderEkle | yeni sabit gider girisi
 + | api/gider/degiskenGiderGetir | degisken giderleri doner
