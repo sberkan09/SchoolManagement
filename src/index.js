@@ -337,7 +337,7 @@ app.get("/api/ders/talepGetir", (req, res) => {
 app.get("/api/gider/sabitGiderGetir", (req, res) => {
   const { GIDER_SABIT_MI } = req.query;
   if (GIDER_SABIT_MI == "1") {
-    db.query(`select * gider where GIDER_SABIT_MI = 1;`)
+    db.query(`select * from gider where GIDER_SABIT_MI = 1;`)
       .then((data) => {
         res.json(data[0]);
       })
@@ -378,7 +378,7 @@ app.get("/api/gider/sabitGiderEkle", (req, res) => {
 app.get("/api/gider/degiskenGiderGetir", (req, res) => {
   const { GIDER_SABIT_MI } = req.query;
   if (GIDER_SABIT_MI == "0") {
-    db.query(`select * gider where GIDER_SABIT_MI = 0;`)
+    db.query(`select * from gider where GIDER_SABIT_MI = 0;`)
       .then((data) => {
         res.json(data[0]);
       })
