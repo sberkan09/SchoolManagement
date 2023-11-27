@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 
 
-
 function OgrenciList() {
     const [dataResponse, setDataResponse] = useState([]);
     useEffect(() => {
       async function getPageData() {
-        const apiUrl = '../../api/ogrenci/ogrencileriGetir/route';
+        const apiUrl = '/api/ogrenci/ogrencileriGetir';
         const response = await fetch(apiUrl);
         const res = await response.json();
         setDataResponse(res.students)
