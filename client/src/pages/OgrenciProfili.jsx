@@ -1,45 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import PropTypes from 'prop-types';
+import { useLocation } from 'react-router-dom';
 
 function StudentProfile(props) {
-  const { TC_NO } = props;
+  const location = useLocation();
+  const { TC_NO } = location.state;
   const [student, setStudent] = useState(null);
   const [schedule, setSchedule] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3006/api/ogrenci/ogrencileriGetir', { params: { TC_NO } })
-      .then((response) => setStudent(response.data))
+      .then((response) => setStudent(response.data[0]))
       .catch((error) => console.error('Error fetching student profile:', error));
   }, [TC_NO]);
+
+  console.log(student);
 
   return (
     <div>
       {student && (
         <div>
           <h2>
-            {student.name}
-            &apos;s Profile
+            {student.ISIM} s Profile
           </h2>
           <p>
-            İsim:
-            {student.name}
+            İsim: {student.ISIM}
           </p>
           <p>
-            Soyisim:
-            {student.surname}
+            Soyisim: {student.SOYISIM}
           </p>
           <p>
-            TC No:
-            {student.TC_NO}
+            TC No: {student.TC_NO}
           </p>
           <p>
-            Telefon:
-            {student.phone}
+            Telefon: {student.TEL_NO}
           </p>
           <p>
-            Email:
-            {student.email}
+            Email: {student.E_POSTA}
           </p>
         </div>
       )}
@@ -75,13 +72,5 @@ function MyBody() {
   }
   return (<tbody rows={rows} />);
 }
-
-StudentProfile.defaultProps = {
-  TC_NO: '',
-};
-
-StudentProfile.propTypes = {
-  TC_NO: PropTypes.string,
-};
 
 export default StudentProfile;

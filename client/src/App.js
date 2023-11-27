@@ -36,7 +36,7 @@ function Hello() {
     <Routes>
       <Route index element={<Home />} />
       <Route path="/Ogrenciler" element={<OgrencilerPage />} />
-      <Route path="/OgrenciProfili/:TC_NO" element={<OgrenciPage />} />
+      <Route path="/OgrenciProfili/" element={<OgrenciPage />} />
       <Route path="/Veli/:TC_NO" element={<VeliProfili />} />
       <Route path="/Calisanlar" element={<CalisanlarPage />} />
     </Routes>
