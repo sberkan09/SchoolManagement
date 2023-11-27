@@ -1,0 +1,22 @@
+.list-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.list-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.list-item p {
+  margin: 0;
+}
+
+.list-item strong {
+  font-weight: bold;
+  margin-right: 5px;
+}

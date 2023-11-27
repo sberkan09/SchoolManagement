@@ -6,14 +6,16 @@ function Calisanlar() {
   const [rows, setRows] = React.useState([]);
 
   React.useEffect(() => {
-    (async function getData() {
+    const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:3006/api/calisan/calisanlariGetir');
         setRows(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
-    }()); // Move the invocation inside the parentheses
+    };
+
+    fetchData(); // Call the async function directly
   }, []);
 
   // Pass the 'rows' directly as a prop, not as an object property
