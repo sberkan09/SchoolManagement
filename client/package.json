@@ -16,6 +16,7 @@
         "axios": "^1.1.3",
         "date-fns": "^2.29.3",
         "package.json": "^2.0.1",
+        "pkg.json": "^2.0.8",
         "prop-types": "^15.8.1",
         "react": "^18.2.0",
         "react-auth-kit": "^2.6.0",

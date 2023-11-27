@@ -1,294 +1,451 @@
-const bp = require('body-parser');
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const db = require('./src/db');
+const bp = require("body-parser");
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const db = require("./database");
 
 const app = express();
-
-// oguz
 
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 
-// tum ilaclari doner
-app.get('/api/ilaclar', (req, res) => {
-  db.query(
-    'select ilacadi, mg, ilacid from ILAC order by ilacadi ASC',
-  ).then((data) => {
-    res.json(data[0]);
-  });
+//Ogrencileri getir
+//TC_NOsuna gore ogrencileri getir
+app.get("/api/ogrenci/ogrencileriGetir", (req, res) => {
+  const { TC_NO } = req.query;
+  if (TC_NO == undefined) {
+    db.query("select * from ogrenci;")
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/ogrenci/ogrencileriGetir", error));
+  } else {
+    db.query(`select * from ogrenci where TC_NO = '${TC_NO}';`)
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/ogrenci/ogrencileriGetir = '${TC_NO}'`, error)
+      );
+  }
 });
 
-// tum kullanicilari doner
-app.get('/api/kullanicilar', (req, res) => {
-  const { doktortc } = req.query;
-  db.query(`select tcno,ad,soyad from kullanici where tcno != '${doktortc}' order by ad, soyad ASC`).then((data) => {
-    res.json(data[0]);
-  });
-});
-
-// TCNo verilen kullanicinin id'si verilen ilacin gerekli bilgilerini doner
-app.get('/kullandigim', (req, res) => {
-  const { ilacid, tcno } = req.query;
-  db.query(`select I.prospektus, I.ac_tok, I.mg, KU.siklik, Y.yaztarih, I.resim
-  from ILAC as I inner join KULLANIR as KU on I.ilacid = KU.ilacid left join YAZAR as Y on Y.ilacid = I.ilacid 
-  where I.ilacid = '${ilacid}' and KU.tcno = '${tcno}'`).then((data) => {
-    res.json(data[0][0]);
-  });
-});
-
-// Eger HastaneId verilmediyse
-// tum doktorlari doner
-// Eger HastaneId verildiyse
-// O hastanede calisan doktorlari doner
-app.get('/api/doktorlar', (req, res) => {
-  const { hastaneid } = req.query;
-  if (hastaneid === undefined) {
+//Aktif ogrencileri getir
+//TC_NOsuna gore aktif ogrencileri doner
+app.get("/api/ogrenci/aktifOgrencileriGetir", (req, res) => {
+  const { TC_NO } = req.query;
+  if (TC_NO == undefined) {
     db.query(
-      'select * from DOKTOR as D, KULLANICI as K where D.tcno = K.tcno',
-    ).then((data) => {
-      res.json(data[0]);
-    });
+      "select * from aktif as a left outer join ogrenci as ogr on (a.TC_NO = ogr.TC_NO);"
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error("/api/ogrenci/aktifOgrencileriGetir", error)
+      );
   } else {
     db.query(
-      `select K.ad as doktorad, K.soyad as doktorsoyad, D.tcno 
-      From DOKTOR as D,KULLANICI as K 
-      where D.hastaneid = '${hastaneid}' and D.tcno=K.tcno order by doktorad, doktorsoyad ASC;
-      `,
-    ).then((data) => {
-      res.json(data[0]);
-    });
+      `select * from aktif as a left outer join ogrenci as ogr on (a.TC_NO = ogr.TC_NO) where TC_NO = '${TC_NO}';`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/ogrenci/aktifOgrencileriGetir = '${TC_NO}'`, error)
+      );
   }
 });
 
-// tum asilari doner
-app.get('/api/asilar', (req, res) => {
-  db.query(
-    'select asiid, asiadi from ASI order by asiadi ASC',
-  ).then((data) => {
-    res.json(data[0]);
-  });
+//Mezunlari getir
+//TC_NOsuna gore mezun ogrencileri doner
+app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
+  const { TC_NO } = req.query;
+  if (TC_NO == undefined) {
+    db.query(
+      "select * from mezun as m left outer join ogrenci as ogr on (a.TC_NO = m.TC_NO);"
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error("/api/ogrenci/mezunOgrencileriGetir", error)
+      );
+  } else {
+    db.query(
+      `select * from mezun as m left outer join ogrenci as ogr on (a.TC_NO = m.TC_NO) where TC_NO = '${TC_NO}';`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/ogrenci/mezunOgrencileriGetir = '${TC_NO}'`, error)
+      );
+  }
 });
 
-// tum hastaneleri doner
-app.get('/api/hastaneler', (req, res) => {
-  db.query(
-    'select hastanead, hastaneid from HASTANE order by hastanead ASC',
-  ).then((data) => {
-    res.json(data[0]);
-  });
+//Yeni Ogrenci ekle
+app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
+  const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = req.query;
+  if (TC_NO == undefined) {
+    db.query(
+      `insert into ogrenci values('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/ogrenci/aktifOgrenciEkle = '${TC_NO}'`, error)
+      );
+  }
 });
 
-// body'de TCsi verilen kullanicinin ilaclarinin doner
-app.get('/ilaclarim', (req, res) => {
-  const { tcno } = req.query;
-  db.query(
-    `select I.ilacadi, I.mg, I.resim, I.prospektus, K.kullanmasayisi, K.siklik, U.tcno, I.ilacid
-    from KULLANICI as U, KULLANIR as K, ILAC as I 
-    where U.tcno='${tcno}' and K.tcno = U.tcno and K.ilacid = I.ilacid
-    `,
-  ).then((data) => {
-    res.json(data[0]);
-  });
+// Ogrenciyi mezun et
+app.get("/api/ogrenci/mezunEt", (req, res) => {
+  const { TC_NO } = req.query;
+
+  if (TC_NO !== undefined) {
+    db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`)
+      .then((result) => {
+        const { ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = result[0];
+
+        // Mezun tablosuna ekle
+        return db.query(
+          `INSERT INTO mezun VALUES('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`
+        );
+      })
+      .then(() => {
+        // Aktif tablosundan sil
+        return db.query(`DELETE FROM aktif WHERE TC_NO = '${TC_NO}'`);
+      })
+      .then(() => {
+        res.json({ success: true, message: "Ogrenci mezun edildi." });
+      })
+      .catch((error) => {
+        console.error(`/api/ogrenci/mezunEt TC_NO='${TC_NO}'`, error);
+        res.status(500).json({ success: false, error: "Bir hata oluştu." });
+      });
+  } else {
+    res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
+  }
 });
 
-// body'de TCsi verilen kullanicinin asilarini doner
-app.get('/asilarim', (req, res) => {
-  const { tcno } = req.query;
-  db.query(
-    `select S.asiadi, S.yapilmayasi, Y.yapilacagitarih, S.asiid, Y.yaptirdi_mi
-    from KULLANICI as K, ASI as S, YAPTIRIR as Y 
-    where K.tcno = '${tcno}' and K.tcno = Y.tcno and Y.asiid = S.asiid order by Y.yaptirdi_mi ASC`,
-  ).then((data) => {
-    res.json(data[0]);
-  });
+//Ogrenci sil
+app.get("/api/ogrenci/aktifOgrenciSil", (req, res) => {
+  const { TC_NO } = req.query;
+
+  if (TC_NO !== undefined) {
+    db.query(`DELETE FROM ogrenci WHERE TC_NO = '${TC_NO}'`)
+      .then(() => {
+        res.json({ success: true, message: "Ogrenci veritabanindan silindi." });
+      })
+      .catch((error) => {
+        console.error(`/api/ogrenci/aktifOgrenciSil TC_NO='${TC_NO}'`, error);
+        res.status(500).json({ success: false, error: "Bir hata oluştu." });
+      });
+  } else {
+    res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
+  }
 });
 
-// body'de TCsi verilen kullanicinin randevularini doner
-app.get('/randevularim', (req, res) => {
-  const { tcno } = req.query;
-  db.query(
-    `select K.ad, DK.ad as doktorad, DK.soyad as doktorsoyad, R.tarih, R.randevuadi, H.hastanead, R.gitti_mi, R.saat, D.tcno as doktortc 
-    from HASTANE as H, RANDEVU as R,KULLANICI as K, DOKTOR as D, KULLANICI as DK 
-    where K.tcno = '${tcno}' and K.tcno = R.kullanicitc and R.doktortc = D.tcno and D.hastaneid = H.hastaneid and DK.tcno= D.tcno order by R.gitti_mi, R.tarih ASC`,
-  ).then((data) => {
-    res.json(data[0]);
-  });
+// tum calisanlari doner
+//TC_NOsuna gore calisanlari doner
+app.get("/api/calisan/calisanlariGetir", (req, res) => {
+  const { TC_NO } = req.query;
+  if (TC_NO == undefined) {
+    db.query("select * from calisan;")
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/calisan/calisanlariGetir", error));
+  } else {
+    db.query(`select * from calisan where TC_NO = '${TC_NO}';`)
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/calisan/calisanGetir = '${TC_NO}'`, error)
+      );
+  }
 });
 
-// body'de bilgileri veirlen randevuyu doner
-app.get('/randevu', (req, res) => {
-  const { kullanicitc, doktortc, tarih, saat } = req.query;
-  db.query(`select kullanicitc, doktortc, tarih, saat, randevuadi, gitti_mi 
-  from RANDEVU where kullanicitc = '${kullanicitc}' and doktortc = '${doktortc}' and tarih = '${tarih}' and saat = '${saat}:00'`)
+//idarecileri getir
+app.get("/api/calisan/idareciGetir", (req, res) => {
+  const { TC_NO } = req.query;
+  if (TC_NO == undefined) {
+    db.query(
+      "select * from idari as i left outer join calisan as c on (i.TC_NO = c.TC_NO)"
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/calisan/idareciGetir", error));
+  } else {
+    db.query(
+      `select * from idari as i left outer join calisan as c on (i.TC_NO = c.TC_NO) where TC_NO = '${TC_NO}';`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/calisan/idareciGetir = '${TC_NO}'`, error)
+      );
+  }
+});
+
+//ogretmenleri getir
+app.get("/api/calisan/ogretmenGetir", (req, res) => {
+  const { TC_NO, PART_MI } = req.query;
+
+  if (TC_NO === undefined) {
+    let query = `SELECT *, CASE WHEN o.PART_MI = 1 THEN "Part-Time" ELSE "Full-Time" END AS PART_MI FROM ogretmen AS o LEFT OUTER JOIN calisan AS c ON o.TC_NO = c.TC_NO`;
+
+    if (PART_MI === "1") {
+      // Part-time çalışanlar
+      query += ` WHERE o.PART_MI = 1`;
+    } else if (PART_MI === "0") {
+      // Full-time çalışanlar
+      query += ` WHERE o.PART_MI = 0`;
+    } else {
+      //tum ogretmenler
+      query;
+    }
+
+    db.query(query)
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => {
+        console.error("/api/calisan/ogretmenGetir", error);
+        res.status(500).json({ error: "Veritabani hatasi" });
+      });
+  } else {
+    db.query(
+      `SELECT * FROM ogretmen AS o LEFT OUTER JOIN calisan AS c ON o.TC_NO = c.TC_NO WHERE o.TC_NO = '${TC_NO}'`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => {
+        console.error(`/api/calisan/ogretmenGetir = '${TC_NO}'`, error);
+        res.status(500).json({ error: "Veritabani hatasi" });
+      });
+  }
+});
+
+//temizlik personellerini getir
+app.get("/api/calisan/temizlikGetir", (req, res) => {
+  const { TC_NO } = req.query;
+  if (TC_NO == undefined) {
+    db.query(
+      "select * from temizlikci as t left outer join calisan as c on (t.TC_NO = c.TC_NO)"
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/calisan/temizlikGetir", error));
+  } else {
+    db.query(
+      `select * from temizlikci as t left outer join calisan as c on (t.TC_NO = c.TC_NO) where TC_NO = '${TC_NO}';`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/calisan/temizlikGetir = '${TC_NO}'`, error)
+      );
+  }
+});
+
+//Ogrenci TC_NOya gore velilerini getir
+app.get("/api/veli/veliGetir", (req, res) => {
+  const { TC_NO } = req.query;
+  if (TC_NO == undefined) {
+    db.query(
+      "create view Veliler as select v.TC_NO, a.OTC_NO, v.ISIM, v.SOYISIM, v.ADRES, v.TEL_NO, v.E_POSTA, a.YAKINLIK from veli as v left join aile_iliskisi as a on (v.TC_NO = a.VTC_NO)"
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/veli/veliGetir", error));
+  } else {
+    db.query(
+      `select v.TC_NO, a.OTC_NO, v.ISIM, v.SOYISIM, v.ADRES, v.TEL_NO, v.E_POSTA, a.YAKINLIK from veli as v left join aile_iliskisi as a on (v.TC_NO = a.VTC_NO) where TC_NO = '${TC_NO}';`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(
+          `/api/veli/veliGetir => ogrenci TC_NO = '${TC_NO}'`,
+          error
+        )
+      );
+  }
+});
+
+//sube ogrencilerinin velilerini getirir
+app.get("/api/veli/subeVeliGetir", (req, res) => {
+  const { SUBE_ID } = req.query;
+  db.query(
+    `create view SubeVeliler as select v.TC_NO, ai.OTC_NO, v.ISIM, v.SOYISIM, v.ADRES, v.TEL_NO, v.E_POSTA, ai.YAKINLIK 
+      from ((ogrenci_katilir ok left outer join ogrenci o on (ok.TC_NO  = o.TC_NO)) left outer join aile_iliskisi ai on (o.TC_NO = ai.OTC_NO)) 
+      left outer join veli v on (ai.VTC_NO = v.TC_NO) where ok.SUBE_ID = '${SUBE_ID}'`
+  )
     .then((data) => {
       res.json(data[0]);
-    });
-});
-
-// body'de TCsi verilen kullanicinin profil bilgilerini doner
-app.get('/profilim', (req, res) => {
-  const { TCNo } = req.body;
-  db.query(`select * from KULLANICI as K where K.tcno = '${TCNo}'`).then(
-    (data) => {
-      res.json(data[0]);
-    },
-  );
-});
-
-// Eger body'de siklik verilmediyse,
-// Kullanicinin id'si verilen ilacin kullanim sayisini Body'de verilen deger ile degistirir
-// Eger body'de siklik verildiyse,
-// Kullaniciya yeni ilac ekler
-app.put('/ilaclarim', (req, res) => {
-  const { tcno, ilacid, kullanmasayisi, siklik } = req.body;
-  if (siklik === undefined) {
-    db.query(`update KULLANIR set kullanmasayisi='${kullanmasayisi}' from KULLANICI as U, ILAC as I where U.tcno = '${tcno}' and U.tcno = KULLANIR.tcno and I.ilacid = '${ilacid}' and I.ilacid = KULLANIR.ilacid
-  `).then(
-      (data) => {
-        res.json(data[0]);
-      },
-    );
-  } else {
-    db.query(`insert into KULLANIR values('${tcno}','${ilacid}','${siklik}',0)
-  `).then(
-      (data) => {
-        res.json(data[0]);
-      },
-    );
-  }
-});
-
-// Body'de tcno, asiid ve yapilacagitarih bilgileri verilen YAPTIRIR tablosu entrysini yaptirdi_mi bilgisiyle gunceller.
-app.put('/asilarim', (req, res) => {
-  const { tcno, asiid, yapilacagitarih, yaptirdi_mi } = req.body;
-  db.query(`update YAPTIRIR set yaptirdi_mi = ${yaptirdi_mi} where tcno = '${tcno}' and asiid = '${asiid}' and yapilacagitarih = '${yapilacagitarih}'`).then(
-    (data) => {
-      res.json(data[0]);
-    },
-  );
-});
-
-// Body'de tc si verilen kullanicinin yaptirir tablosuna yeni asiyi ekler
-app.post('/asilarim', (req, res) => {
-  const { tcno, asiid, yapilacagitarih } = req.body;
-  db.query(`insert into YAPTIRIR values('${tcno}','${asiid}', '${new Date(yapilacagitarih).toJSON().slice(0, 10)}', 0)
-  `).then(
-    (data) => {
-      res.json(data[0]);
-    },
-  );
-});
-
-// Eger bodyde RandevuIsmi yoksa
-// DoktorTC si ve Tarihi verilen randevunun Gittimi degeri bodydeki ile degisir
-// Eger bodyde RandevuIsmi varsa
-// Verilen TCler tarih ve Randevu ismi ile yeni Randevu olusturulur
-app.put('/randevularim', (req, res) => {
-  const { kullanicitc, doktortc, tarih, gitti_mi, randevuismi, saat } = req.body;
-  if (randevuismi === undefined) {
-    db.query(`
-    update RANDEVU set gitti_mi='${gitti_mi}' from KULLANICI as U, DOKTOR as D where U.tcno = '${kullanicitc}' and U.tcno = RANDEVU.kullanicitc and D.tcno = RANDEVU.doktortc and RANDEVU.tarih='${tarih}' and RANDEVU.saat='${saat}';
-  `).then(
-      (data) => {
-        res.json(data[0]);
-      },
-    );
-  } else if (randevuismi !== '' && doktortc !== '' && tarih !== '' && saat !== '') {
-    const tarih_tomorrow = new Date(new Date(tarih).getTime() + (24 * 60 * 60 * 1000)).toJSON().slice(0, 10);
-    db.query(`
-    insert into RANDEVU values('${kullanicitc}','${doktortc}','${randevuismi}',0,'${tarih_tomorrow}','${saat}')
-    `).then(
-      (data) => {
-        res.json(data[0]);
-      },
-    );
-  }
-});
-
-app.put('/yazar', (req, res) => {
-  const { kullanicitc, doktortc, ilacid, yaztarih } = req.body;
-  db.query(`insert into YAZAR values('${kullanicitc}', '${doktortc}', '${ilacid}', '${yaztarih}')`).then((data) => {
-    res.json(data[0]);
-  });
-});
-
-// Eger Body'de sifre verilmediyse
-// Diger ozellikler bodydeki degerlerle guncellenir
-// Eger Body'de sifre verildiyse
-// Sifre Bodydeki deger ile guncellenir
-app.put('/profilim', (req, res) => {
-  const { TCNo, Ad, Soyad, DogumT, Adres, Cinsiyet, Boy, Kilo, Sifre } = req.body;
-  if (Sifre === undefined) {
-    db.query(`update KULLANICI set ad='${Ad}', soyad='${Soyad}', dogumt='${DogumT}', adres='${Adres}', cinsiyet='${Cinsiyet}', boy='${Boy}', kilo='${Kilo}' where tcno='${TCNo}'`).then(
-      (data) => {
-        res.json(data[0]);
-      },
-    );
-  } else {
-    db.query(`update KULLANICI set sifre='${Sifre}' where tcno='${TCNo}'`).then(
-      (data) => {
-        res.json(data[0]);
-      },
-    );
-  }
-});
-
-// Body'de TCsi verilen kullanicinin ID'si verilen Ilaci silinir
-app.delete('/ilaclarim', (req, res) => {
-  const { tcno, ilacid } = req.query;
-  db.query(`delete From KULLANIR where tcno='${tcno}' and ilacid='${ilacid}'`).then(
-    (data) => {
-      res.json(data[0]);
-    },
-  );
-});
-
-// Body'de TCsi verilen kullanicinin ID'si verilen asisi silinir
-app.delete('/asilarim', (req, res) => {
-  const { tcno, asiid } = req.query;
-  db.query(`delete from YAPTIRIR where tcno='${tcno}' and asiid='${asiid}'`).then(
-    (data) => {
-      res.json(data[0]);
-    },
-  );
-});
-
-// Body'de TCsi verilen kullanicinin DoktorTC'si ve Tarihi verilen randevu silinir
-app.delete('/randevularim', (req, res) => {
-  const { kullanicitc, doktortc, tarih } = req.query;
-  db.query(`delete from RANDEVU where kullanicitc='${kullanicitc}' and doktortc='${doktortc}' and tarih='${tarih}'`).then(
-    (data) => {
-      res.json(data[0]);
-    },
-  );
-});
-
-app.post('/login', (req, res) => {
-  const { TCNo, Sifre } = req.body;
-  db.query(`select * from KULLANICI where tcno='${TCNo}' and sifre='${Sifre}'`)
-    .then((data) => {
-      const [result] = data[0];
-      if (result !== undefined) {
-        const token = jwt.sign({ TCNo, Sifre }, 'secretkey');
-        const userObject = { ...result, token, doktor_mu: false };
-        db.query(`select * from DOKTOR as D, HASTANE as H where D.tcno='${result.tcno}' and H.hastaneid = D.hastaneid`).then((data2) => {
-          const [result2] = data2[0];
-          if (result2 !== undefined) {
-            userObject.doktor_mu = true;
-            userObject.hastanead = result2.hastanead;
-          }
-          res.json(userObject);
-        });
-      } else {
-        res.status(404).json();
-      }
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch((error) => console.error("/api/veli/subeVeliGetir", error));
 });
 
-app.listen(4000, () => {
-  console.log('this is develop branch');
+//Tum derslerin taleplerini getirir
+//Ders adi verilen dersin talebini getirir.
+app.get("/api/ders/talepGetir", (req, res) => {
+  const { DERS_ADI } = req.query;
+  if (DERS_ADI == undefined) {
+    db.query(
+      //Tum derslerin taleplerini getir
+      `select Ders_ADI, Count(DERS_ID) as "Talep"
+      from talep t left outer join ders d on (t.DERS_ID = d.DERS_ID)
+      group by d.DERS_ADI
+      order by Count(DERS_ID) desc `
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/ders/talepGetir", error));
+  } else {
+    //Adi verilen dersin talebini getir
+    db.query(
+      `select Ders_ADI, Count(DERS_ID) as "Talep"
+      from talep t left outer join ders d on (t.DERS_ID = d.DERS_ID)
+      where d.DERS_ID in (select DERS_ID
+                           from ders
+                           where DERS_ADI = '${DERS_ADI}')
+      group by d.DERS_ADI
+      order by Count(DERS_ID) desc `
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/ders/talepGetir = '${DERS_ADI}'`, error)
+      );
+  }
+});
+
+//sabit giderleri getir
+app.get("/api/gider/sabitGiderGetir", (req, res) => {
+  const { GIDER_SABIT_MI } = req.query;
+  if (GIDER_SABIT_MI == "1") {
+    db.query(`select * gider where GIDER_SABIT_MI = 1;`)
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/gider/sabitGiderGetir", error));
+  } else {
+    console.error(`/api/gider/sabitGiderGetir => Sabit Gider Yok!`, error);
+  }
+});
+
+//sabit gider ekle
+app.get("/api/gider/sabitGiderEkle", (req, res) => {
+  const {
+    GIDER_ID,
+    GIDER_ADI,
+    GIDER_TUTAR,
+    GIDER_TARIH,
+    GIDER_SABIT_MI,
+  } = req.query;
+  if (GIDER_SABIT_MI == "1") {
+    db.query(
+      `insert into gider values('${GIDER_ID}', '${GIDER_ADI}', '${GIDER_TUTAR}', '${GIDER_TARIH}', '${GIDER_SABIT_MI}')`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/gider/sabitGiderEkle = '${GIDER_ID}'`, error)
+      );
+  } else {
+    console.error(
+      `/api/gider/sabitGiderEkle = '${GIDER_ID}' sabit gider degil.`,
+      error
+    );
+  }
+});
+
+//degisken giderleri getir
+app.get("/api/gider/degiskenGiderGetir", (req, res) => {
+  const { GIDER_SABIT_MI } = req.query;
+  if (GIDER_SABIT_MI == "0") {
+    db.query(`select * gider where GIDER_SABIT_MI = 0;`)
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/gider/degiskenGiderGetir", error));
+  } else {
+    console.error(
+      `/api/gider/degiskenGiderGetir => Degisken Gider Yok!`,
+      error
+    );
+  }
+});
+
+//degisken gider ekle
+app.get("/api/gider/degiskenGiderEkle", (req, res) => {
+  const {
+    GIDER_ID,
+    GIDER_ADI,
+    GIDER_TUTAR,
+    GIDER_TARIH,
+    GIDER_SABIT_MI,
+  } = req.query;
+  if (GIDER_SABIT_MI == "0") {
+    db.query(
+      `insert into gider values('${GIDER_ID}', '${GIDER_ADI}', '${GIDER_TUTAR}', '${GIDER_TARIH}', '${GIDER_SABIT_MI}')`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(`/api/gider/degiskenGiderEkle = '${GIDER_ID}'`, error)
+      );
+  } else {
+    console.error(
+      `/api/gider/degiskenGiderEkle = '${GIDER_ID}' sabit gider degil.`,
+      error
+    );
+  }
+});
+
+//sube malzeme listelerini getir
+app.get("/api/malzeme/subeMalzemeGetir", (req, res) => {
+  const { SUBE_ID } = req.query;
+  if (SUBE_ID == undefined) {
+    db.query(
+      `SELECT mk.SUBE_ID, mk.MALZEME_ID, m.MALZEME_ADI, m.STOK, m.MALZEME_BIRIM
+            FROM malzeme_kullanimi mk LEFT OUTER JOIN malzeme m ON (mk.MALZEME_ID = m.MALZEME_ID)`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) => console.error("/api/malzeme/subeMalzemeGetir", error));
+  } else {
+    db.query(
+      `SELECT mk.SUBE_ID, mk.MALZEME_ID, m.MALZEME_ADI, m.STOK, m.MALZEME_BIRIM
+            FROM malzeme_kullanimi mk LEFT OUTER JOIN malzeme m ON (mk.MALZEME_ID = m.MALZEME_ID)
+            WHERE mk.SUBE_ID = '${SUBE_ID}'`
+    )
+      .then((data) => {
+        res.json(data[0]);
+      })
+      .catch((error) =>
+        console.error(
+          `/api/malzeme/subeMalzemeGetir => '${SUBE_ID}' subesi icin malzeme bulunamadi!`, error)
+      );
+  }
+});
+
+app.listen(3006, () => {
+  console.log("this is develop branch");
 });

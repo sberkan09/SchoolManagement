@@ -1,25 +1,21 @@
-import Head from 'next/head';
-import '../../styles/Home.module.css';
-import Link from 'next/link';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from 'react-auth-kit';
+import App from './App';
 
-function Exciting() {
-  return <h1>Exciting</h1>
-}
-
-function Ogrenci() {
-  return (
-    <center>
-      <Link href='/Ogrenci'>
-        <button className='button'>
-          Öğrenci
-        </button>
-      </Link>
-    </center>
-  );
-}
-
-export default function Home() {
-  return (
-      <Ogrenci/>
-  );
-}
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <AuthProvider
+      authType="cookie"
+      authName="_auth"
+      cookieDomain={window.location.hostname}
+      cookieSecure={false}
+    >
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AuthProvider>
+  </React.StrictMode>,
+);
