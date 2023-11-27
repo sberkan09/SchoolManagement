@@ -22,5 +22,5 @@ Yapılma Durumu | api url | açıklama
 + | api/malzeme/subeMalzemeGetir | subelere ait ihtiyac malzemeleri ve stoklarini getirir
 - | api/genel/bilgileriGetir | filtrelemeye gore view getirir (SON PARAGRAF?????)
 + | api/ogrenci/filtre | ogrenci listesini filtreler
-- | api/calisan/filtre | calisan listesini filtreler
-- | Filtreleme ekranında aktif ogrenci checkbox
++ | api/calisan/filtre | calisan listesini filtreler
+

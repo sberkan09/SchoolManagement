@@ -231,6 +231,51 @@ app.get("/api/ogrenci/filtre", (req, res) => {
 	}
 });
 
+//api/calisan/filtre
+app.get("/api/calisan/filtre", (req, res) => {
+	const { TC_NO, ISIM, SOYISIM } = req.query;
+
+	if (TC_NO !== undefined) {
+		db.query(
+			`SELECT * FROM calisan
+       WHERE TC_NO = '${TC_NO}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/calisan/filtre TC_NO='${TC_NO}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (ISIM !== undefined) {
+		db.query(
+			`SELECT * FROM calisan
+       WHERE ISIM = '${ISIM}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/calisan/filtre ISIM='${ISIM}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (SOYISIM !== undefined) {
+		db.query(
+			`SELECT * FROM calisan
+       WHERE SOYISIM = '${SOYISIM}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/calisan/filtre SOYISIM='${SOYISIM}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else {
+		res.status(400).json({ success: false, error: "Parametre eksik." });
+	}
+});
+
 // tum calisanlari doner
 //TC_NOsuna gore calisanlari doner
 app.get("/api/calisan/calisanlariGetir", (req, res) => {
