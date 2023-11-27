@@ -1,7 +1,8 @@
 import React from 'react';
 import axios from 'axios';
+import { Link, useParams } from 'react-router-dom';
 
-function OgrenciList() {
+function Ogrenci() {
   const [rows, setRows] = React.useState([]);
   React.useEffect(() => {
     (async function getData() {
@@ -16,6 +17,13 @@ function OgrenciList() {
       {rows.map((row) => (
         <div>
           <div>
+            <p>
+              <Link to="/Veli/123">
+                <button type="button">
+                  Veli
+                </button>
+              </Link>
+            </p>
             <p>
               TC NO:
               {row.TC_NO}
@@ -48,10 +56,12 @@ function OgrenciList() {
   );
 }
 
-export default function Ogrenci() {
+function OgrencilerPage() {
   return (
     <div>
-      <OgrenciList />
+      <Ogrenci />
     </div>
   );
 }
+
+export default OgrencilerPage;
