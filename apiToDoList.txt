@@ -23,4 +23,7 @@ Yapılma Durumu | api url | açıklama
 - | api/genel/bilgileriGetir | filtrelemeye gore view getirir (SON PARAGRAF?????)
 + | api/ogrenci/filtre | ogrenci listesini filtreler
 + | api/calisan/filtre | calisan listesini filtreler
+- | api/ogrenci/guncelle | ogrenci bilgilerini gunceller
+- | api/ogretmen/guncelle | ogretmen bilgilerini gunceller
+- | api/veli/guncelle | veli bilgilerini gunceller
 
