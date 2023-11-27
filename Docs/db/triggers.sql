@@ -30,27 +30,28 @@ DELIMITER ;
 
 
 #3
-#ogrenci silme?
+#ogrenci silme
 DELIMITER //
 
 CREATE TRIGGER before_delete_ogrenci
 BEFORE DELETE ON ogrenci
 FOR EACH ROW
 BEGIN
-    DECLARE veli_count INT;
+    DECLARE veli_tc_no CHAR(11);
+    DECLARE veli_linked_other_student INT;
 
-    -- Öğrencinin veli sayısını kontrol et
-    SELECT COUNT(*) INTO veli_count
-    FROM aile_iliskisi
-    WHERE OTC_NO = OLD.TC_NO OR VTC_NO = OLD.TC_NO;
+    -- Öğrenciye bağlı velinin TC kimlik numarasını bul
+    SELECT VTC_NO INTO veli_tc_no FROM aile_iliskisi WHERE OTC_NO = OLD.TC_NO;
 
-    -- Eğer sadece bu öğrenciye ait bir veli varsa, veliyi tamamen sil
-    IF veli_count = 1 THEN
-        DELETE FROM veli WHERE TC_NO = OLD.TC_NO;
-    
-    -- Eğer başka öğrencilere de veli olarak kayıtlı ise, sadece aile ilişkisini sil
-    ELSE
-        DELETE FROM aile_iliskisi WHERE OTC_NO = OLD.TC_NO OR VTC_NO = OLD.TC_NO;
+    -- Öğrenci-veli ilişkisini sil
+    DELETE FROM aile_iliskisi WHERE OTC_NO = OLD.TC_NO;
+
+    -- Bu velinin başka bir öğrenciyle ilişkilendirilip ilişkilendirilmediğini kontrol et
+    SELECT COUNT(*) INTO veli_linked_other_student FROM aile_iliskisi WHERE VTC_NO = veli_tc_no;
+
+    -- Eğer veli başka bir öğrenciyle ilişkilendirilmemişse, veliyi sil
+    IF veli_linked_other_student = 0 THEN
+        DELETE FROM veli WHERE TC_NO = veli_tc_no;
     END IF;
 END //
 
@@ -75,7 +76,7 @@ BEGIN
     -- Eğer toplam talep sayısı 10'dan büyükse
     IF toplam_talep > 10 THEN
         -- Uyarı mesajını yazdır
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = `Dikkat!: '${DERS_ID}' dersine ait talep sayisi 10'dan büyük!`;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = `Dikkat!: 'NEW.DERS_ID' dersine ait talep sayisi 10'dan büyük! Ders acilabilir.`;
     END IF;
 END //
 
