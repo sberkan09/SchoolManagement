@@ -21,12 +21,14 @@ CREATE TRIGGER before_update_malzeme_stok
 BEFORE UPDATE ON malzeme
 FOR EACH ROW
 BEGIN
-    IF NEW.STOK = 1 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Uyari: Malzeme stoku 1 oldu!';
+    IF NEW.STOK <= 5 THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = CONCAT('Uyari: Malzeme stoku ', NEW.STOK, ' adet kaldi!');
     END IF;
 END //
 
 DELIMITER ;
+
+
 
 
 #3
@@ -67,17 +69,15 @@ FOR EACH ROW
 BEGIN
     DECLARE toplam_talep INT;
 
-    -- Belirli bir derse ait taleplerin toplamını kontrol et
-    SELECT COUNT(*) INTO toplam_talep
-    FROM talep
-    GROUP BY DERS_ID;
-
+    -- Güncellenen DERS_ID için toplam talep sayısını hesapla
+    SELECT COUNT(*) INTO toplam_talep FROM talep WHERE DERS_ID = NEW.DERS_ID;
 
     -- Eğer toplam talep sayısı 10'dan büyükse
     IF toplam_talep > 10 THEN
         -- Uyarı mesajını yazdır
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = `Dikkat!: 'NEW.DERS_ID' dersine ait talep sayisi 10'dan büyük! Ders acilabilir.`;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = CONCAT('Dikkat!: ', NEW.DERS_ID, ' dersine ait talep sayisi 10dan büyük! Ders acilabilir.');
     END IF;
 END //
 
 DELIMITER ;
+
