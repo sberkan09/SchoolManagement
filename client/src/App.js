@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
-import OgrenciPage from './pages/Ogrenci';
+import OgrenciPage from './pages/OgrenciProfili';
 import OgrencilerPage from './pages/Ogrenciler';
 import VeliProfili from './pages/Veli';
+import CalisanlarPage from './pages/Calisanlar';
 
 function Ogrenci() {
   return (
@@ -13,6 +14,11 @@ function Ogrenci() {
         </button>
       </Link>
       <br />
+      <Link to="/Calisanlar">
+        <button type="button">
+          Çalışanlar
+        </button>
+      </Link>
     </center>
   );
 }
@@ -30,8 +36,9 @@ function Hello() {
     <Routes>
       <Route index element={<Home />} />
       <Route path="/Ogrenciler" element={<OgrencilerPage />} />
-      <Route path="/Ogrenci/:TC_NO" element={<OgrenciPage />} />
+      <Route path="/OgrenciProfili/:TC_NO" element={<OgrenciPage />} />
       <Route path="/Veli/:TC_NO" element={<VeliProfili />} />
+      <Route path="/Calisanlar" element={<CalisanlarPage />} />
     </Routes>
   );
 }
