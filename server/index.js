@@ -150,6 +150,132 @@ app.get("/api/ogrenci/aktifOgrenciSil", (req, res) => {
 	}
 });
 
+//api/ogrenci/filtre
+app.get("/api/ogrenci/filtre", (req, res) => {
+	const { TC_NO, ISIM, SOYISIM, LOW, UP } = req.query;
+
+	if (TC_NO !== undefined) {
+		db.query(
+			`SELECT * FROM ogrenci
+       WHERE TC_NO = '${TC_NO}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/ogrenci/filtre TC_NO='${TC_NO}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (ISIM !== undefined) {
+		db.query(
+			`SELECT * FROM ogrenci
+       WHERE ISIM = '${ISIM}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/ogrenci/filtre ISIM='${ISIM}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (SOYISIM !== undefined) {
+		db.query(
+			`SELECT * FROM ogrenci
+       WHERE SOYISIM = '${SOYISIM}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/ogrenci/filtre SOYISIM='${SOYISIM}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (LOW !== undefined && UP == undefined) {
+		db.query(
+			`SELECT * FROM ogrenci
+       WHERE YEAR(CURDATE()) - YEAR(DOGUM_YILI) < '${UP}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/ogrenci/filtre UP='${UP}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (UP !== undefined && LOW == undefined) {
+		db.query(
+			`SELECT * FROM ogrenci
+       WHERE YEAR(CURDATE()) - YEAR(DOGUM_YILI) > '${LOW}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/ogrenci/filtre LOW='${LOW}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (LOW !== undefined && UP !== undefined) {
+		db.query(
+			`SELECT * FROM ogrenci
+       WHERE YEAR(CURDATE()) - YEAR(DOGUM_YILI) > '${LOW}' AND YEAR(CURDATE()) - YEAR(DOGUM_YILI) < '${UP}' `
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/ogrenci/filtre LOW='${LOW}', UP='${UP}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else {
+		res.status(400).json({ success: false, error: "Parametre eksik." });
+	}
+});
+
+//api/calisan/filtre
+app.get("/api/calisan/filtre", (req, res) => {
+	const { TC_NO, ISIM, SOYISIM } = req.query;
+
+	if (TC_NO !== undefined) {
+		db.query(
+			`SELECT * FROM calisan
+       WHERE TC_NO = '${TC_NO}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/calisan/filtre TC_NO='${TC_NO}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (ISIM !== undefined) {
+		db.query(
+			`SELECT * FROM calisan
+       WHERE ISIM = '${ISIM}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/calisan/filtre ISIM='${ISIM}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else if (SOYISIM !== undefined) {
+		db.query(
+			`SELECT * FROM calisan
+       WHERE SOYISIM = '${SOYISIM}'`
+		)
+			.then(() => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error(`/api/calisan/filtre SOYISIM='${SOYISIM}'`, error);
+				res.status(500).json({ success: false, error: "Bir hata oluştu." });
+			});
+	} else {
+		res.status(400).json({ success: false, error: "Parametre eksik." });
+	}
+});
+
 // tum calisanlari doner
 //TC_NOsuna gore calisanlari doner
 app.get("/api/calisan/calisanlariGetir", (req, res) => {
@@ -347,6 +473,7 @@ app.get("/api/ogrenci/ogrenciMusaitlikGetir ", (req, res) => {
 		)
 			.then((data) => {
 				res.json(data[0]);
+				console.log("hello");
 			})
 			.catch((error) =>
 				console.error("/api/ogrenci/ogrenciMusaitlikGetir", error)

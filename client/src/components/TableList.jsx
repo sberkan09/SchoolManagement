@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import '../style/FilterableTableList.css'; // Import a CSS file for styling
+import '../style/Ogrenciler.css';
 
 function FilterableTableList({ rows, visibleColumns }) {
   const [filteredData, setFilteredData] = useState(rows);
@@ -56,36 +57,50 @@ function FilterableTableList({ rows, visibleColumns }) {
   return (
     <div>
       <div className="filters">
-        <input
-          type="text"
-          placeholder="Filter by TC NO"
-          value={filterTCNO}
-          onChange={(e) => setFilterTCNO(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filter by İsim"
-          value={filterIsim}
-          onChange={(e) => setFilterIsim(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filter by Soyisim"
-          value={filterSoyisim}
-          onChange={(e) => setFilterSoyisim(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filter by Tel No"
-          value={filterTelNo}
-          onChange={(e) => setFilterTelNo(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Filter by E-Posta"
-          value={filterEPosta}
-          onChange={(e) => setFilterEPosta(e.target.value)}
-        />
+        {visibleColumns.includes('TC_NO') && (
+          <input
+            type="text"
+            placeholder="Filter by TC NO"
+            value={filterTCNO}
+            onChange={(e) => setFilterTCNO(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('ISIM') && (
+          <input
+            type="text"
+            placeholder="Filter by İsim"
+            value={filterIsim}
+            onChange={(e) => setFilterIsim(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('SOYISIM') && (
+          <input
+            type="text"
+            placeholder="Filter by Soyisim"
+            value={filterSoyisim}
+            onChange={(e) => setFilterSoyisim(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('TEL_NO') && (
+          <input
+            type="text"
+            placeholder="Filter by Tel No"
+            value={filterTelNo}
+            onChange={(e) => setFilterTelNo(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('E_POSTA') && (
+          <input
+            type="text"
+            placeholder="Filter by E-Posta"
+            value={filterEPosta}
+            onChange={(e) => setFilterEPosta(e.target.value)}
+          />
+        )}
 
         {visibleColumns.includes('DOGUM_YILI') && (
           <label htmlFor="dogumYiliFilterType">Yaş Filter Type:
@@ -129,6 +144,9 @@ function FilterableTableList({ rows, visibleColumns }) {
             {visibleColumns.includes('TEL_NO') && <th>Tel No</th>}
             {visibleColumns.includes('E_POSTA') && <th>E-Posta</th>}
             {visibleColumns.includes('DOGUM_YILI') && <th>YAŞ</th>}
+            {visibleColumns.includes('DERS_ID') && <th>DERS ID</th>}
+            {visibleColumns.includes('DERS_ADI') && <th>DERS ADI</th>}
+            {visibleColumns.includes('DERS_SAATI') && <th>DERS SAATİ</th>}
           </tr>
         </thead>
         <tbody>
@@ -146,6 +164,9 @@ function FilterableTableList({ rows, visibleColumns }) {
               {visibleColumns.includes('TEL_NO') && <td>{item.TEL_NO}</td>}
               {visibleColumns.includes('E_POSTA') && <td>{item.E_POSTA}</td>}
               {visibleColumns.includes('DOGUM_YILI') && <td>{new Date().getFullYear() - item.DOGUM_YILI}</td>}
+              {visibleColumns.includes('DERS_ID') && <td>{item.DERS_ID}</td>}
+              {visibleColumns.includes('DERS_ADI') && <td>{item.DERS_ADI}</td>}
+              {visibleColumns.includes('DERS_SAATI') && <td>{item.DERS_SAATI}</td>}
             </tr>
           ))}
         </tbody>
@@ -157,13 +178,16 @@ function FilterableTableList({ rows, visibleColumns }) {
 FilterableTableList.propTypes = {
   rows: PropTypes.arrayOf(
     PropTypes.shape({
-      TC_NO: PropTypes.string.isRequired,
-      ISIM: PropTypes.string.isRequired,
-      SOYISIM: PropTypes.string.isRequired,
+      TC_NO: PropTypes.string,
+      ISIM: PropTypes.string,
+      SOYISIM: PropTypes.string,
       ADRES: PropTypes.string,
-      TEL_NO: PropTypes.string.isRequired,
-      E_POSTA: PropTypes.string.isRequired,
+      TEL_NO: PropTypes.string,
+      E_POSTA: PropTypes.string,
       DOGUM_YILI: PropTypes.number,
+      DERS_ID: PropTypes.number,
+      DERS_ADI: PropTypes.string,
+      DERS_SAATI: PropTypes.number,
     }),
   ).isRequired,
   visibleColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
