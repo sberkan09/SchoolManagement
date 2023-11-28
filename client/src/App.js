@@ -4,8 +4,9 @@ import OgrenciPage from './pages/OgrenciProfili';
 import OgrencilerPage from './pages/Ogrenciler';
 import VeliProfili from './pages/Veli';
 import CalisanlarPage from './pages/Calisanlar';
+import DerslerPage from './pages/Dersler';
 
-function Ogrenci() {
+function AnaSayfa() {
   return (
     <center>
       <Link to="/Ogrenciler">
@@ -19,6 +20,11 @@ function Ogrenci() {
           Çalışanlar
         </button>
       </Link>
+      <Link to="/Dersler">
+        <button type="button">
+          Dersler
+        </button>
+      </Link>
     </center>
   );
 }
@@ -26,7 +32,7 @@ function Ogrenci() {
 function Home() {
   return (
     <div>
-      <Ogrenci />
+      <AnaSayfa />
     </div>
   );
 }
@@ -39,6 +45,7 @@ function Hello() {
       <Route path="/OgrenciProfili/" element={<OgrenciPage />} />
       <Route path="/Veli/:TC_NO" element={<VeliProfili />} />
       <Route path="/Calisanlar" element={<CalisanlarPage />} />
+      <Route path="/Dersler" element={<DerslerPage />} />
     </Routes>
   );
 }

@@ -12,7 +12,7 @@ function Ogrenciler() {
     }());
   }, []);
 
-  return <TableList rows={rows} visibleColumns={['  TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']} />;
+  return <TableList rows={rows} visibleColumns={['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']} />;
 }
 
 function OgrencilerPage() {
