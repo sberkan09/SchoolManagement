@@ -39,5 +39,3 @@ Yapılma Durumu | api url | açıklama
 + | api/ders/dersEkle | ders ekler
 + | api/ders/kapaliDersGetir | aktif olmayan dersleri getir
 + | api/ders/acikDersGetir | aktif olan dersleri getir
-
-Aylık ve haftalık gider raporları oluşturmak. view
