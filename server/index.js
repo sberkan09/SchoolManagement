@@ -465,18 +465,20 @@ app.get("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
 	console.log(req.query);
 
 	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
-			// Calisan tablosuna ekleme yap
-		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`;
-		const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}')`;
-		const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES (${TC_NO}, ${MAAS})`;
+					// Calisan tablosuna ekleme yap
+			const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`;
+			const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}')`;
+			const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES (${TC_NO}, ${MAAS})`;
 
-		db.query(query1, [TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA]);
-		db.query(query2, [TC_NO, PART_MI]);
-		db.query(query3, [TC_NO, MAAS]);
-			
-	} else {
-			res.status(400).send("Eksik veya geçersiz parametreler.");
-	}
+			db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`).then((data) =>{
+        if (data.length > 0) {
+					res.status(400).send("Ayni ogretmen birden fazla kaydedilemez.");
+				} else {
+					db.query(query1, [TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA]);
+					db.query(query2, [TC_NO, PART_MI]);
+					db.query(query3, [TC_NO, MAAS]);
+        }});
+}
 });
 
 
