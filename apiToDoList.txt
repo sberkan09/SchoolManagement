@@ -27,7 +27,8 @@ Yapılma Durumu | api url | açıklama
 + | api/ogrenci/guncelle | ogrenci bilgilerini gunceller
 + | api/calisan/guncelle | calisan bilgilerini gunceller
 + | api/fullTime/guncelle | fullTime maas bilgilerini gunceller 
-- | api/partTime/guncelle | partTime saatlik ucret bilgilerini gunceller 
++ | api/partTime/guncelle | partTime saatlik ucret bilgilerini gunceller 
++ | api/ucret/guncelle | saatlik ucretleri gunceller
 + | api/veli/guncelle | veli bilgilerini gunceller
 + | api/sube/ogrencileriGetir | şubedeki öğrencileri getirir
 + | api/ders/tumDersleriGetir | tüm dersleri getirir
