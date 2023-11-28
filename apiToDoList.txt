@@ -36,6 +36,7 @@ Yapılma Durumu | api url | açıklama
 + | api/calisan/partTime/OgretmenEkle | part time ogretmen ekler
 + | api/calisan/temizlikciEkle | temizlikci ekler
 - | api/ders/dersEkle | ders ekler
+- | api/ders/kapaliDersGetir | aktif olmayan dersleri getir
 part time maas
 maas update
 Aylık ve haftalık gider raporları oluşturmak. view
