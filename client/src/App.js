@@ -5,6 +5,9 @@ import OgrencilerPage from './pages/Ogrenciler';
 import VeliProfili from './pages/Veli';
 import CalisanlarPage from './pages/Calisanlar';
 import DerslerPage from './pages/Dersler';
+import CalisanPage from './pages/CalisanProfili';
+import SubelerPage from './pages/Subeler';
+import DersManage from './pages/DersManage';
 
 import './style/FilterableTableList.css';
 
@@ -27,11 +30,6 @@ function AnaSayfa() {
           Dersler
         </button>
       </Link>
-      <Link to="/Subeler">
-        <button type="button" className="ogrenci-button">
-          Şubeler
-        </button>
-      </Link>
     </center>
   );
 }
@@ -52,8 +50,10 @@ function Hello() {
       <Route path="/OgrenciProfili/" element={<OgrenciPage />} />
       <Route path="/Veli/:TC_NO" element={<VeliProfili />} />
       <Route path="/Calisanlar" element={<CalisanlarPage />} />
+      <Route path="/CalisanProfili" element={<CalisanPage />} />
       <Route path="/Dersler" element={<DerslerPage />} />
-      <Route path="/Subeler" element={<DerslerPage />} />
+      <Route path="/Subeler" element={<SubelerPage />} />
+      <Route path="/DersManage" element={<DersManage />} />
     </Routes>
   );
 }

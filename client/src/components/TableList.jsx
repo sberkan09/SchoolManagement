@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 
 import '../style/FilterableTableList.css';
 
-function FilterableTableList({ rows, visibleColumns, comp }) {
+function FilterableTableList({
+  rows, visibleColumns, comp, manageTo, unique,
+}) {
   const [filteredData, setFilteredData] = useState(rows);
   const [filterTCNO, setFilterTCNO] = useState('');
   const [filterIsim, setFilterIsim] = useState('');
@@ -25,11 +27,16 @@ function FilterableTableList({ rows, visibleColumns, comp }) {
   useEffect(() => {
     // Filter the data based on the filter input value for each column
     const filtered = rows.filter((item) => {
-      const isTCNOMatch = item.TC_NO.toLowerCase().includes(filterTCNO.toLowerCase());
-      const isIsimMatch = item.ISIM.toLowerCase().includes(filterIsim.toLowerCase());
-      const isSoyisimMatch = item.SOYISIM.toLowerCase().includes(filterSoyisim.toLowerCase());
-      const isTelNoMatch = item.TEL_NO.toLowerCase().includes(filterTelNo.toLowerCase());
-      const isEPostaMatch = item.E_POSTA.toLowerCase().includes(filterEPosta.toLowerCase());
+      let isTCNOMatch = true;
+      let isIsimMatch = true;
+      let isSoyisimMatch = true;
+      let isTelNoMatch = true;
+      let isEPostaMatch = true;
+      if (item.TC_NO) { isTCNOMatch = item.TC_NO.toLowerCase().includes(filterTCNO.toLowerCase()); }
+      if (item.ISIM) { isIsimMatch = item.ISIM.toLowerCase().includes(filterIsim.toLowerCase()); }
+      if (item.SOYISIM) { isSoyisimMatch = item.SOYISIM.toLowerCase().includes(filterSoyisim.toLowerCase()); }
+      if (item.TEL_NO) { isTelNoMatch = item.TEL_NO.toLowerCase().includes(filterTelNo.toLowerCase()); }
+      if (item.E_POSTA) { isEPostaMatch = item.E_POSTA.toLowerCase().includes(filterEPosta.toLowerCase()); }
 
       let isDogumYiliMatch = true;
       if (dogumYiliFilterType === 'exact') {
@@ -225,6 +232,7 @@ function FilterableTableList({ rows, visibleColumns, comp }) {
             {visibleColumns.includes('ADRES') && <th>Adres</th>}
             {visibleColumns.includes('TEL_NO') && <th>Tel No</th>}
             {visibleColumns.includes('E_POSTA') && <th>E-Posta</th>}
+            {visibleColumns.includes('MEZUNIYET_TARIHI') && <th>Mezuniyet Tarihi</th>}
             {visibleColumns.includes('DOGUM_YILI') && <th>YAŞ</th>}
             {visibleColumns.includes('DERS_ID') && <th>DERS ID</th>}
             {visibleColumns.includes('DERS_ADI') && <th>DERS ADI</th>}
@@ -238,18 +246,21 @@ function FilterableTableList({ rows, visibleColumns, comp }) {
         </thead>
         <tbody>
           {filteredData.map((item) => (
-            <tr key={item.TC_NO}>
-              <td>
-                <Link to="/OgrenciProfili/" state={{ TC_NO: item.TC_NO }}>
-                  <button type="button" className="ogrenci-button">Manage</button>
-                </Link>
-              </td>
+            <tr key={item[unique]}>
+              {manageTo && (
+                <td>
+                  <Link to={manageTo} state={{ TC_NO: item.TC_NO }}>
+                    <button type="button" className="ogrenci-button">Manage</button>
+                  </Link>
+                </td>
+              )}
               {visibleColumns.includes('TC_NO') && <td>{item.TC_NO}</td>}
               {visibleColumns.includes('ISIM') && <td>{item.ISIM}</td>}
               {visibleColumns.includes('SOYISIM') && <td>{item.SOYISIM}</td>}
               {visibleColumns.includes('ADRES') && <td>{item.ADRES}</td>}
               {visibleColumns.includes('TEL_NO') && <td>{item.TEL_NO}</td>}
               {visibleColumns.includes('E_POSTA') && <td>{item.E_POSTA}</td>}
+              {visibleColumns.includes('MEZUNIYET_TARIHI') && <td>{item.MEZUNIYET_TARIHI}</td>}
               {visibleColumns.includes('DOGUM_YILI') && <td>{new Date().getFullYear() - item.DOGUM_YILI}</td>}
               {visibleColumns.includes('DERS_ID') && <td>{item.DERS_ID}</td>}
               {visibleColumns.includes('DERS_ADI') && <td>{item.DERS_ADI}</td>}
@@ -269,6 +280,8 @@ function FilterableTableList({ rows, visibleColumns, comp }) {
 
 FilterableTableList.defaultProps = {
   comp: null,
+  manageTo: '/',
+  unique: 'TC_NO',
 };
 
 FilterableTableList.propTypes = {
@@ -280,6 +293,7 @@ FilterableTableList.propTypes = {
       ADRES: PropTypes.string,
       TEL_NO: PropTypes.string,
       E_POSTA: PropTypes.string,
+      MEZUNIYET_TARIHI: PropTypes.string,
       DOGUM_YILI: PropTypes.number,
       DERS_ID: PropTypes.number,
       DERS_ADI: PropTypes.string,
@@ -293,6 +307,8 @@ FilterableTableList.propTypes = {
   ).isRequired,
   visibleColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
   comp: PropTypes.element,
+  manageTo: PropTypes.string,
+  unique: PropTypes.string,
 };
 
 export default FilterableTableList;

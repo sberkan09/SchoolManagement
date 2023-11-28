@@ -3,16 +3,19 @@ import axios from 'axios';
 import TableList from '../components/TableList';
 import '../style/FilterableTableList.css';
 
-function OgrenciTypeSelect(showMezun, setShowMezun) {
+function OgrenciTypeSelect(ogrenciType, setOgrenciType) {
   return (
     <div className="filters">
-      <label htmlFor="mezunCheckbox">
-        <input
-          type="checkbox"
-          id="mezunCheckbox"
-          checked={showMezun}
-          onChange={() => setShowMezun(!showMezun)}
-        />
+      <label htmlFor="ogrenciTypeDropdown">
+        <select
+          id="ogrenciTypeDropdown"
+          value={ogrenciType}
+          onChange={(e) => setOgrenciType(e.target.value)}
+        >
+          <option value="all">Tümü</option>
+          <option value="aktif">Aktif</option>
+          <option value="mezun">Mezun</option>
+        </select>
         Mezun Öğrencileri Göster
       </label>
     </div>
@@ -21,19 +24,23 @@ function OgrenciTypeSelect(showMezun, setShowMezun) {
 
 function Ogrenciler() {
   const [rows, setRows] = useState([]);
-  const [showMezun, setShowMezun] = useState(false);
-  let visibleColumns = ['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI'];
+  const [ogrenciType, setOgrenciType] = useState('all');
+  const [visibleColumns, setvisibleColumns] = useState(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']);
+  console.log(ogrenciType);
 
   useEffect(() => {
     const fetchData = async () => {
       let endpoint = 'http://localhost:3006/api/ogrenci/ogrencileriGetir';
 
-      if (showMezun) {
+      if (ogrenciType === 'mezun') {
         endpoint = 'http://localhost:3006/api/ogrenci/mezunOgrencileriGetir';
-        visibleColumns = ['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI', 'MEZUNIYET_TARIHI'];
-      } else {
+        setvisibleColumns(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI', 'MEZUNIYET_TARIHI']);
+      } else if (ogrenciType === 'aktif') {
         endpoint = 'http://localhost:3006/api/ogrenci/aktifOgrencileriGetir';
-        visibleColumns = ['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI'];
+        setvisibleColumns(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']);
+      } else if (ogrenciType === 'all') {
+        endpoint = 'http://localhost:3006/api/ogrenci/ogrencileriGetir';
+        setvisibleColumns(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']);
       }
 
       try {
@@ -45,11 +52,11 @@ function Ogrenciler() {
     };
 
     fetchData();
-  }, [showMezun]);
+  }, [ogrenciType]);
 
   return (
     <div>
-      <TableList rows={rows} visibleColumns={visibleColumns} comp={OgrenciTypeSelect(showMezun, setShowMezun)} />
+      <TableList rows={rows} visibleColumns={visibleColumns} comp={OgrenciTypeSelect(ogrenciType, setOgrenciType)} manageTo="/ogrenciProfili/" unique="TC_NO" />
     </div>
   );
 }

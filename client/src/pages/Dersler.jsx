@@ -12,7 +12,7 @@ function Dersler() {
     }());
   }, []);
 
-  return <TableList rows={rows} visibleColumns={['DERS_ID', 'DERS_ADI', 'DERS_SAATI']} />;
+  return <TableList rows={rows} visibleColumns={['DERS_ID', 'DERS_ADI', 'DERS_SAATI']} manageTo="/DersManage/" unique="DERS_ID" />;
 }
 
 function DerslerPage() {
