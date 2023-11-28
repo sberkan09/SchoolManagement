@@ -7,7 +7,7 @@ Yapılma Durumu | api url | açıklama
 + | api/ogrenci/aktifOgrenciSil | aktif ogrenciyi sil (TC_NOya gore) VELI TABLOSUNDAN SILINMIYOR(TRIGGER)
 + | api/calisan/calisanGetir | tüm calisan listesini ve TC_NOsuna gore calisani getir
 + | api/calisan/idareciGetir | tüm idareci listesini ve TC_NOsuna gore idareci getir
-+ | api/calisan/ogretmenGetir | tüm ogretmen listesini part-time bilgisine gore ogretmen getir
++ | api/calisan/ogretmenGetir | tüm ogretmen listesini part-time bilgisine gore ogretmen getir ve maaslarini da verir
 + | api/calisan/temizlikGetir | tüm temzilik personeli listesini ve TC_NOsuna gore temizlik personeli getir
 + | api/veli/veliGetir | ogrenci TC_NOya gore veli getirir (view olusturdum)
 + | api/veli/subeVeliGetir | bir subedeki tum ogrencilerin velilerini getirir
@@ -39,5 +39,5 @@ Yapılma Durumu | api url | açıklama
 + | api/ders/dersEkle | ders ekler
 + | api/ders/kapaliDersGetir | aktif olmayan dersleri getir
 + | api/ders/acikDersGetir | aktif olan dersleri getir
-part time maas
+
 Aylık ve haftalık gider raporları oluşturmak. view
