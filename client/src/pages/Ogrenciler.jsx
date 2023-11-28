@@ -22,6 +22,25 @@ function OgrenciTypeSelect(ogrenciType, setOgrenciType) {
   );
 }
 
+async function handleDelete(deletedItemUniqueKey) {
+  try {
+    // Make a DELETE request to your API endpoint
+    await axios.get('http://localhost:3006/api/ogrenci/aktifOgrenciSil', {
+      params: { deletedItemUniqueKey },
+    });
+  } catch (error) {
+    console.error('Error deleting data:', error);
+  }
+}
+
+function deleteOgrenci(deletedItemUniqueKey) {
+  return (
+    <td>
+      <button type="button" className="ogrenci-button" onClick={handleDelete(deletedItemUniqueKey)}>Delete</button>
+    </td>
+  );
+}
+
 function Ogrenciler() {
   const [rows, setRows] = useState([]);
   const [ogrenciType, setOgrenciType] = useState('all');
@@ -55,7 +74,7 @@ function Ogrenciler() {
 
   return (
     <div>
-      <TableList rows={rows} visibleColumns={visibleColumns} comp={OgrenciTypeSelect(ogrenciType, setOgrenciType)} manageTo="/ogrenciProfili/" unique="TC_NO" addTo="/OgrenciEkle/" />
+      <TableList rows={rows} visibleColumns={visibleColumns} comp={OgrenciTypeSelect(ogrenciType, setOgrenciType)} manageTo="/ogrenciProfili/" unique="TC_NO" addTo="/OgrenciEkle/" deleteComp={deleteOgrenci} />
     </div>
   );
 }

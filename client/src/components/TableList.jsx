@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 import '../style/FilterableTableList.css';
 
@@ -14,8 +15,19 @@ function Add({
   );
 }
 
+async function handleDelete(deleteEndpoint, deletedItemUniqueKey) {
+  try {
+    // Make a DELETE request to your API endpoint
+    await axios.get(deleteEndpoint, {
+      params: deletedItemUniqueKey,
+    });
+  } catch (error) {
+    console.error('Error deleting data:', error);
+  }
+}
+
 function FilterableTableList({
-  rows, visibleColumns, compFilter, manageTo, addTo, unique,
+  rows, visibleColumns, compFilter, manageTo, addTo, unique, deleteComp,
 }) {
   const [filteredData, setFilteredData] = useState(rows);
   const [filterTCNO, setFilterTCNO] = useState('');
@@ -301,13 +313,7 @@ function FilterableTableList({
               {visibleColumns.includes('DERS_NO') && <td>{item.DERS_NO}</td>}
               {visibleColumns.includes('SINIF') && <td>{item.SINIF}</td>}
               {visibleColumns.includes('SUBE_NO') && <td>{item.SUBE_NO}</td>}
-              {manageTo && (
-                <td>
-                  <Link to={manageTo} state={{ TC_NO: item.TC_NO }}>
-                    <button type="button" className="ogrenci-button">Delete</button>
-                  </Link>
-                </td>
-              )}
+              {deleteComp(item[unique])}
             </tr>
           ))}
         </tbody>
@@ -349,6 +355,7 @@ FilterableTableList.propTypes = {
   manageTo: PropTypes.string,
   addTo: PropTypes.string,
   unique: PropTypes.string,
+  deleteComp: PropTypes.any.isRequired,
 };
 
 Add.propTypes = {

@@ -35,7 +35,7 @@ function AnaSayfa() {
           Dersler
         </button>
       </Link>
-          <Link to="/Giderler">
+      <Link to="/Giderler">
         <button type="button" className="ogrenci-button">
           Giderler
         </button>
