@@ -119,33 +119,49 @@ app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
 
 // Ogrenciyi mezun et
 app.get("/api/ogrenci/mezunEt", (req, res) => {
-	const { TC_NO } = req.query;
+    const { TC_NO, MEZUNIYET_TARIHI } = req.query;
 
-	if (TC_NO !== undefined) {
-		db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`)
-			.then((result) => {
-				const { ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = result[0];
+    if (TC_NO && MEZUNIYET_TARIHI) {
+        // İşlemleri sırayla gerçekleştirmek için transaction başlat
+        db.beginTransaction((transactionError) => {
+            if (transactionError) {
+                console.error(transactionError);
+                res.status(500).json({ success: false, error: "Islem baslatilirken bir hata olustu." });
+                return;
+            }
 
-				// Mezun tablosuna ekle
-				return db.query(
-					`INSERT INTO mezun VALUES('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`
-				);
-			})
-			.then(() => {
-				// Aktif tablosundan sil
-				return db.query(`DELETE FROM aktif WHERE TC_NO = '${TC_NO}'`);
-			})
-			.then(() => {
-				res.json({ success: true, message: "Ogrenci mezun edildi." });
-			})
-			.catch((error) => {
-				console.error(`/api/ogrenci/mezunEt TC_NO='${TC_NO}'`, error);
-				res.status(500).json({ success: false, error: "Bir hata oluştu." });
-			});
-	} else {
-		res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
-	}
+            // Mezun tablosuna ekle
+            db.query(
+                `INSERT INTO mezun (TC_NO, MEZUNIYET_TARIHI) VALUES ('${TC_NO}', '${MEZUNIYET_TARIHI}' )`
+            )
+            .then(() => {
+                // Aktif tablosundan sil
+                return db.query(`DELETE FROM aktif WHERE TC_NO = '${TC_NO}'`)
+            })
+            .then(() => {
+                // İşlemleri onayla
+                db.commit((commitError) => {
+                    if (commitError) {
+                        console.error(commitError);
+                        res.status(500).json({ success: false, error: "Islem onaylanirken bir hata olustu." });
+                        return;
+                    }
+                    res.json({ success: true, message: "Ogrenci mezun edildi." });
+                });
+            })
+            .catch((error) => {
+                // Hata olursa işlemleri geri al
+                db.rollback(() => {
+                    console.error("/api/ogrenci/mezunEt TC_NO='" + TC_NO + "'", error);
+                    res.status(500).json({ success: false, error: "Bir hata oluştu." });
+                });
+            });
+        });
+    } else {
+        res.status(400).json({ success: false, error: "TC_NO veya MEZUNIYET_TARIHI parametresi eksik." });
+    }
 });
+
 
 //Ogrenci sil
 app.get("/api/ogrenci/aktifOgrenciSil", (req, res) => {
