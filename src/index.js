@@ -650,6 +650,48 @@ app.get("/api/fullTime/guncelle", (req, res) => {
   
 });
 
+//Part_timer calisanlarin maaslarin guncelle
+app.get("/api/partTime/guncelle", (req, res) => {
+    const { TC_NO, SAAT } = req.query;
+
+	if(TC_NO !== undefined){
+	  db.query(
+        `UPDATE part_timer SET TC_NO = '${TC_NO}', SAAT = '${SAAT}' WHERE TC_NO = '${TC_NO}';`,
+    )
+    .then(() => {
+        res.status(200).send('PartTime calisma saati bilgileri başariyla güncellendi');
+    })
+    .catch((error) => {
+        console.error("/api/partTime/guncelle", error);
+        res.status(500).send('partTime saat bilgileri güncellenirken bir hata oluştu');
+    });	
+	}else {
+		res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
+	}
+  
+});
+
+//Saatlik ucretleri guncelle
+app.get("/api/ucret/guncelle", (req, res) => {
+    const { SAAT, UCRET } = req.query;
+
+	if(SAAT !== undefined){
+	  db.query(
+        `UPDATE ucret_tablosu SET SAAT = '${SAAT}', UCRET = '${UCRET}' WHERE SAAT = '${SAAT}';`,
+    )
+    .then(() => {
+        res.status(200).send('Saatlik ucret bilgileri başariyla güncellendi');
+    })
+    .catch((error) => {
+        console.error("/api/ucret/guncelle", error);
+        res.status(500).send('Saatlik ucret bilgileri güncellenirken bir hata oluştu');
+    });	
+	}else {
+		res.status(400).json({ success: false, error: "SAAT parametresi eksik." });
+	}
+  
+});
+
 
 //Ogrenci TC_NOya gore velilerini getir
 app.get("/api/veli/veliGetir", (req, res) => {
