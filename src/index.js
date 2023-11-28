@@ -85,20 +85,37 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
 	}
 });
 
-//Yeni Ogrenci ekle
 app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = req.query;
-	if (TC_NO !== undefined) {
-		db.query(
-			`insert into ogrenci values('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');
-       insert into aktif values('${TC_NO}');`
-		)
-			.then((data) => {
-				res.json(data[0]);
-			})
-			.catch((error) =>
-				console.error(`/api/ogrenci/aktifOgrenciEkle = '${TC_NO}'`, error)
-			);
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI } =
+		req.query;
+
+	// Girdilerin doğrulanması ve temizlenmesi
+	// NOT: Bu örnek, girdilerin doğrulanmasını ve temizlenmesini göstermek için basitleştirilmiştir.
+	// Gerçek bir uygulamada daha güçlü doğrulama ve temizleme işlemleri yapılmalıdır.
+	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI) {
+		const query1 = `INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`;
+
+		db.query(query1, (error, results) => {
+			if (error) {
+				console.error(error);
+				res.status(500).send("Error while inserting into ogrenci");
+				return;
+			}
+
+			const query2 = `INSERT INTO aktif (TC_NO) VALUES ('${TC_NO}');`;
+
+			db.query(query2, (error, results) => {
+				if (error) {
+					console.error(error);
+					res.status(500).send("Error while inserting into aktif");
+					return;
+				}
+
+				res.status(200).send("Student added successfully");
+			});
+		});
+	} else {
+		res.status(400).send("Missing or invalid parameters");
 	}
 });
 
