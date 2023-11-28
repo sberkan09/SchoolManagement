@@ -42,6 +42,12 @@ function FilterableTableList({
       let isSoyisimMatch = true;
       let isTelNoMatch = true;
       let isEPostaMatch = true;
+      let isDersAdi = true;
+      let isDersSaati = true;
+      let isGun = true;
+      let isDersNo = true;
+      let isSinif = true;
+      let isSubeNo = true;
       if (item.TC_NO) { isTCNOMatch = item.TC_NO.toLowerCase().includes(filterTCNO.toLowerCase()); }
       if (item.ISIM) { isIsimMatch = item.ISIM.toLowerCase().includes(filterIsim.toLowerCase()); }
       if (item.SOYISIM) { isSoyisimMatch = item.SOYISIM.toLowerCase().includes(filterSoyisim.toLowerCase()); }
@@ -56,6 +62,13 @@ function FilterableTableList({
         isDogumYiliMatch = new Date().getFullYear() - item.DOGUM_YILI >= Math.min(min, max) && new Date().getFullYear() - item.DOGUM_YILI <= Math.max(min, max);
       }
 
+      if (item.DERS_ADI) { isDersAdi = item.DERS_ADI.toLowerCase().includes(filterDersAdi.toLowerCase()); }
+      if (item.DERS_SAATI) { isDersSaati = String(item.DERS_SAATI).includes(filterDersSaati); }
+      if (item.GUN) { isGun = String(item.GUN).includes(filterGun); }
+      if (item.DERS_NO) { isDersNo = String(item.DERS_NO).includes(filterDersNo); }
+      if (item.SINIF) { isSinif = item.SINIF.toLowerCase().includes(filterSinif.toLowerCase()); }
+      if (item.SUBE_NO) { isSubeNo = String(item.SUBE_NO).includes(filterSubeNo); }
+
       return (
         isTCNOMatch
         && isIsimMatch
@@ -63,6 +76,12 @@ function FilterableTableList({
         && isTelNoMatch
         && isEPostaMatch
         && isDogumYiliMatch
+        && isDersAdi
+        && isDersSaati
+        && isGun
+        && isDersNo
+        && isSinif
+        && isSubeNo
       );
     });
 

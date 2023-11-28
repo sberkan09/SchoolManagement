@@ -5,19 +5,19 @@
   margin: auto;
 }
 
-label {
+.label-add {
   display: block;
   margin-bottom: 10px;
 }
 
-input {
+.input-add {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
   box-sizing: border-box;
 }
 
-button {
+.button-add {
   background-color: #4caf50;
   color: white;
   padding: 10px;
@@ -26,6 +26,6 @@ button {
   width: 100%;
 }
 
-button:hover {
+.button-add:hover {
   background-color: #45a049;
 }
