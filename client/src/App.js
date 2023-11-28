@@ -11,6 +11,8 @@ import DersManage from './pages/DersManage';
 import CalisanEkle from './pages/CalisanEkle';
 import OgrenciEkle from './pages/OgrenciEkle';
 import DersEkle from './pages/DersEkle';
+import GiderlerPage from './pages/Giderler';
+import MalzemelerPage from './pages/Malzemeler';
 
 import './style/FilterableTableList.css';
 
@@ -31,6 +33,16 @@ function AnaSayfa() {
       <Link to="/Dersler">
         <button type="button" className="ogrenci-button">
           Dersler
+        </button>
+      </Link>
+          <Link to="/Giderler">
+        <button type="button" className="ogrenci-button">
+          Giderler
+        </button>
+      </Link>
+      <Link to="/Malzemeler">
+        <button type="button" className="ogrenci-button">
+          Malzemeler
         </button>
       </Link>
     </center>
@@ -60,6 +72,8 @@ function Hello() {
       <Route path="/DersEkle" element={<DersEkle />} />
       <Route path="/Subeler" element={<SubelerPage />} />
       <Route path="/DersManage" element={<DersManage />} />
+      <Route path="/Giderler" element={<GiderlerPage />} />
+      <Route path="/Malzemeler" element={<MalzemelerPage />} />
     </Routes>
   );
 }
