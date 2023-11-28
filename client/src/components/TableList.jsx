@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import '../style/FilterableTableList.css'; // Import a CSS file for styling
-import '../style/Ogrenciler.css';
+import '../style/FilterableTableList.css';
 
-function FilterableTableList({ rows, visibleColumns }) {
+function FilterableTableList({ rows, visibleColumns, comp }) {
   const [filteredData, setFilteredData] = useState(rows);
   const [filterTCNO, setFilterTCNO] = useState('');
   const [filterIsim, setFilterIsim] = useState('');
@@ -14,6 +13,14 @@ function FilterableTableList({ rows, visibleColumns }) {
   const [filterEPosta, setFilterEPosta] = useState('');
   const [filterDogumYili, setFilterDogumYili] = useState('');
   const [dogumYiliFilterType, setDogumYiliFilterType] = useState('exact');
+  const [filterDersId, setFilterDersId] = useState('');
+  const [filterDersAdi, setfilterDersAdi] = useState('');
+  const [filterDersSaati, setfilterDersSaati] = useState('');
+  const [filterSubeId, setfilterSubeId] = useState('');
+  const [filterGun, setfilterGun] = useState('');
+  const [filterDersNo, setfilterDersNo] = useState('');
+  const [filterSinif, setfilterSinif] = useState('');
+  const [filterSubeNo, setfilterSubeNo] = useState('');
 
   useEffect(() => {
     // Filter the data based on the filter input value for each column
@@ -57,6 +64,8 @@ function FilterableTableList({ rows, visibleColumns }) {
   return (
     <div>
       <div className="filters">
+        {comp}
+
         {visibleColumns.includes('TC_NO') && (
           <input
             type="text"
@@ -132,6 +141,78 @@ function FilterableTableList({ rows, visibleColumns }) {
             onChange={(e) => setFilterDogumYili(e.target.value)}
           />
         )}
+
+        {visibleColumns.includes('DERS_ID') && (
+          <input
+            type="text"
+            placeholder="Filter by DERS ID"
+            value={filterDersId}
+            onChange={(e) => setFilterDersId(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('DERS_ADI') && (
+          <input
+            type="text"
+            placeholder="Filter by Ders Adı"
+            value={filterDersAdi}
+            onChange={(e) => setfilterDersAdi(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('DERS_SAATI') && (
+          <input
+            type="text"
+            placeholder="Filter by Ders Saati"
+            value={filterDersSaati}
+            onChange={(e) => setfilterDersSaati(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('SUBE_ID') && (
+          <input
+            type="text"
+            placeholder="Filter by Şube Id"
+            value={filterSubeId}
+            onChange={(e) => setfilterSubeId(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('GUN') && (
+          <input
+            type="text"
+            placeholder="Filter by Gün"
+            value={filterGun}
+            onChange={(e) => setfilterGun(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('DERS_NO') && (
+          <input
+            type="text"
+            placeholder="Filter by Ders No"
+            value={filterDersNo}
+            onChange={(e) => setfilterDersNo(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('SINIF') && (
+          <input
+            type="text"
+            placeholder="Filter by Sınıf"
+            value={filterSinif}
+            onChange={(e) => setfilterSinif(e.target.value)}
+          />
+        )}
+
+        {visibleColumns.includes('SUBE_NO') && (
+          <input
+            type="text"
+            placeholder="Filter by Şube No"
+            value={filterSubeNo}
+            onChange={(e) => setfilterSubeNo(e.target.value)}
+          />
+        )}
       </div>
 
       <table>
@@ -147,6 +228,11 @@ function FilterableTableList({ rows, visibleColumns }) {
             {visibleColumns.includes('DERS_ID') && <th>DERS ID</th>}
             {visibleColumns.includes('DERS_ADI') && <th>DERS ADI</th>}
             {visibleColumns.includes('DERS_SAATI') && <th>DERS SAATİ</th>}
+            {visibleColumns.includes('SUBE_ID') && <th>ŞUBE ID</th>}
+            {visibleColumns.includes('GUN') && <th>GÜN</th>}
+            {visibleColumns.includes('DERS_NO') && <th>DERS NO</th>}
+            {visibleColumns.includes('SINIF') && <th>SINIF</th>}
+            {visibleColumns.includes('SUBE_NO') && <th>ŞUBE NO</th>}
           </tr>
         </thead>
         <tbody>
@@ -167,6 +253,11 @@ function FilterableTableList({ rows, visibleColumns }) {
               {visibleColumns.includes('DERS_ID') && <td>{item.DERS_ID}</td>}
               {visibleColumns.includes('DERS_ADI') && <td>{item.DERS_ADI}</td>}
               {visibleColumns.includes('DERS_SAATI') && <td>{item.DERS_SAATI}</td>}
+              {visibleColumns.includes('SUBE_ID') && <td>{item.SUBE_ID}</td>}
+              {visibleColumns.includes('GUN') && <td>{item.GUN}</td>}
+              {visibleColumns.includes('DERS_NO') && <td>{item.DERS_NO}</td>}
+              {visibleColumns.includes('SINIF') && <td>{item.SINIF}</td>}
+              {visibleColumns.includes('SUBE_NO') && <td>{item.SUBE_NO}</td>}
             </tr>
           ))}
         </tbody>
@@ -174,6 +265,10 @@ function FilterableTableList({ rows, visibleColumns }) {
     </div>
   );
 }
+
+FilterableTableList.defaultProps = {
+  comp: null,
+};
 
 FilterableTableList.propTypes = {
   rows: PropTypes.arrayOf(
@@ -188,9 +283,15 @@ FilterableTableList.propTypes = {
       DERS_ID: PropTypes.number,
       DERS_ADI: PropTypes.string,
       DERS_SAATI: PropTypes.number,
+      SUBE_ID: PropTypes.number,
+      GUN: PropTypes.number,
+      DERS_NO: PropTypes.number,
+      SINIF: PropTypes.string,
+      SUBE_NO: PropTypes.number,
     }),
   ).isRequired,
   visibleColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
+  comp: PropTypes.element,
 };
 
 export default FilterableTableList;

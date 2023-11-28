@@ -64,7 +64,7 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
 	const { TC_NO } = req.query;
 	if (TC_NO == undefined) {
 		db.query(
-			"select * from mezun as m left outer join ogrenci as ogr on (a.TC_NO = m.TC_NO);"
+			"select * from mezun as m left outer join ogrenci as ogr on (ogr.TC_NO = m.TC_NO);"
 		)
 			.then((data) => {
 				res.json(data[0]);

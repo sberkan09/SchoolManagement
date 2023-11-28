@@ -25,6 +25,11 @@ function AnaSayfa() {
           Dersler
         </button>
       </Link>
+      <Link to="/Subeler">
+        <button type="button">
+          Şubeler
+        </button>
+      </Link>
     </center>
   );
 }
@@ -46,6 +51,7 @@ function Hello() {
       <Route path="/Veli/:TC_NO" element={<VeliProfili />} />
       <Route path="/Calisanlar" element={<CalisanlarPage />} />
       <Route path="/Dersler" element={<DerslerPage />} />
+      <Route path="/Subeler" element={<DerslerPage />} />
     </Routes>
   );
 }
