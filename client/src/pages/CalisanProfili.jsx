@@ -13,8 +13,6 @@ function CalisanProfile() {
       .catch((error) => console.error('Error fetching student profile:', error));
   }, [TC_NO]);
 
-  console.log(student);
-
   return (
     <div>
       {student && (

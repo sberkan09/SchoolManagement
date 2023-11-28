@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
-function StudentProfile(props) {
+function StudentProfile() {
   const location = useLocation();
   const { TC_NO } = location.state;
   const [student, setStudent] = useState(null);

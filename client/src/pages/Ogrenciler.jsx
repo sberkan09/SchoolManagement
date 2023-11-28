@@ -26,7 +26,6 @@ function Ogrenciler() {
   const [rows, setRows] = useState([]);
   const [ogrenciType, setOgrenciType] = useState('all');
   const [visibleColumns, setvisibleColumns] = useState(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']);
-  console.log(ogrenciType);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +55,7 @@ function Ogrenciler() {
 
   return (
     <div>
-      <TableList rows={rows} visibleColumns={visibleColumns} comp={OgrenciTypeSelect(ogrenciType, setOgrenciType)} manageTo="/ogrenciProfili/" unique="TC_NO" />
+      <TableList rows={rows} visibleColumns={visibleColumns} comp={OgrenciTypeSelect(ogrenciType, setOgrenciType)} manageTo="/ogrenciProfili/" unique="TC_NO" addTo="/OgrenciEkle/" />
     </div>
   );
 }
