@@ -22,12 +22,13 @@ Yapılma Durumu | api url | açıklama
 + | api/gider/degiskenGiderGetir | degisken giderleri doner
 + | api/gider/degiskenGiderEkle | degisken gider ekler
 + | api/malzeme/subeMalzemeGetir | subelere ait ihtiyac malzemeleri ve stoklarini getirir
-- | api/genel/bilgileriGetir | filtrelemeye gore view getirir (SON PARAGRAF?????)
 + | api/ogrenci/filtre | ogrenci listesini filtreler
 + | api/calisan/filtre | calisan listesini filtreler
-- | api/ogrenci/guncelle | ogrenci bilgilerini gunceller
-- | api/ogretmen/guncelle | ogretmen bilgilerini gunceller
-- | api/veli/guncelle | veli bilgilerini gunceller
++ | api/ogrenci/guncelle | ogrenci bilgilerini gunceller
++ | api/calisan/guncelle | calisan bilgilerini gunceller
++ | api/fullTime/guncelle | fullTime maas bilgilerini gunceller 
+- | api/partTime/guncelle | partTime saatlik ucret bilgilerini gunceller 
++ | api/veli/guncelle | veli bilgilerini gunceller
 + | api/sube/ogrencileriGetir | şubedeki öğrencileri getirir
 + | api/ders/tumDersleriGetir | tüm dersleri getirir
 + | api/ders/subeleriGetir | dersin şubelerini getirir
@@ -35,9 +36,8 @@ Yapılma Durumu | api url | açıklama
 + | api/calisan/fullTime/OgretmenEkle | full time ogretmen ekler
 + | api/calisan/partTime/OgretmenEkle | part time ogretmen ekler
 + | api/calisan/temizlikciEkle | temizlikci ekler
-- | api/ders/dersEkle | ders ekler
-- | api/ders/kapaliDersGetir | aktif olmayan dersleri getir
-- | api/ders/acikDersGetir | aktif olan dersleri getir
++ | api/ders/dersEkle | ders ekler
++ | api/ders/kapaliDersGetir | aktif olmayan dersleri getir
++ | api/ders/acikDersGetir | aktif olan dersleri getir
 part time maas
-maas update
 Aylık ve haftalık gider raporları oluşturmak. view
