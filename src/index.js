@@ -488,7 +488,7 @@ app.get("/api/veli/ogrencileriGetir", (req, res) => {
 app.get("/api/ders/tumDersleriGetir", (req, res) => {
 	db.query(
 		//Tum derslerin taleplerini getir
-		`select DERS_ADI from ders group by d.DERS_ADI;`
+		`select * from ders as d group by d.DERS_ADI;`
 	)
 		.then((data) => {
 			res.json(data[0]);
