@@ -19,7 +19,7 @@ function Calisanlar() {
   }, []);
 
   // Pass the 'rows' directly as a prop, not as an object property
-  return <TableList rows={rows} visibleColumns={['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA']} manageTo="/calisanProfili/" unique="TC_NO" />;
+  return <TableList rows={rows} visibleColumns={['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA']} manageTo="/calisanProfili/" unique="TC_NO" addTo="/CalisanEkle/" />;
 }
 
 function CalisanlarPage() {

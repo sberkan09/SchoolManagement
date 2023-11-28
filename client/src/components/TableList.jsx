@@ -4,8 +4,18 @@ import { Link } from 'react-router-dom';
 
 import '../style/FilterableTableList.css';
 
+function Add({
+  addTo, unique,
+}) {
+  return (
+    <Link to={addTo} state={unique}>
+      <button type="button" className="ogrenci-button">Add</button>
+    </Link>
+  );
+}
+
 function FilterableTableList({
-  rows, visibleColumns, comp, manageTo, unique,
+  rows, visibleColumns, compFilter, manageTo, addTo, unique,
 }) {
   const [filteredData, setFilteredData] = useState(rows);
   const [filterTCNO, setFilterTCNO] = useState('');
@@ -71,7 +81,7 @@ function FilterableTableList({
   return (
     <div>
       <div className="filters">
-        {comp}
+        {compFilter}
 
         {visibleColumns.includes('TC_NO') && (
           <input
@@ -220,6 +230,8 @@ function FilterableTableList({
             onChange={(e) => setfilterSubeNo(e.target.value)}
           />
         )}
+
+        <Add addTo={addTo} unique={unique} />
       </div>
 
       <table>
@@ -270,6 +282,13 @@ function FilterableTableList({
               {visibleColumns.includes('DERS_NO') && <td>{item.DERS_NO}</td>}
               {visibleColumns.includes('SINIF') && <td>{item.SINIF}</td>}
               {visibleColumns.includes('SUBE_NO') && <td>{item.SUBE_NO}</td>}
+              {manageTo && (
+                <td>
+                  <Link to={manageTo} state={{ TC_NO: item.TC_NO }}>
+                    <button type="button" className="ogrenci-button">Delete</button>
+                  </Link>
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
@@ -279,8 +298,9 @@ function FilterableTableList({
 }
 
 FilterableTableList.defaultProps = {
-  comp: null,
+  compFilter: null,
   manageTo: '/',
+  addTo: '/',
   unique: 'TC_NO',
 };
 
@@ -306,9 +326,15 @@ FilterableTableList.propTypes = {
     }),
   ).isRequired,
   visibleColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
-  comp: PropTypes.element,
+  compFilter: PropTypes.element,
   manageTo: PropTypes.string,
+  addTo: PropTypes.string,
   unique: PropTypes.string,
+};
+
+Add.propTypes = {
+  addTo: PropTypes.string.isRequired,
+  unique: PropTypes.string.isRequired,
 };
 
 export default FilterableTableList;

@@ -12,7 +12,7 @@ function Subeler() {
     }());
   }, []);
 
-  return <TableList rows={rows} visibleColumns={['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']} />;
+  return <TableList rows={rows} visibleColumns={['SUBE_ID', 'GUN', 'DERS_NO', 'SINIF', 'SUBE_NO']} />;
 }
 
 function SubelerPage() {

@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
-function CalisanProfile(props) {
+function CalisanProfile() {
   const location = useLocation();
   const { TC_NO } = location.state;
   const [student, setStudent] = useState(null);
-  const [schedule, setSchedule] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:3006/api/calisan/calisanlariGetir', { params: { TC_NO } })
@@ -42,14 +41,6 @@ function CalisanProfile(props) {
       )}
     </div>
   );
-}
-
-function MyBody() {
-  const rows = [];
-  for (let i = 1; i <= 10; i += 1) {
-    rows.push(i);
-  }
-  return (<tbody rows={rows} />);
 }
 
 export default CalisanProfile;
