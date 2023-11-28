@@ -85,13 +85,11 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
 	}
 });
 
+//ogrenci ekle
 app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
 	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI } =
 		req.query;
 
-	// Girdilerin doğrulanması ve temizlenmesi
-	// NOT: Bu örnek, girdilerin doğrulanmasını ve temizlenmesini göstermek için basitleştirilmiştir.
-	// Gerçek bir uygulamada daha güçlü doğrulama ve temizleme işlemleri yapılmalıdır.
 	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI) {
 		const query1 = `INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`;
 
@@ -338,14 +336,13 @@ app.get("/api/calisan/idareciGetir", (req, res) => {
 	}
 });
 
-app.post("/api/calisan/idareciEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = req.query;
-
-	// Girdilerin doğrulanması ve temizlenmesi
-	// NOT: Bu örnek, girdilerin doğrulanmasını ve temizlenmesini göstermek için basitleştirilmiştir.
-	// Gerçek bir uygulamada daha güçlü doğrulama ve temizleme işlemleri yapılmalıdır.
-	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA) {
-		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}','${TEL_NO}','${E_POSTA}');`;
+//idareci ekle
+app.get("/api/calisan/idareciEkle", (req, res) => {
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS} =
+		req.query;
+		
+	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
+		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
 
 		db.query(query1, (error, results) => {
 			if (error) {
@@ -363,13 +360,23 @@ app.post("/api/calisan/idareciEkle", (req, res) => {
 					return;
 				}
 
-				res.status(200).send("idareci added successfully");
+				const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES ('${TC_NO}', '${MAAS}');`;
+				db.query(query2, (error, results) => {
+					if (error) {
+						console.error(error);
+						res.status(500).send("Error while inserting into full_timer");
+						return;
+					}
+					res.status(200).send("Idareci added successfully");
+				});
+
 			});
 		});
 	} else {
 		res.status(400).send("Missing or invalid parameters");
 	}
 });
+
 
 //ogretmenleri getir
 app.get("/api/calisan/ogretmenGetir", (req, res) => {
@@ -412,68 +419,90 @@ app.get("/api/calisan/ogretmenGetir", (req, res) => {
 });
 
 ///api/calisan/fullTime/ogretmenEkle
-app.post("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS } = req.body;
-	const PART_MI = false; // Tam zamanlı öğretmenler için false olarak ayarlanır
+app.get("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS} =
+		req.query;
+	const PART_MI = "0"; // Tam zamanlı ogretmenler icin false olarak ayarlanır
+		
+	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
+		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
 
-	// calisan tablosuna ekleme
-	db.query(
-		`INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES (${TC_NO}, ${ISIM}, ${SOYISIM}, ${ADRES}, ${TEL_NO}, ${E_POSTA});`
-	)
-		.then(() => {
-			// ogretmen tablosuna ekleme
-			return db.query(
-				`INSERT INTO ogretmen (TC_NO, PART_MI) VALUES (${TC_NO}, ${PART_MI});`,
-				[TC_NO, PART_MI]
-			);
-		})
-		.then(() => {
-			// full_timer tablosuna ekleme
-			return db.query(
-				`INSERT INTO full_timer (TC_NO, MAAS) VALUES (${TC_NO}, ${MAAS});`,
-				[TC_NO, MAAS]
-			);
-		})
-		.then(() => {
-			res.status(200).send("Tam zamanlı öğretmen başarıyla eklendi");
-		})
-		.catch((error) => {
-			console.error("/api/calisan/fullTime/OgretmenEkle", error);
-			res.status(500).send("Öğretmen eklenirken bir hata oluştu");
+		db.query(query1, (error, results) => {
+			if (error) {
+				console.error(error);
+				res.status(500).send("Error while inserting into calisan");
+				return;
+			}
+
+			const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}');`;
+
+			db.query(query2, (error, results) => {
+				if (error) {
+					console.error(error);
+					res.status(500).send("Error while inserting into ogretmen");
+					return;
+				}
+
+				const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES ('${TC_NO}', '${MAAS}');`;
+				db.query(query2, (error, results) => {
+					if (error) {
+						console.error(error);
+						res.status(500).send("Error while inserting into full_timer");
+						return;
+					}
+					res.status(200).send("Full_time ogretmen added successfully");
+				});
+
+			});
 		});
+	} else {
+		res.status(400).send("Missing or invalid parameters");
+	}
 });
+
 
 //api/calisan/partTime/ogretmenEkle
-app.post("/api/calisan/partTime/OgretmenEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, SAAT } = req.body;
-	const PART_MI = true; // Yarı zamanlı öğretmenler için true olarak ayarlanır
+app.get("/api/calisan/partTime/OgretmenEkle", (req, res) => {
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, SAAT} =
+		req.query;
+	const PART_MI = "1"; // Part_time ogretmenler icin true olarak ayarlanır
+		
+	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
+		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
 
-	// calisan tablosuna ekleme
-	db.query(
-		`INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES (${TC_NO}, ${ISIM}, ${SOYISIM},${ADRES}, ${TEL_NO}, ${E_POSTA});`
-	)
-		.then(() => {
-			// ogretmen tablosuna ekleme
-			return db.query(
-				`INSERT INTO ogretmen (TC_NO, PART_MI) VALUES (${TC_NO}, ${PART_MI});`,
-				[TC_NO, PART_MI]
-			);
-		})
-		.then(() => {
-			// part_timer tablosuna ekleme
-			return db.query(
-				`INSERT INTO part_timer (TC_NO, SAAT) VALUES (${TC_NO}, ${SAAT});`,
-				[TC_NO, SAAT]
-			);
-		})
-		.then(() => {
-			res.status(200).send("Yarı zamanlı öğretmen başarıyla eklendi");
-		})
-		.catch((error) => {
-			console.error("/api/calisan/partTime/OgretmenEkle", error);
-			res.status(500).send("Öğretmen eklenirken bir hata oluştu");
+		db.query(query1, (error, results) => {
+			if (error) {
+				console.error(error);
+				res.status(500).send("Error while inserting into calisan");
+				return;
+			}
+
+			const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}');`;
+
+			db.query(query2, (error, results) => {
+				if (error) {
+					console.error(error);
+					res.status(500).send("Error while inserting into ogretmen");
+					return;
+				}
+
+				const query3 = `INSERT INTO part_timer (TC_NO, MAAS) VALUES ('${TC_NO}', '${SAAT}');`;
+				db.query(query2, (error, results) => {
+					if (error) {
+						console.error(error);
+						res.status(500).send("Error while inserting into full_timer");
+						return;
+					}
+					res.status(200).send("Part_time ogretmen added successfully");
+				});
+
+			});
 		});
+	} else {
+		res.status(400).send("Missing or invalid parameters");
+	}
 });
+
 
 //temizlik personellerini getir
 app.get("/api/calisan/temizlikGetir", (req, res) => {
@@ -500,27 +529,44 @@ app.get("/api/calisan/temizlikGetir", (req, res) => {
 });
 
 // api/calisan/temizlikciEkle
-app.post("/api/calisan/temizlikciEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = req.body;
+app.get("/api/calisan/temizlikciEkle", (req, res) => {
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS} =
+		req.query;
+		
+	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
+		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
 
-	// calisan tablosuna ekleme
-	db.query(
-		`INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES (${TC_NO}, ${ISIM}, ${SOYISIM}, ${ADRES}, ${TEL_NO}, ${E_POSTA});`,
-		[TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA]
-	)
-		.then(() => {
-			// temizlikci tablosuna ekleme
-			return db.query(`INSERT INTO temizlikci (TC_NO) VALUES (${TC_NO});`, [
-				TC_NO,
-			]);
-		})
-		.then(() => {
-			res.status(200).send("Temizlikçi başarıyla eklendi");
-		})
-		.catch((error) => {
-			console.error("/api/calisan/temizlikciEkle", error);
-			res.status(500).send("Temizlikçi eklenirken bir hata oluştu");
+		db.query(query1, (error, results) => {
+			if (error) {
+				console.error(error);
+				res.status(500).send("Error while inserting into calisan");
+				return;
+			}
+
+			const query2 = `INSERT INTO temizlikci (TC_NO) VALUES ('${TC_NO}');`;
+
+			db.query(query2, (error, results) => {
+				if (error) {
+					console.error(error);
+					res.status(500).send("Error while inserting into temizlikci");
+					return;
+				}
+
+				const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES ('${TC_NO}', '${MAAS}');`;
+				db.query(query2, (error, results) => {
+					if (error) {
+						console.error(error);
+						res.status(500).send("Error while inserting into full_timer");
+						return;
+					}
+					res.status(200).send("Temizlik personeli added successfully");
+				});
+
+			});
 		});
+	} else {
+		res.status(400).send("Missing or invalid parameters");
+	}
 });
 
 //Ogrenci TC_NOya gore velilerini getir
