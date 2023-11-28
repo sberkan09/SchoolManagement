@@ -218,6 +218,7 @@ function FilterableTableList({ rows, visibleColumns, comp }) {
       <table>
         <thead>
           <tr>
+            <th> </th>
             {visibleColumns.includes('TC_NO') && <th>TC NO</th>}
             {visibleColumns.includes('ISIM') && <th>İsim</th>}
             {visibleColumns.includes('SOYISIM') && <th>Soyisim</th>}
@@ -237,10 +238,10 @@ function FilterableTableList({ rows, visibleColumns, comp }) {
         </thead>
         <tbody>
           {filteredData.map((item) => (
-            <tr key={item.TC_NO}>
+            <tr key={item.TC_NO} className="ogrenci-card">
               <td>
                 <Link to="/OgrenciProfili/" state={{ TC_NO: item.TC_NO }}>
-                  <button type="button">Manage</button>
+                  <button type="button" className="ogrenci-button">Manage</button>
                 </Link>
               </td>
               {visibleColumns.includes('TC_NO') && <td>{item.TC_NO}</td>}

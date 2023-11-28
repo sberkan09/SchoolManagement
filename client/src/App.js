@@ -6,27 +6,29 @@ import VeliProfili from './pages/Veli';
 import CalisanlarPage from './pages/Calisanlar';
 import DerslerPage from './pages/Dersler';
 
+import './style/FilterableTableList.css';
+
 function AnaSayfa() {
   return (
     <center>
       <Link to="/Ogrenciler">
-        <button type="button">
+        <button type="button" className="ogrenci-button">
           Öğrenciler
         </button>
       </Link>
       <br />
       <Link to="/Calisanlar">
-        <button type="button">
+        <button type="button" className="ogrenci-button">
           Çalışanlar
         </button>
       </Link>
       <Link to="/Dersler">
-        <button type="button">
+        <button type="button" className="ogrenci-button">
           Dersler
         </button>
       </Link>
       <Link to="/Subeler">
-        <button type="button">
+        <button type="button" className="ogrenci-button">
           Şubeler
         </button>
       </Link>
