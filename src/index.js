@@ -426,6 +426,82 @@ app.get("/api/veli/subeVeliGetir", (req, res) => {
 		.catch((error) => console.error("/api/veli/subeVeliGetir", error));
 });
 
+//sube ogrencilerini getirir
+app.get("/api/sube/ogrencileriGetir", (req, res) => {
+	const { SUBE_ID } = req.query;
+	db.query(
+		`SELECT o.TC_NO, o.ISIM, o.SOYISIM, o.ADRES, o.TEL_NO, o.E_POSTA FROM ogrenci o 
+		 JOIN ogrenci_katilir ok ON o.TC_NO = ok.TC_NO WHERE ok.SUBE_ID = '${SUBE_ID}';`
+	)
+		.then((data) => {
+			res.json(data[0]);
+		})
+		.catch((error) => console.error("/api/sube/ogrencileriGetir", error));
+});
+
+//Velilerin ogrencilerini getirir
+app.get("/api/veli/ogrencileriGetir", (req, res) => {
+	const { TC_NO } = req.query;
+	if (TC_NO == undefined) {
+		db.query(
+			`SELECT  o.TC_NO, o.ISIM, o.SOYISIM, FROM ogrenci o JOIN aile_iliskisi ai ON o.TC_NO = ai.OTC_NO WHERE  ai.VTC_NO = '${TC_NO}';`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) => console.error("/api/veli/ogrencileriGetir", error));
+	} else {
+		db.query(
+			`SELECT v.TC_NO AS VeliTC, v.ISIM AS VeliIsim, v.SOYISIM AS VeliSoyisim, o.TC_NO AS OgrenciTC, o.ISIM AS OgrenciIsim, o.SOYISIM AS OgrenciSoyisim
+			 FROM veli v JOIN aile_iliskisi ai ON v.TC_NO = ai.VTC_NO JOIN ogrenci o ON ai.OTC_NO = o.TC_NO ORDER BY v.TC_NO;`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) =>
+				console.error(
+					`/api/veli/ogrencileriGetir => ogrenci TC_NO = '${TC_NO}'`,
+					error
+				)
+			);
+	}
+});
+
+// /api/ders/tumDersleriGetir
+app.get("/api/ders/tumDersleriGetir", (req, res) => {
+	db.query(
+		//Tum derslerin taleplerini getir
+		`select DERS_ADI from ders group by d.DERS_ADI;`
+	)
+		.then((data) => {
+			res.json(data[0]);
+		})
+		.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
+});
+
+app.get("/api/ders/subeleriGetir", (req, res) => {
+	const { DERS_ID } = req.query;
+	if (DERS_ID != undefined) {
+		db.query(
+			`SELECT s.SUBE_ID, s.GUN, s.DERS_NO, s.SINIF, s.SUBE_NO FROM sube s JOIN ders_sube ds ON s.SUBE_ID = ds.SUBE_ID WHERE ds.DERS_ID = '${DERS_ID}';`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) => console.error("/api/ders/subeleriGetir", error));
+	} else {
+		db.query(
+			"SELECT s.SUBE_ID, s.GUN, s.DERS_NO, s.SINIF, s.SUBE_NO FROM sube s JOIN ders_sube ds ON s.SUBE_ID = ds.SUBE_ID ORDER BY ds.DERS_ID;"
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) =>
+				console.error(`/api/ders/subeleriGetir = '${DERS_ID}'`, error)
+			);
+	}
+});
+
 //Tum derslerin taleplerini getirir
 //Ders adi verilen dersin talebini getirir.
 app.get("/api/ders/talepGetir", (req, res) => {
