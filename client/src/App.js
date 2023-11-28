@@ -6,10 +6,12 @@ import VeliProfili from './pages/Veli';
 import CalisanlarPage from './pages/Calisanlar';
 import DerslerPage from './pages/Dersler';
 import CalisanPage from './pages/CalisanProfili';
+import CalisanEkle from './pages/CalisanEkle';
 import SubelerPage from './pages/Subeler';
 import DersManage from './pages/DersManage';
-import CalisanEkle from './pages/CalisanEkle';
+import OgretmenEkle from './pages/OgretmenEkle';
 import OgrenciEkle from './pages/OgrenciEkle';
+import TemizlikciEkle from './pages/TemizlikciEkle';
 import DersEkle from './pages/DersEkle';
 import GiderlerPage from './pages/Giderler';
 import MalzemelerPage from './pages/Malzemeler';
@@ -64,10 +66,12 @@ function Hello() {
       <Route path="/Ogrenciler" element={<OgrencilerPage />} />
       <Route path="/OgrenciProfili/" element={<OgrenciPage />} />
       <Route path="/OgrenciEkle/" element={<OgrenciEkle />} />
+      <Route path="/TemizlikciEkle/" element={<TemizlikciEkle />} />
       <Route path="/Veli/:TC_NO" element={<VeliProfili />} />
       <Route path="/Calisanlar" element={<CalisanlarPage />} />
       <Route path="/CalisanProfili" element={<CalisanPage />} />
       <Route path="/CalisanEkle" element={<CalisanEkle />} />
+      <Route path="/OgretmenEkle" element={<OgretmenEkle />} />
       <Route path="/Dersler" element={<DerslerPage />} />
       <Route path="/DersEkle" element={<DersEkle />} />
       <Route path="/Subeler" element={<SubelerPage />} />

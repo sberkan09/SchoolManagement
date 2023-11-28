@@ -460,43 +460,22 @@ app.get("/api/calisan/ogretmenGetir", (req, res) => {
 });
 ///api/calisan/fullTime/ogretmenEkle
 app.get("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS} =
-		req.query;
-	const PART_MI = "0"; // Tam zamanlı ogretmenler icin false olarak ayarlanır
-		
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS } = req.query;
+	const PART_MI = 0; // Tam zamanli 0
+	console.log(req.query);
+
 	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
-		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
+			// Calisan tablosuna ekleme yap
+		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`;
+		const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}')`;
+		const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES (${TC_NO}, ${MAAS})`;
 
-		db.query(query1, (error, results) => {
-			if (error) {
-				console.error(error);
-				res.status(500).send("Error while inserting into calisan");
-				return;
-			}
-
-			const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}');`;
-
-			db.query(query2, (error, results) => {
-				if (error) {
-					console.error(error);
-					res.status(500).send("Error while inserting into ogretmen");
-					return;
-				}
-
-				const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES ('${TC_NO}', '${MAAS}');`;
-				db.query(query2, (error, results) => {
-					if (error) {
-						console.error(error);
-						res.status(500).send("Error while inserting into full_timer");
-						return;
-					}
-					res.status(200).send("Full_time ogretmen added successfully");
-				});
-
-			});
-		});
+		db.query(query1, [TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA]);
+		db.query(query2, [TC_NO, PART_MI]);
+		db.query(query3, [TC_NO, MAAS]);
+			
 	} else {
-		res.status(400).send("Missing or invalid parameters");
+			res.status(400).send("Eksik veya geçersiz parametreler.");
 	}
 });
 
@@ -527,7 +506,7 @@ app.get("/api/calisan/partTime/OgretmenEkle", (req, res) => {
 				}
 
 				const query3 = `INSERT INTO part_timer (TC_NO, SAAT) VALUES ('${TC_NO}', '${SAAT}');`;
-				db.query(query2, (error, results) => {
+				db.query(query3, (error, results) => {
 					if (error) {
 						console.error(error);
 						res.status(500).send("Error while inserting into full_timer");

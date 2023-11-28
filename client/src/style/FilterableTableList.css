@@ -6,7 +6,7 @@
   margin-bottom: 10px;
   position: sticky;
   top: 0;
-  background-image: linear-gradient(45deg, #ff77a9, #a100d1, #ff77a9, #a100d1);
+  background-image: linear-gradient(45deg, #77a2ff, rgb(20, 88, 165), rgb(119, 255, 226), #3800d1);
   background-size: 400% 400%;
   animation: gradient 5s infinite;
   z-index: 1;
@@ -69,7 +69,7 @@ tbody tr:hover {
 }
 
 .ogrenci-card {
-  border: 1px solid #ff77a9;
+  border: 1px solid #18aa5a;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 300px;
@@ -111,6 +111,6 @@ tbody tr:hover {
 }
 
 body {
-  background-color: #ff77a9;
+  background-color: rgb(62, 140, 185);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
