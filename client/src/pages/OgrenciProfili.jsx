@@ -170,10 +170,36 @@ function StudentProfile() {
         <div>
           <h2>Ders Programı</h2>
           <table>
-            {/* ... */}
+            <thead>
+              <tr>
+                <th> </th>
+                <th>Pazartesi</th>
+                <th>Salı</th>
+                <th>Çarşamba</th>
+                <th>Perşembe</th>
+                <th>Cuma</th>
+                <th>Cumartesi</th>
+                <th>Pazar</th>
+              </tr>
+            </thead>
+            <tbody>
+              {schedule.map((item, index) => (
+                <tr key={item.TC_NO}>
+                  <td>Saat {index + 1}</td>
+                  <td>{item.GUN === '1' && item.DERS_NO}</td>
+                  <td>{item.GUN === '2' && item.DERS_NO}</td>
+                  <td>{item.GUN === '3' && item.DERS_NO}</td>
+                  <td>{item.GUN === '4' && item.DERS_NO}</td>
+                  <td>{item.GUN === '5' && item.DERS_NO}</td>
+                  <td>{item.GUN === '6' && item.DERS_NO}</td>
+                  <td>{item.GUN === '7' && item.DERS_NO}</td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       )}
+
     </div>
   );
 }
