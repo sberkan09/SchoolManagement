@@ -238,7 +238,7 @@ function FilterableTableList({ rows, visibleColumns, comp }) {
         </thead>
         <tbody>
           {filteredData.map((item) => (
-            <tr key={item.TC_NO} className="ogrenci-card">
+            <tr key={item.TC_NO}>
               <td>
                 <Link to="/OgrenciProfili/" state={{ TC_NO: item.TC_NO }}>
                   <button type="button" className="ogrenci-button">Manage</button>
