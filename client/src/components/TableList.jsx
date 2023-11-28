@@ -27,7 +27,7 @@ async function handleDelete(deleteEndpoint, deletedItemUniqueKey) {
 }
 
 function FilterableTableList({
-  rows, visibleColumns, compFilter, manageTo, addTo, unique, deleteComp,
+  rows, visibleColumns, compFilter, manageTo, addTo, unique,
 }) {
   const [filteredData, setFilteredData] = useState(rows);
   const [filterTCNO, setFilterTCNO] = useState('');
@@ -292,7 +292,7 @@ function FilterableTableList({
             <tr key={item[unique]}>
               {manageTo && (
                 <td>
-                  <Link to={manageTo} state={{ TC_NO: item.TC_NO }}>
+                  <Link to={manageTo} state={{ TC_NO: item.TC_NO, visibleColumns: visibleColumns }}>
                     <button type="button" className="ogrenci-button">Manage</button>
                   </Link>
                 </td>
@@ -313,7 +313,6 @@ function FilterableTableList({
               {visibleColumns.includes('DERS_NO') && <td>{item.DERS_NO}</td>}
               {visibleColumns.includes('SINIF') && <td>{item.SINIF}</td>}
               {visibleColumns.includes('SUBE_NO') && <td>{item.SUBE_NO}</td>}
-              {deleteComp(item[unique])}
             </tr>
           ))}
         </tbody>
@@ -355,7 +354,6 @@ FilterableTableList.propTypes = {
   manageTo: PropTypes.string,
   addTo: PropTypes.string,
   unique: PropTypes.string,
-  deleteComp: PropTypes.any.isRequired,
 };
 
 Add.propTypes = {

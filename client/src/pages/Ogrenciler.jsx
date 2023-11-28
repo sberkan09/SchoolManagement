@@ -12,7 +12,6 @@ function OgrenciTypeSelect(ogrenciType, setOgrenciType) {
           value={ogrenciType}
           onChange={(e) => setOgrenciType(e.target.value)}
         >
-          <option value="all">Tümü</option>
           <option value="aktif">Aktif</option>
           <option value="mezun">Mezun</option>
         </select>
@@ -22,28 +21,9 @@ function OgrenciTypeSelect(ogrenciType, setOgrenciType) {
   );
 }
 
-async function handleDelete(deletedItemUniqueKey) {
-  try {
-    // Make a DELETE request to your API endpoint
-    await axios.get('http://localhost:3006/api/ogrenci/aktifOgrenciSil', {
-      params: { deletedItemUniqueKey },
-    });
-  } catch (error) {
-    console.error('Error deleting data:', error);
-  }
-}
-
-function deleteOgrenci(deletedItemUniqueKey) {
-  return (
-    <td>
-      <button type="button" className="ogrenci-button" onClick={handleDelete(deletedItemUniqueKey)}>Delete</button>
-    </td>
-  );
-}
-
 function Ogrenciler() {
   const [rows, setRows] = useState([]);
-  const [ogrenciType, setOgrenciType] = useState('all');
+  const [ogrenciType, setOgrenciType] = useState('aktif');
   const [visibleColumns, setvisibleColumns] = useState(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']);
 
   useEffect(() => {
@@ -55,9 +35,6 @@ function Ogrenciler() {
         setvisibleColumns(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI', 'MEZUNIYET_TARIHI']);
       } else if (ogrenciType === 'aktif') {
         endpoint = 'http://localhost:3006/api/ogrenci/aktifOgrencileriGetir';
-        setvisibleColumns(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']);
-      } else if (ogrenciType === 'all') {
-        endpoint = 'http://localhost:3006/api/ogrenci/ogrencileriGetir';
         setvisibleColumns(['TC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'DOGUM_YILI']);
       }
 
@@ -74,7 +51,7 @@ function Ogrenciler() {
 
   return (
     <div>
-      <TableList rows={rows} visibleColumns={visibleColumns} comp={OgrenciTypeSelect(ogrenciType, setOgrenciType)} manageTo="/ogrenciProfili/" unique="TC_NO" addTo="/OgrenciEkle/" deleteComp={deleteOgrenci} />
+      <TableList rows={rows} visibleColumns={visibleColumns} compFilter={OgrenciTypeSelect(ogrenciType, setOgrenciType)} type={ogrenciType} manageTo="/ogrenciProfili/" unique="TC_NO" addTo="/OgrenciEkle/" />
     </div>
   );
 }

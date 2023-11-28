@@ -33,6 +33,7 @@
         "no-nested-ternary": "off",
         "react/no-unstable-nested-components": "off",
         "react/no-unused-prop-types": "warn",
-        "react/jsx-one-expression-per-line": "off"
+        "react/jsx-one-expression-per-line": "off",
+        "object-shorthand": 0
     }
 }
