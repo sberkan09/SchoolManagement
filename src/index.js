@@ -948,14 +948,26 @@ app.get("/api/veli/guncelle", (req, res) => {
 
 // /api/ders/tumDersleriGetir
 app.get("/api/ders/tumDersleriGetir", (req, res) => {
-	db.query(
-		//Tum derslerin taleplerini getir
-		`select * from ders as d group by d.DERS_ADI;`
-	)
-		.then((data) => {
-			res.json(data[0]);
-		})
-		.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
+	const { DERS_ID } = req.query;
+	if (DERS_ID != undefined) {
+		db.query(
+			`select * from ders WHERE DERS_ID = ${DERS_ID};`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
+		
+	} else {
+		db.query(
+			//Tum derslerin taleplerini getir
+			`select * from ders as d group by d.DERS_ADI;`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
+	}
 });
 
 app.get("/api/ders/subeleriGetir", (req, res) => {
