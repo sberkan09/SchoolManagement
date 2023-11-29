@@ -30,7 +30,7 @@ END
 
 
 #3) ogrenci silme durumu
-DELIMITER //
+
 CREATE DEFINER=`u828725825_root`@`%` TRIGGER ogrenciSil
 BEFORE DELETE ON ogrenci 
 FOR EACH ROW
