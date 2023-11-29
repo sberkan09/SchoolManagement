@@ -359,8 +359,31 @@ app.get("/api/ogrenci/dersTalepEt", (req, res) => {
     }
 });
 
+//api/ogrenci/MusaitlikEkle
+app.get("/api/ogrenci/MusaitlikEkle", (req, res) => {
+    const { TC_NO, GUN, DERS_NO } = req.query;
+    // GUN ve DERS_NO değerlerinin uygun aralıkta olup olmadığını kontrol et
+    if (!TC_NO || !GUN || !DERS_NO || GUN < 1 || GUN > 7 || DERS_NO < 1 || DERS_NO > 10) {
+        return res.status(400).send("Parametrelerin degerleri uygun aralikta olmali: GUN 1-7 arasi, DERS_NO 1-10 arasi.");
+    }
 
-
+    // Önce öğrencinin var olup olmadığını kontrol et
+    db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`)
+        .then(ogrenciResults => {
+            if (ogrenciResults.length === 0) {
+                return res.status(404).json({ success: false, message: "Ogrenci bulunamadi." });
+            }
+            // Öğrenci varsa, müsaitlik bilgisini ekle
+            return db.query(`INSERT INTO ogrenci_musaitlik (TC_NO, GUN, DERS_NO) VALUES ('${TC_NO}', '${GUN}', '${DERS_NO}')`);
+        })
+        .then(insertResults => {
+            res.json({ success: true, message: "Musaitlik bilgisi başariyla eklendi.", insertId: insertResults.insertId });
+        })
+        .catch(error => {
+            console.error(`/api/ogrenci/MusaitlikEkle TC_NO='${TC_NO}'`, error);
+            res.status(500).json({ success: false, error: "Bir hata oluştu." });
+        });
+});
 
 //api/calisan/filtre
 app.get("/api/calisan/filtre", (req, res) => {
@@ -636,6 +659,34 @@ app.get("/api/calisan/partTime/OgretmenEkle", (req, res) => {
         res.status(400).json({ success: false, error: "Missing or invalid parameters" });
     }
 });
+
+//api/ogretmen/MusaitlikEkle 
+app.get("/api/ogretmen/MusaitlikEkle", (req, res) => {
+    const { TC_NO, GUN, DERS_NO } = req.query; // Öğretmenin TC kimlik numarası, müsait olduğu gün ve DERS_NO
+
+    // GUN ve SAATLER'in uygun aralıkta olup olmadığını kontrol et
+    if (!TC_NO || !GUN || !DERS_NO || GUN < 1 || GUN > 7 || DERS_NO < 1 || DERS_NO > 10) {
+        return res.status(400).send("Parametrelerin degerleri uygun aralikta olmali: GUN 1-7 arasi ve SAATLER tanimli olmali.");
+    }
+
+    // Önce öğretmenin var olup olmadığını kontrol et
+    db.query(`SELECT * FROM ogretmen WHERE TC_NO = '${TC_NO}'`)
+        .then(ogretmenResults => {
+            if (ogretmenResults.length === 0) {
+                return res.status(404).json({ success: false, message: "Öğretmen bulunamadi." });
+            }
+            // Öğretmen varsa, müsaitlik bilgisini ekle
+            return db.query(`INSERT INTO part_time_musaitlik (TC_NO, GUN, DERS_NO) VALUES ('${TC_NO}', '${GUN}', '${DERS_NO}')`);
+        })
+        .then(insertResults => {
+            res.json({ success: true, message: "Musaitlik bilgisi basariyla eklendi.", insertId: insertResults.insertId });
+        })
+        .catch(error => {
+            console.error(`/api/ogretmen/MusaitlikEkle TC_NO='${TC_NO}'`, error);
+            res.status(500).json({ success: false, error: "Bir hata olustu." });
+        });
+});
+
 
 
 //Calisan guncelle
