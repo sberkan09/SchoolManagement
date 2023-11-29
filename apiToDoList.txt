@@ -41,3 +41,4 @@ Yapılma Durumu | api url | açıklama
 + | api/ders/kapaliDersGetir | aktif olmayan dersleri getir
 + | api/ders/acikDersGetir | aktif olan dersleri getir
 - | api/ogrenci/dersTalepEt | ogrenci ders talep eder
+- | api/veli/aileiliskisiEkle | aile ilişkisi ekle
