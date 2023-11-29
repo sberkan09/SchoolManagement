@@ -16,6 +16,7 @@ import DersEkle from './pages/DersEkle';
 import GiderlerPage from './pages/Giderler';
 import MalzemelerPage from './pages/Malzemeler';
 import VelilerPage from './pages/Veliler';
+import VeliProfile from './pages/VeliProfili';
 
 import './style/FilterableTableList.css';
 
@@ -85,6 +86,7 @@ function Hello() {
       <Route path="/Giderler" element={<GiderlerPage />} />
       <Route path="/Malzemeler" element={<MalzemelerPage />} />
       <Route path="/Veliler" element={<VelilerPage />} />
+      <Route path="/VeliManage" element={<VeliProfile />} />
     </Routes>
   );
 }
