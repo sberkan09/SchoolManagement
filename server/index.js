@@ -783,7 +783,7 @@ app.get("/api/veli/ogrencileriGetir", (req, res) => {
 	const { TC_NO } = req.query;
 	if (TC_NO == undefined) {
 		db.query(
-			`SELECT o.TC_NO, o.ISIM, o.SOYISIM, FROM ogrenci o JOIN aile_iliskisi ai ON o.TC_NO = ai.OTC_NO WHERE  ai.VTC_NO = '${TC_NO}';`
+			`SELECT  o.TC_NO, o.ISIM, o.SOYISIM, FROM ogrenci o JOIN aile_iliskisi ai ON o.TC_NO = ai.OTC_NO WHERE  ai.VTC_NO = '${TC_NO}';`
 		)
 			.then((data) => {
 				res.json(data[0]);
@@ -898,7 +898,7 @@ app.get("/api/ders/talepGetir", (req, res) => {
 });
 
 //Ogrencilerin musaitliklerini getirir
-app.get("/api/ogrenci/ogrenciMusaitlikGetir", (req, res) => {
+app.get("/api/ogrenci/ogrenciMusaitlikGetir ", (req, res) => {
 	const { TC_NO } = req.query;
 	if (TC_NO == undefined) {
 		db.query(
@@ -918,7 +918,7 @@ app.get("/api/ogrenci/ogrenciMusaitlikGetir", (req, res) => {
 			//TC_NOsuna gore ogrencinin musaitliklerini getir
 			`SELECT om.TC_NO, om.GUN, om.DERS_NO
        FROM ogrenci_musaitlik om
-       WHERE om.TC_NO = '${TC_NO}';`
+       WHERE o.TC_NO = '${TC_NO}';`
 		)
 			.then((data) => {
 				res.json(data[0]);
@@ -987,11 +987,11 @@ app.get("/api/ders/dersEkle", (req, res) => {
 
 //Kapali dersleri getir
 app.get("/api/ders/kapaliDersGetir", (req, res) => {
-	db.query(`select * from ders where AKTIF_MI = 0;`)
-		.then((data) => {
-			res.json(data[0]);
-		})
-		.catch((error) => console.error("/api/ders/kapaliDersGetir", error));
+    db.query('select * from ders where AKTIF_MI = false;')
+        .then((data) => {
+            res.json(data[0]);
+        })
+        .catch((error) => console.error("/api/ders/kapaliDersGetir", error));
 });
 
 //Acik dersleri getir

@@ -29,11 +29,11 @@ function FilterableTableList({
       let isG_tarihMatch = true;
 
       if (item.MALZEME_ADI) { isM_AdiMatch = item.MALZEME_ADI.toLowerCase().includes(filterM_Adi.toLowerCase()); }
-      if (item.MALZEME_ID) { isM_idMatch = item.MALZEME_ID.toLowerCase().includes(filterM_id.toLowerCase()); }
+      if (item.MALZEME_ID) { isM_idMatch = String(item.MALZEME_ID).includes(filterM_id); }
       if (item.MALZEME_BIRIM) { isM_birimMatch = item.MALZEME_BIRIM.toLowerCase().includes(filterM_birim.toLowerCase()); }
-      if (item.STOK) { isM_stokMatch = item.STOK.toLowerCase().includes(filterM_stok.toLowerCase()); }
-      if (item.GIDER_ID) { isG_idMatch = item.GIDER_ID.toLowerCase().includes(filterG_id.toLowerCase()); }
-      if (item.GIDER_TUTAR) { isG_tutarMatch = item.GIDER_TUTAR.toLowerCase().includes(filterG_tutar.toLowerCase()); }
+      if (item.STOK) { isM_stokMatch = String(item.STOK).includes(filterM_stok); }
+      if (item.GIDER_ID) { isG_idMatch = String(item.GIDER_ID).includes(filterG_id); }
+      if (item.GIDER_TUTAR) { isG_tutarMatch = String(item.GIDER_TUTAR).includes(filterG_tutar); }
       if (item.GIDER_ADI) { isG_adiMatch = item.GIDER_ADI.toLowerCase().includes(filterG_adi.toLowerCase()); }
       if (item.GIDER_TARIH) { isG_tarihMatch = item.GIDER_TARIH.toLowerCase().includes(filterG_tarih.toLowerCase()); }
 
@@ -191,7 +191,7 @@ FilterableTableList.propTypes = {
       GIDER_ID: PropTypes.number,
       GIDER_TUTAR: PropTypes.number,
       GIDER_ADI: PropTypes.string,
-      GIDER_TARIH: PropTypes.number,
+      GIDER_TARIH: PropTypes.string,
     }),
   ).isRequired,
   visibleColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
