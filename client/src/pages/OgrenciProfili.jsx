@@ -30,21 +30,11 @@ function Delete(TC_NO) {
   );
 }
 
-function DersTypeSelect(dersType, setDersType) {
+function DersTalepEt() {
   return (
-    <div className="filters">
-      <label htmlFor="ogrenciTypeDropdown">
-        <select
-          id="ogrenciTypeDropdown"
-          value={dersType}
-          onChange={(e) => setDersType(e.target.value)}
-        >
-          <option value="aktif">Aktif</option>
-          <option value="mezun">Mezun</option>
-        </select>
-        Mezun Öğrencileri Göster
-      </label>
-    </div>
+    <button type="button">
+      Talep Et
+    </button>
   );
 }
 
@@ -59,7 +49,7 @@ function Dersler() {
     }());
   }, []);
 
-  return <TableList rows={rows} visibleColumns={['DERS_ID', 'DERS_ADI', 'DERS_SAATI', 'DERS TALEP']} manageTo="/DersManage/" unique="DERS_ID" addTo="/DersEkle/" />;
+  return <TableList rows={rows} visibleColumns={['DERS_ID', 'DERS_ADI', 'DERS_SAATI', 'DERS TALEP']} manageTo="/DersManage/" unique="DERS_ID" addTo="/DersEkle/" compAfter={<DersTalepEt />} />;
 }
 
 function StudentProfile() {
@@ -199,7 +189,16 @@ function StudentProfile() {
               <p>Telefon: {student.TEL_NO}</p>
               <p>Email: {student.E_POSTA}</p>
               <button type="button" onClick={handleEditBtn}>Öğrenci Bilgilerini Güncelle</button>
-              <button type="button" onClick={(e) => setisDersTalep(true)}>Ders Talep Et</button>
+              {!isDersTalep && (
+                <button type="button" onClick={(e) => setisDersTalep(true)}>Ders Talep Et</button>
+              )}
+
+              {isDersTalep && (
+                <>
+                  <button type="button" onClick={(e) => setisDersTalep(false)}>Ders Talep İptal</button>
+                  <Dersler />
+                </>
+              )}
             </>
           )}
         </div>
@@ -237,13 +236,6 @@ function StudentProfile() {
             </tbody>
           </table>
         </div>
-      )}
-
-      {isDersTalep && (
-        <>
-          <button type="button" onClick={(e) => setisDersTalep(false)}>Ders Talep İptal</button>
-          <Dersler />
-        </>
       )}
 
     </div>

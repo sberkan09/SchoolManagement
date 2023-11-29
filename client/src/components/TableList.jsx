@@ -285,6 +285,7 @@ function FilterableTableList({
             {visibleColumns.includes('DERS_NO') && <th>DERS NO</th>}
             {visibleColumns.includes('SINIF') && <th>SINIF</th>}
             {visibleColumns.includes('SUBE_NO') && <th>ŞUBE NO</th>}
+            {(compAfter !== undefined) && <th>İşlem</th>}
           </tr>
         </thead>
         <tbody>
@@ -313,7 +314,7 @@ function FilterableTableList({
               {visibleColumns.includes('DERS_NO') && <td>{item.DERS_NO}</td>}
               {visibleColumns.includes('SINIF') && <td>{item.SINIF}</td>}
               {visibleColumns.includes('SUBE_NO') && <td>{item.SUBE_NO}</td>}
-              {compAfter}
+              {(compAfter !== undefined) && <td>{compAfter}</td>}
             </tr>
           ))}
         </tbody>
