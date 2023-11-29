@@ -30,6 +30,7 @@ function Veliler() {
         visibleColumns={['VTC_NO', 'OTC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'YAKINLIK']}
         manageTo="/VeliManage/"
         unique="TC_NO"
+        addTo="/VeliEkle/"
       />
     </div>
   );
