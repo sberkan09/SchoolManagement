@@ -87,50 +87,50 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
 
 //ogrenci ekle
 app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
-    const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI, VTC_NO, VISIM, VSOYISIM, VADRES, VTEL_NO, VE_POSTA, YAKINLIK } = req.query;
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI, VTC_NO, VISIM, VSOYISIM, VADRES, VTEL_NO, VE_POSTA, YAKINLIK } = req.query;
 
-    if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI && VTC_NO && VISIM && VSOYISIM && VADRES && VTEL_NO && VE_POSTA && YAKINLIK) {
-        db.transaction().then((transaction) => {
-            // Önce TC_NO ile öğrencinin zaten mevcut olup olmadığını kontrol et
-            return db.query(`SELECT TC_NO FROM ogrenci WHERE TC_NO = '${TC_NO}';`, { transaction: transaction })
-                .then((results) => {
-                    // Eğer öğrenci zaten varsa, ekleme işlemi yapma
-                    if (results.length > 0) {
-                        throw new Error('Öğrenci zaten mevcut.');
-                    }
-                    // Öğrenci yoksa, ekleme işlemini sürdür
-                    return db.query(`INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`, { transaction: transaction });
-                })
-                .then(() => {
-                    // aktif tablosuna ekle
-                    return db.query(`INSERT INTO aktif (TC_NO) VALUES ('${TC_NO}');`, { transaction: transaction });
-                })
-                .then(() => {
-                    // veli tablosuna ekle
-                    return db.query(`INSERT INTO veli (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${VTC_NO}', '${VISIM}', '${VSOYISIM}', '${VADRES}', '${VTEL_NO}', '${VE_POSTA}');`, { transaction: transaction });
-                })
-                .then(() => {
-                    // aile ilişkisi tablosuna ekle
-                    return db.query(`INSERT INTO aile_iliskisi (OTC_NO, VTC_NO, YAKINLIK) VALUES ('${TC_NO}', '${VTC_NO}', '${YAKINLIK}' );`, { transaction: transaction });
-                })
-                .then(() => {
-                    // İşlemi onayla
-                    return transaction.commit();
-                })
-                .then(() => {
-                    res.json({ success: true, message: "Öğrenci ve velisi veritabanına eklendi." });
-                })
-                .catch((error) => {
-                    // Hata olursa işlemi geri al
-                    transaction.rollback();
-                    console.error(`/api/ogrenci/aktifOgrenciEkle TC_NO='${TC_NO}'`, error);
-                    res.status(500).json({ success: false, error: "Bir hata oluştu." });
-                });
-        });
+	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI && VTC_NO && VISIM && VSOYISIM && VADRES && VTEL_NO && VE_POSTA && YAKINLIK) {
+			db.transaction().then((transaction) => {
+					// Önce TC_NO ile öğrencinin zaten mevcut olup olmadığını kontrol et
+					return db.query(`SELECT TC_NO FROM ogrenci WHERE TC_NO = '${TC_NO}';`, { transaction: transaction })
+							.then((results) => {
+									// Eğer öğrenci zaten varsa, ekleme işlemi yapma
+									if (results.length > 2) {
+											throw new Error('Öğrenci zaten mevcut.');
+									}
+									// Öğrenci yoksa, ekleme işlemini sürdür
+									return db.query(`INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`, { transaction: transaction });
+							})
+							.then(() => {
+									// aktif tablosuna ekle
+									return db.query(`INSERT INTO aktif (TC_NO) VALUES ('${TC_NO}');`, { transaction: transaction });
+							})
+							.then(() => {
+									// veli tablosuna ekle
+									return db.query(`INSERT INTO veli (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${VTC_NO}', '${VISIM}', '${VSOYISIM}', '${VADRES}', '${VTEL_NO}', '${VE_POSTA}');`, { transaction: transaction });
+							})
+							.then(() => {
+									// aile ilişkisi tablosuna ekle
+									return db.query(`INSERT INTO aile_iliskisi (OTC_NO, VTC_NO, YAKINLIK) VALUES ('${TC_NO}', '${VTC_NO}', '${YAKINLIK}' );`, { transaction: transaction });
+							})
+							.then(() => {
+									// İşlemi onayla
+									return transaction.commit();
+							})
+							.then(() => {
+									res.json({ success: true, message: "Öğrenci ve velisi veritabanına eklendi." });
+							})
+							.catch((error) => {
+									// Hata olursa işlemi geri al
+									transaction.rollback();
+									console.error(`/api/ogrenci/aktifOgrenciEkle TC_NO='${TC_NO}'`, error);
+									res.status(500).json({ success: false, error: "Bir hata oluştu." });
+							});
+			});
 
-    } else {
-        res.status(400).send("Missing or invalid parameters");
-    }
+	} else {
+			res.status(400).send("Missing or invalid parameters");
+	}
 });
 
 
@@ -993,6 +993,19 @@ app.get("/api/ders/subeleriGetir", (req, res) => {
 	}
 });
 
+app.get("/api/sube/subeGetir", (req, res) => {
+	const { GUN, SUBE_NO, DERS_NO } = req.query;
+	if (GUN && SUBE_NO && DERS_NO) {
+		db.query(
+			`SELECT SUBE_ID FROM sube WHERE (GUN = ${GUN} AND SUBE_NO = ${SUBE_NO} AND DERS_NO = ${DERS_NO});`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) => console.error("/api/ders/subeleriGetir", error));
+	}
+});
+
 //Tum derslerin taleplerini getirir
 //Ders adi verilen dersin talebini getirir.
 app.get("/api/ders/talepGetir", (req, res) => {
@@ -1211,6 +1224,74 @@ app.get("/api/gider/degiskenGiderEkle", (req, res) => {
 						console.error(`/api/gider/degiskenGiderEkle = '${GIDER_ID}'`, error);
 						res.status(500).json({ success: false, error: "Bir hata oluştu." });
 				});
+});
+
+//Sube ekle
+app.get("/api/sube/subeEkle", (req, res) => {
+	const {GUN, DERS_NO, SINIF, SUBE_NO} = req.query;
+
+	if (GUN && DERS_NO && SINIF && SUBE_NO) {
+			// İşlemleri sırayla gerçekleştirmek için transaction başlat
+			db.transaction().then((transaction) => {
+					// Mezun tablosuna ekle
+					return db.query(
+							`INSERT INTO sube (GUN, DERS_NO, SINIF, SUBE_NO) VALUES ('${GUN}', '${DERS_NO}', '${SINIF}', '${SUBE_NO}')`,
+							{ transaction: transaction }
+					)
+					.then(() => {
+							// İşlemleri onayla
+							return transaction.commit();
+					})
+					.then(() => {
+							res.json({ success: true, message: "Yeni sube eklendi." });
+					})
+					.catch((error) => {
+							// Hata olursa işlemleri geri al
+							transaction.rollback();
+							console.error("/api/sube/subeEkle'", error);
+							res.status(500).json({ success: false, error: "Bir hata oluştu." });
+					});
+			});
+	} else {
+			res.status(400).json({
+					success: false,
+					error: "Parametre eksik veya hatali.",
+			});
+	}
+});
+
+//Ders sube bagla
+app.get("/api/ders/subeDersBagla", (req, res) => {
+	const {SUBE_ID, DERS_ID} = req.query;
+
+	if (SUBE_ID && DERS_ID) {
+			// İşlemleri sırayla gerçekleştirmek için transaction başlat
+			db.transaction().then((transaction) => {
+					// Mezun tablosuna ekle
+					return db.query(
+							`INSERT INTO ders_sube (SUBE_ID, DERS_ID) VALUES ('${SUBE_ID}', '${DERS_ID}')`,
+							{ transaction: transaction }
+					)
+					.then(() => {
+							// İşlemleri onayla
+							return transaction.commit();
+					})
+					.then(() => {
+							res.json({ success: true, message: "Yeni ders-sube iliskisi eklendi." });
+					})
+					.catch((error) => {
+							// Hata olursa işlemleri geri al
+							transaction.rollback();
+							console.error("/api/ders/subeDersBagla ='" + `'${SUBE_ID}'`+ " " + `'${DERS_ID}'`, error);
+							res.status(500).json({ success: false, error: "Bir hata oluştu." });
+					});
+			});
+	} else {
+			res.status(400).json({
+					success: false,
+					error: "Parametre eksik veya hatali.",
+			});
+	}
 });
 
 //sube malzeme listelerini getir

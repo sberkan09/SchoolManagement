@@ -36,6 +36,7 @@ function FilterableTableList({
 
   useEffect(() => {
     // Filter the data based on the filter input value for each column
+
     const filtered = rows.filter((item) => {
       let isTCNOMatch = true;
       let isIsimMatch = true;

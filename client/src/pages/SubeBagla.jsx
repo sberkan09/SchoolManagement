@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../style/AddPage.css';
 
-function DersEkle() {
-  const [DERS_ADI, setDERS_ADI] = useState('');
-  const [DERS_SAATI, setDERS_SAATI] = useState('');
+function SubeBagla() {
+  const location = useLocation();
+  const [DERS_ID, setDERS_ID] = useState('');
+  const [SUBE_ID, setSUBE_ID] = useState('');
   const navigate = useNavigate();
 
   const handleAddOgrenci = async () => {
     try {
-      const response = await axios.get('http://localhost:3006/api/ders/dersEkle', {
+      const response = await axios.get('http://localhost:3006/api/ders/subeDersBagla', {
         params: {
-          DERS_ADI, DERS_SAATI,
+          SUBE_ID, DERS_ID,
         },
       });
 
@@ -22,19 +23,19 @@ function DersEkle() {
       console.error('Error adding Ogrenci:', error);
       // Handle the error, e.g., show an error message to the user
     }
-    navigate('/Dersler');
+    navigate('/Dersler/');
   };
 
   return (
     <div className="ogrenci-ekle-container">
-      <h2>Ders Ekle</h2>
+      <h2>Şube Bağla</h2>
 
-      <label className="label-add" htmlFor="TC_NO">Ders Adı:
-        <input className="input-add" type="text" id="TC_NO" value={DERS_ADI} onChange={(e) => setDERS_ADI(e.target.value)} />
+      <label className="label-add" htmlFor="TC_NO">Şube Id:
+        <input className="input-add" type="text" id="TC_NO" value={SUBE_ID} onChange={(e) => setSUBE_ID(e.target.value)} />
       </label>
 
-      <label className="label-add" htmlFor="ISIM">Ders Saati:
-        <input className="input-add" type="text" id="ISIM" value={DERS_SAATI} onChange={(e) => setDERS_SAATI(e.target.value)} />
+      <label className="label-add" htmlFor="ISIM">Ders Id:
+        <input className="input-add" type="text" id="ISIM" value={DERS_ID} onChange={(e) => setDERS_ID(e.target.value)} />
       </label>
 
       <button className="button-add" type="button" onClick={handleAddOgrenci}>
@@ -44,4 +45,4 @@ function DersEkle() {
   );
 }
 
-export default DersEkle;
+export default SubeBagla;

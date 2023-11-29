@@ -20,6 +20,7 @@ import VeliProfile from './pages/VeliProfili';
 import SubeEkle from './pages/SubeEkle';
 import SubeManage from './pages/SubeManage';
 import GiderEkle from './pages/GiderEkle';
+import SubeBagla from './pages/SubeBagla';
 
 import './style/FilterableTableList.css';
 
@@ -40,6 +41,11 @@ function AnaSayfa() {
       <Link to="/Dersler">
         <button type="button" className="ogrenci-button">
           Dersler
+        </button>
+      </Link>
+      <Link to="/Subeler">
+        <button type="button" className="ogrenci-button">
+          Şubeler
         </button>
       </Link>
       <Link to="/Giderler">
@@ -86,6 +92,7 @@ function Hello() {
       <Route path="/DersEkle" element={<DersEkle />} />
       <Route path="/Subeler" element={<SubelerPage />} />
       <Route path="/SubeEkle" element={<SubeEkle />} />
+      <Route path="/SubeBagla" element={<SubeBagla />} />
       <Route path="/SubeManage" element={<SubeManage />} />
       <Route path="/DersManage" element={<DersManage />} />
       <Route path="/Giderler" element={<GiderlerPage />} />

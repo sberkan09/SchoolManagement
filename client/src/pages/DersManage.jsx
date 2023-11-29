@@ -8,6 +8,10 @@ function objToArr(rows) {
   if (Array.isArray(rows)) {
     return rows;
   }
+
+  if (rows === undefined) {
+    return [];
+  }
   const arr = [];
   arr[0] = rows;
   return arr;
@@ -40,7 +44,7 @@ function DersManage() {
         <p>Ders Saati: {ders.DERS_SAATI}</p>
         <p>Aktif Mi: {ders.AKTIF_MI}</p>
       </div>
-      <TableList rows={rows} manageTo="/SubeManage" visibleColumns={['SUBE_ID', 'GUN', 'DERS_NO', 'SINIF', 'SUBE_NO']} unique="SUBE_ID" addTo="/SubeEkle/" />
+      <TableList rows={rows} manageTo="/SubeManage" visibleColumns={['SUBE_ID', 'GUN', 'DERS_NO', 'SINIF', 'SUBE_NO']} unique="SUBE_ID" addTo="/SubeBagla/" addParam={ders.DERS_ID} />
     </>
   );
 }
