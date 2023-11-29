@@ -2,7 +2,6 @@ import React from 'react';
 import { Link, Routes, Route } from 'react-router-dom';
 import OgrenciPage from './pages/OgrenciProfili';
 import OgrencilerPage from './pages/Ogrenciler';
-import VeliProfili from './pages/Veli';
 import CalisanlarPage from './pages/Calisanlar';
 import DerslerPage from './pages/Dersler';
 import CalisanPage from './pages/CalisanProfili';
@@ -16,6 +15,7 @@ import IdareciEkle from './pages/IdareciEkle';
 import DersEkle from './pages/DersEkle';
 import GiderlerPage from './pages/Giderler';
 import MalzemelerPage from './pages/Malzemeler';
+import VelilerPage from './pages/Veliler';
 
 import './style/FilterableTableList.css';
 
@@ -48,6 +48,11 @@ function AnaSayfa() {
           Malzemeler
         </button>
       </Link>
+      <Link to="/Veliler">
+        <button type="button" className="ogrenci-button">
+          Veliler
+        </button>
+      </Link>
     </center>
   );
 }
@@ -69,7 +74,6 @@ function Hello() {
       <Route path="/OgrenciEkle/" element={<OgrenciEkle />} />
       <Route path="/TemizlikciEkle/" element={<TemizlikciEkle />} />
       <Route path="/IdareciEkle/" element={<IdareciEkle />} />
-      <Route path="/Veli/:TC_NO" element={<VeliProfili />} />
       <Route path="/Calisanlar" element={<CalisanlarPage />} />
       <Route path="/CalisanProfili" element={<CalisanPage />} />
       <Route path="/CalisanEkle" element={<CalisanEkle />} />
@@ -80,6 +84,7 @@ function Hello() {
       <Route path="/DersManage" element={<DersManage />} />
       <Route path="/Giderler" element={<GiderlerPage />} />
       <Route path="/Malzemeler" element={<MalzemelerPage />} />
+      <Route path="/Veliler" element={<VelilerPage />} />
     </Routes>
   );
 }

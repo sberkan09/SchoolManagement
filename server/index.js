@@ -119,33 +119,49 @@ app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
 
 // Ogrenciyi mezun et
 app.get("/api/ogrenci/mezunEt", (req, res) => {
-	const { TC_NO } = req.query;
+    const { TC_NO, MEZUNIYET_TARIHI } = req.query;
 
-	if (TC_NO !== undefined) {
-		db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`)
-			.then((result) => {
-				const { ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = result[0];
+    if (TC_NO && MEZUNIYET_TARIHI) {
+        // İşlemleri sırayla gerçekleştirmek için transaction başlat
+        db.beginTransaction((transactionError) => {
+            if (transactionError) {
+                console.error(transactionError);
+                res.status(500).json({ success: false, error: "Islem baslatilirken bir hata olustu." });
+                return;
+            }
 
-				// Mezun tablosuna ekle
-				return db.query(
-					`INSERT INTO mezun VALUES('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`
-				);
-			})
-			.then(() => {
-				// Aktif tablosundan sil
-				return db.query(`DELETE FROM aktif WHERE TC_NO = '${TC_NO}'`);
-			})
-			.then(() => {
-				res.json({ success: true, message: "Ogrenci mezun edildi." });
-			})
-			.catch((error) => {
-				console.error(`/api/ogrenci/mezunEt TC_NO='${TC_NO}'`, error);
-				res.status(500).json({ success: false, error: "Bir hata oluştu." });
-			});
-	} else {
-		res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
-	}
+            // Mezun tablosuna ekle
+            db.query(
+                `INSERT INTO mezun (TC_NO, MEZUNIYET_TARIHI) VALUES ('${TC_NO}', '${MEZUNIYET_TARIHI}' )`
+            )
+            .then(() => {
+                // Aktif tablosundan sil
+                return db.query(`DELETE FROM aktif WHERE TC_NO = '${TC_NO}'`)
+            })
+            .then(() => {
+                // İşlemleri onayla
+                db.commit((commitError) => {
+                    if (commitError) {
+                        console.error(commitError);
+                        res.status(500).json({ success: false, error: "Islem onaylanirken bir hata olustu." });
+                        return;
+                    }
+                    res.json({ success: true, message: "Ogrenci mezun edildi." });
+                });
+            })
+            .catch((error) => {
+                // Hata olursa işlemleri geri al
+                db.rollback(() => {
+                    console.error("/api/ogrenci/mezunEt TC_NO='" + TC_NO + "'", error);
+                    res.status(500).json({ success: false, error: "Bir hata oluştu." });
+                });
+            });
+        });
+    } else {
+        res.status(400).json({ success: false, error: "TC_NO veya MEZUNIYET_TARIHI parametresi eksik." });
+    }
 });
+
 
 //Ogrenci sil
 app.get("/api/ogrenci/aktifOgrenciSil", (req, res) => {
@@ -460,25 +476,44 @@ app.get("/api/calisan/ogretmenGetir", (req, res) => {
 });
 ///api/calisan/fullTime/ogretmenEkle
 app.get("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS } = req.query;
-	const PART_MI = 0; // Tam zamanli 0
-	console.log(req.query);
-
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS} =
+		req.query;
+	const PART_MI = "0"; // Tam zamanlı ogretmenler icin false olarak ayarlanır
+		
 	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
-					// Calisan tablosuna ekleme yap
-			const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`;
-			const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}')`;
-			const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES (${TC_NO}, ${MAAS})`;
+		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
 
-			db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`).then((data) =>{
-        if (data[0].length <= 0) {
-            db.query(query1, [TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA]);
-            db.query(query2, [TC_NO, PART_MI]);
-            db.query(query3, [TC_NO, MAAS]);
-        } else {
-            res.status(400).send("Ayni ogretmen birden fazla kaydedilemez.");
-        }});
-}
+		db.query(query1, (error, results) => {
+			if (error) {
+				console.error(error);
+				res.status(500).send("Error while inserting into calisan");
+				return;
+			}
+
+			const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}');`;
+
+			db.query(query2, (error, results) => {
+				if (error) {
+					console.error(error);
+					res.status(500).send("Error while inserting into ogretmen");
+					return;
+				}
+
+				const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES ('${TC_NO}', '${MAAS}');`;
+				db.query(query2, (error, results) => {
+					if (error) {
+						console.error(error);
+						res.status(500).send("Error while inserting into full_timer");
+						return;
+					}
+					res.status(200).send("Full_time ogretmen added successfully");
+				});
+
+			});
+		});
+	} else {
+		res.status(400).send("Missing or invalid parameters");
+	}
 });
 
 
@@ -508,7 +543,7 @@ app.get("/api/calisan/partTime/OgretmenEkle", (req, res) => {
 				}
 
 				const query3 = `INSERT INTO part_timer (TC_NO, SAAT) VALUES ('${TC_NO}', '${SAAT}');`;
-				db.query(query3, (error, results) => {
+				db.query(query2, (error, results) => {
 					if (error) {
 						console.error(error);
 						res.status(500).send("Error while inserting into full_timer");
@@ -789,19 +824,6 @@ app.get("/api/ders/tumDersleriGetir", (req, res) => {
 		.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
 });
 
-// /api/ders/dersiGetir
-app.get("/api/ders/dersiGetir", (req, res) => {
-	const { DERS_ID } = req.query;
-	db.query(
-		//Tum derslerin taleplerini getir
-		`select * from ders WHERE DERS_ID = '${DERS_ID}';`
-	)
-		.then((data) => {
-			res.json(data[0]);
-		})
-		.catch((error) => console.error("/api/ders/dersiGetir", error));
-});
-
 app.get("/api/ders/subeleriGetir", (req, res) => {
 	const { DERS_ID } = req.query;
 	if (DERS_ID != undefined) {
@@ -929,11 +951,11 @@ app.get("/api/ogretmen/ogretmenMusaitlikGetir ", (req, res) => {
 
 //Ders ekle
 app.get("/api/ders/dersEkle", (req, res) => {
-	const { DERS_ADI, DERS_SAATI } = req.query;
+	const { DERS_ID, DERS_ADI, DERS_SAATI } = req.query;
 	const { AKTIF_MI } = "0";
 
 	if (DERS_ADI && DERS_SAATI) {
-		const query1 = `INSERT INTO ders (DERS_ADI, DERS_SAATI, AKTIF_MI) VALUES ('${DERS_ADI}', '${DERS_SAATI}', '${AKTIF_MI}');`;
+		const query1 = `INSERT INTO ders (DERS_ID, DERS_ADI, DERS_SAATI, AKTIF_MI) VALUES ('${DERS_ID}', '${DERS_ADI}', '${DERS_SAATI}', '${AKTIF_MI}');`;
 
 		db.query(query1, (error, results) => {
 			if (error) {
@@ -952,7 +974,7 @@ app.get("/api/ders/dersEkle", (req, res) => {
 
 //Kapali dersleri getir
 app.get("/api/ders/kapaliDersGetir", (req, res) => {
-	db.query(`select * from ders where AKTIF_MI = false;`)
+	db.query(`select * from ders where AKTIF_MI = "0"';`)
 		.then((data) => {
 			res.json(data[0]);
 		})
@@ -961,7 +983,7 @@ app.get("/api/ders/kapaliDersGetir", (req, res) => {
 
 //Acik dersleri getir
 app.get("/api/ders/acikDersGetir", (req, res) => {
-	db.query(`select * from ders where AKTIF_MI = true';`)
+	db.query(`select * from ders where AKTIF_MI = "1"';`)
 		.then((data) => {
 			res.json(data[0]);
 		})
