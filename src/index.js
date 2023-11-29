@@ -87,28 +87,38 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
 
 //ogrenci ekle
 app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI, VTC_NO, VISIM,VSOYISIM, VADRES, VTEL_NO, VE_POSTA, YAKINLIK} = req.query;
+    const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI, VTC_NO, VISIM, VSOYISIM, VADRES, VTEL_NO, VE_POSTA, YAKINLIK } = req.query;
 
-
-	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI && VTC_NO && VISIM && VSOYISIM && VADRES && VTEL_NO && VE_POSTA && YAKINLIK) {
-		db.transaction().then((transaction) => {
-			return db.query(`INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`, { transaction: transaction })
+    if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI && VTC_NO && VISIM && VSOYISIM && VADRES && VTEL_NO && VE_POSTA && YAKINLIK) {
+        db.transaction().then((transaction) => {
+            // Önce TC_NO ile öğrencinin zaten mevcut olup olmadığını kontrol et
+            return db.query(`SELECT TC_NO FROM ogrenci WHERE TC_NO = '${TC_NO}';`, { transaction: transaction })
+                .then((results) => {
+                    // Eğer öğrenci zaten varsa, ekleme işlemi yapma
+                    if (results.length > 0) {
+                        throw new Error('Öğrenci zaten mevcut.');
+                    }
+                    // Öğrenci yoksa, ekleme işlemini sürdür
+                    return db.query(`INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`, { transaction: transaction });
+                })
                 .then(() => {
                     // aktif tablosuna ekle
                     return db.query(`INSERT INTO aktif (TC_NO) VALUES ('${TC_NO}');`, { transaction: transaction });
                 })
                 .then(() => {
-					return db.query(`INSERT INTO veli (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${VTC_NO}', '${VISIM}', '${VSOYISIM}', '${VADRES}', '${VTEL_NO}', '${VE_POSTA}');`, { transaction: transaction })
-                    .then(() => {
-						return db.query(`INSERT INTO aile_iliskisi (OTC_NO, VTC_NO, YAKINLIK) VALUES ('${TC_NO}', '${VTC_NO}', '${YAKINLIK}' );`, { transaction: transaction })
-						.then(() =>{
-							// İşlemi onayla
-							return transaction.commit();
-						})
-					})
+                    // veli tablosuna ekle
+                    return db.query(`INSERT INTO veli (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${VTC_NO}', '${VISIM}', '${VSOYISIM}', '${VADRES}', '${VTEL_NO}', '${VE_POSTA}');`, { transaction: transaction });
                 })
                 .then(() => {
-                    res.json({ success: true, message: "Ogrenci ve velisi veritabanina eklendi." });
+                    // aile ilişkisi tablosuna ekle
+                    return db.query(`INSERT INTO aile_iliskisi (OTC_NO, VTC_NO, YAKINLIK) VALUES ('${TC_NO}', '${VTC_NO}', '${YAKINLIK}' );`, { transaction: transaction });
+                })
+                .then(() => {
+                    // İşlemi onayla
+                    return transaction.commit();
+                })
+                .then(() => {
+                    res.json({ success: true, message: "Öğrenci ve velisi veritabanına eklendi." });
                 })
                 .catch((error) => {
                     // Hata olursa işlemi geri al
@@ -116,12 +126,13 @@ app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
                     console.error(`/api/ogrenci/aktifOgrenciEkle TC_NO='${TC_NO}'`, error);
                     res.status(500).json({ success: false, error: "Bir hata oluştu." });
                 });
-		});
-		
-	} else {
-		res.status(400).send("Missing or invalid parameters");
-	}
+        });
+
+    } else {
+        res.status(400).send("Missing or invalid parameters");
+    }
 });
+
 
 
 // Ogrenciyi mezun et
@@ -299,6 +310,57 @@ app.get("/api/ogrenci/filtre", (req, res) => {
 		res.status(400).json({ success: false, error: "Parametre eksik." });
 	}
 });
+
+//api/ogrenci/dersTalepEt
+app.get("/api/ogrenci/dersTalepEt", (req, res) => {
+    const { TC_NO, DERS_ID } = req.query;
+
+    if (TC_NO && DERS_ID) {
+        db.transaction().then((transaction) => {
+            // Önce öğrencinin ve dersin varlığını ve dersin aktifliğini kontrol et
+            return db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`, { transaction: transaction })
+                .then(ogrenciResults => {
+                    if (ogrenciResults.length === 0) {
+                        throw new Error('Ogrenci bulunamadi.');
+                    }
+                    return db.query(`SELECT * FROM ders WHERE DERS_ID = ${DERS_ID} AND AKTIF_MI = 0`, { transaction: transaction });
+                })
+                .then(dersResults => {
+                    if (dersResults.length === 0) {
+                        throw new Error('Aktif ders bulunamadi.');
+                    }
+                    // Öğrencinin aynı ders için zaten talebi olup olmadığını kontrol et
+                    return db.query(`SELECT * FROM talep WHERE TC_NO = '${TC_NO}' AND DERS_ID = ${DERS_ID}`, { transaction: transaction });
+                })
+                .then(talepResults => {
+                    if (talepResults.length > 2) {
+						console.log(talepResults);
+                        throw new Error('Ogrenci bu ders icin zaten talepte bulunmus.');
+                    }
+                    // Yeni talebi ekle
+                    return db.query(`INSERT INTO talep (TC_NO, DERS_ID) VALUES ('${TC_NO}', ${DERS_ID});`, { transaction: transaction });
+                })
+                .then(() => {
+                    // İşlemi onayla
+                    return transaction.commit();
+                })
+                .then(() => {
+                    res.json({ success: true, message: "Ders talebi başariyla olusturuldu." });
+                })
+                .catch((error) => {
+                    // Hata olursa işlemi geri al
+                    transaction.rollback();
+                    console.error(`/api/ogrenci/dersTalepEt TC_NO='${TC_NO}', DERS_ID='${DERS_ID}'`, error);
+                    res.status(500).json({ success: false, error: error.message });
+                });
+        });
+    } else {
+        res.status(400).send("Eksik veya gecersiz parametreler");
+    }
+});
+
+
+
 
 //api/calisan/filtre
 app.get("/api/calisan/filtre", (req, res) => {
@@ -1033,6 +1095,7 @@ app.get("/api/ders/dersSaatiUygunGetir", (req, res) => {
 			.catch((error) => console.error("/api/ders/dersSaatiUygunGetir", error));
 	}
 });
+
 
 // /api/gider/tumGiderleriGetir
 app.get("/api/gider/tumGiderleriGetir", (req, res) => {

@@ -40,6 +40,6 @@ Yapılma Durumu | api url | açıklama
 + | api/ders/dersEkle | ders ekler
 + | api/ders/kapaliDersGetir | aktif olmayan dersleri getir
 + | api/ders/acikDersGetir | aktif olan dersleri getir
-- | api/ogrenci/dersTalepEt | ogrenci ders talep eder
++ | api/ogrenci/dersTalepEt | ogrenci ders talep eder
 - | api/ogrenci/MusaitlikEkle | öğrenci müsaitlik ekler
 - | api/ogretmen/MusaitlikEkle | öğretmen müsaitlik ekler
