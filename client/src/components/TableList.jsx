@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 
 import '../style/FilterableTableList.css';
 
@@ -15,23 +14,11 @@ function Add({
   );
 }
 
-async function handleDelete(deleteEndpoint, deletedItemUniqueKey) {
-  try {
-    // Make a DELETE request to your API endpoint
-    await axios.get(deleteEndpoint, {
-      params: deletedItemUniqueKey,
-    });
-  } catch (error) {
-    console.error('Error deleting data:', error);
-  }
-}
-
 function FilterableTableList({
   rows, visibleColumns, compFilter, manageTo, addTo, unique, compAfter,
 }) {
   const [filteredData, setFilteredData] = useState(rows);
   const [filterTCNO, setFilterTCNO] = useState('');
-  const [filterOTCNO, setFilterOTCNO] = useState('');
   const [filterIsim, setFilterIsim] = useState('');
   const [filterSoyisim, setFilterSoyisim] = useState('');
   const [filterTelNo, setFilterTelNo] = useState('');
@@ -51,7 +38,6 @@ function FilterableTableList({
     // Filter the data based on the filter input value for each column
     const filtered = rows.filter((item) => {
       let isTCNOMatch = true;
-      let isOTCNOMatch = true;
       let isIsimMatch = true;
       let isSoyisimMatch = true;
       let isTelNoMatch = true;
@@ -62,7 +48,6 @@ function FilterableTableList({
       let isDersNo = true;
       let isSinif = true;
       let isSubeNo = true;
-      if (item.OTC_NO) { isOTCNOMatch = item.OTC_NO.toLowerCase().includes(filterOTCNO.toLowerCase()); }
       if (item.TC_NO) { isTCNOMatch = item.TC_NO.toLowerCase().includes(filterTCNO.toLowerCase()); }
       if (item.ISIM) { isIsimMatch = item.ISIM.toLowerCase().includes(filterIsim.toLowerCase()); }
       if (item.SOYISIM) { isSoyisimMatch = item.SOYISIM.toLowerCase().includes(filterSoyisim.toLowerCase()); }
@@ -86,7 +71,6 @@ function FilterableTableList({
 
       return (
         isTCNOMatch
-        && isOTCNOMatch
         && isIsimMatch
         && isSoyisimMatch
         && isTelNoMatch
@@ -104,7 +88,6 @@ function FilterableTableList({
     setFilteredData(filtered);
   }, [
     rows,
-    filterOTCNO,
     filterTCNO,
     filterIsim,
     filterSoyisim,
@@ -125,15 +108,6 @@ function FilterableTableList({
             placeholder="Filter by TC NO"
             value={filterTCNO}
             onChange={(e) => setFilterTCNO(e.target.value)}
-          />
-        )}
-
-        {visibleColumns.includes('OTC_NO') && (
-          <input
-            type="text"
-            placeholder="Filter by OGRENCI TC NO"
-            value={filterTCNO}
-            onChange={(e) => setFilterOTCNO(e.target.value)}
           />
         )}
 
@@ -283,7 +257,6 @@ function FilterableTableList({
         <thead>
           <tr>
             <th> </th>
-            {visibleColumns.includes('OTC_NO') && <th>ÖĞRENCİ TC NO</th>}
             {visibleColumns.includes('TC_NO') && <th>TC NO</th>}
             {visibleColumns.includes('ISIM') && <th>İsim</th>}
             {visibleColumns.includes('SOYISIM') && <th>Soyisim</th>}
@@ -313,7 +286,6 @@ function FilterableTableList({
                   </Link>
                 </td>
               )}
-              {visibleColumns.includes('OTC_NO') && <td>{item.OTC_NO}</td>}
               {visibleColumns.includes('TC_NO') && <td>{item.TC_NO}</td>}
               {visibleColumns.includes('ISIM') && <td>{item.ISIM}</td>}
               {visibleColumns.includes('SOYISIM') && <td>{item.SOYISIM}</td>}
@@ -350,7 +322,6 @@ FilterableTableList.defaultProps = {
 FilterableTableList.propTypes = {
   rows: PropTypes.arrayOf(
     PropTypes.shape({
-      OTC_NO: PropTypes.string,
       TC_NO: PropTypes.string,
       ISIM: PropTypes.string,
       SOYISIM: PropTypes.string,

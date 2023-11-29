@@ -17,6 +17,8 @@ import GiderlerPage from './pages/Giderler';
 import MalzemelerPage from './pages/Malzemeler';
 import VelilerPage from './pages/Veliler';
 import VeliProfile from './pages/VeliProfili';
+import SubeEkle from './pages/SubeEkle';
+import SubeManage from './pages/SubeManage';
 
 import './style/FilterableTableList.css';
 
@@ -82,6 +84,8 @@ function Hello() {
       <Route path="/Dersler" element={<DerslerPage />} />
       <Route path="/DersEkle" element={<DersEkle />} />
       <Route path="/Subeler" element={<SubelerPage />} />
+      <Route path="/SubeEkle" element={<SubeEkle />} />
+      <Route path="/SubeManage" element={<SubeManage />} />
       <Route path="/DersManage" element={<DersManage />} />
       <Route path="/Giderler" element={<GiderlerPage />} />
       <Route path="/Malzemeler" element={<MalzemelerPage />} />
