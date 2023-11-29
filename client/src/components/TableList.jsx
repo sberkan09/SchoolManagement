@@ -292,7 +292,7 @@ function FilterableTableList({
             <tr key={item[unique]}>
               {manageTo && (
                 <td>
-                  <Link to={manageTo} state={{ TC_NO: item.TC_NO, visibleColumns: visibleColumns }}>
+                  <Link to={manageTo} state={{ unique: item[unique], visibleColumns: visibleColumns }}>
                     <button type="button" className="ogrenci-button">Manage</button>
                   </Link>
                 </td>

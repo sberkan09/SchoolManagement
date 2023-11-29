@@ -12,6 +12,7 @@ import DersManage from './pages/DersManage';
 import OgretmenEkle from './pages/OgretmenEkle';
 import OgrenciEkle from './pages/OgrenciEkle';
 import TemizlikciEkle from './pages/TemizlikciEkle';
+import IdareciEkle from './pages/IdareciEkle';
 import DersEkle from './pages/DersEkle';
 import GiderlerPage from './pages/Giderler';
 import MalzemelerPage from './pages/Malzemeler';
@@ -67,6 +68,7 @@ function Hello() {
       <Route path="/OgrenciProfili/" element={<OgrenciPage />} />
       <Route path="/OgrenciEkle/" element={<OgrenciEkle />} />
       <Route path="/TemizlikciEkle/" element={<TemizlikciEkle />} />
+      <Route path="/IdareciEkle/" element={<IdareciEkle />} />
       <Route path="/Veli/:TC_NO" element={<VeliProfili />} />
       <Route path="/Calisanlar" element={<CalisanlarPage />} />
       <Route path="/CalisanProfili" element={<CalisanPage />} />

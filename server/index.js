@@ -471,12 +471,12 @@ app.get("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
 			const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES (${TC_NO}, ${MAAS})`;
 
 			db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`).then((data) =>{
-        if (data.length > 0) {
-					res.status(400).send("Ayni ogretmen birden fazla kaydedilemez.");
-				} else {
-					db.query(query1, [TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA]);
-					db.query(query2, [TC_NO, PART_MI]);
-					db.query(query3, [TC_NO, MAAS]);
+        if (data[0].length <= 0) {
+            db.query(query1, [TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA]);
+            db.query(query2, [TC_NO, PART_MI]);
+            db.query(query3, [TC_NO, MAAS]);
+        } else {
+            res.status(400).send("Ayni ogretmen birden fazla kaydedilemez.");
         }});
 }
 });
@@ -789,6 +789,19 @@ app.get("/api/ders/tumDersleriGetir", (req, res) => {
 		.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
 });
 
+// /api/ders/dersiGetir
+app.get("/api/ders/dersiGetir", (req, res) => {
+	const { DERS_ID } = req.query;
+	db.query(
+		//Tum derslerin taleplerini getir
+		`select * from ders WHERE DERS_ID = '${DERS_ID}';`
+	)
+		.then((data) => {
+			res.json(data[0]);
+		})
+		.catch((error) => console.error("/api/ders/dersiGetir", error));
+});
+
 app.get("/api/ders/subeleriGetir", (req, res) => {
 	const { DERS_ID } = req.query;
 	if (DERS_ID != undefined) {
@@ -916,11 +929,11 @@ app.get("/api/ogretmen/ogretmenMusaitlikGetir ", (req, res) => {
 
 //Ders ekle
 app.get("/api/ders/dersEkle", (req, res) => {
-	const { DERS_ID, DERS_ADI, DERS_SAATI } = req.query;
+	const { DERS_ADI, DERS_SAATI } = req.query;
 	const { AKTIF_MI } = "0";
 
 	if (DERS_ADI && DERS_SAATI) {
-		const query1 = `INSERT INTO ders (DERS_ID, DERS_ADI, DERS_SAATI, AKTIF_MI) VALUES ('${DERS_ID}', '${DERS_ADI}', '${DERS_SAATI}', '${AKTIF_MI}');`;
+		const query1 = `INSERT INTO ders (DERS_ADI, DERS_SAATI, AKTIF_MI) VALUES ('${DERS_ADI}', '${DERS_SAATI}', '${AKTIF_MI}');`;
 
 		db.query(query1, (error, results) => {
 			if (error) {

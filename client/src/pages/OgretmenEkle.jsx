@@ -17,8 +17,8 @@ function OgretmenEkle() {
     try {
       let response;
       if (PART_MI === '0') {
-        response = await axios.post('http://localhost:3006/api/calisan/fullTime/ogretmenEkle', {
-          query: {
+        response = await axios.get('http://localhost:3006/api/calisan/fullTime/ogretmenEkle', {
+          params: {
             TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS,
           },
         });

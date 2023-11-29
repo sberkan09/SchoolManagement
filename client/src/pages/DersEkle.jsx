@@ -8,7 +8,7 @@ function DersEkle() {
 
   const handleAddOgrenci = async () => {
     try {
-      const response = await axios.get('http://localhost:3006/api/ogrenci/aktifOgrenciEkle', {
+      const response = await axios.get('http://localhost:3006/api/ders/dersEkle', {
         params: {
           DERS_ADI, DERS_SAATI,
         },

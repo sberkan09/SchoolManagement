@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-function Edit() {
-  return <> </>;
-}
-
 function Delete(TC_NO) {
   const navigate = useNavigate();
   const [isDelete, setIsDelete] = useState(false);
@@ -34,6 +30,7 @@ function Delete(TC_NO) {
 }
 
 function StudentProfile() {
+  const navigate = useNavigate();
   const location = useLocation();
   const { TC_NO, visibleColumns } = location.state;
   const [student, setStudent] = useState(null);
@@ -62,10 +59,17 @@ function StudentProfile() {
   }, []);
 
   const handleInputChange = (fieldName, value) => {
-    setEditedStudent((prevStudent) => ({
-      ...prevStudent,
-      [fieldName]: value,
-    }));
+    if (value.length !== 0) {
+      setEditedStudent((prevStudent) => ({
+        ...prevStudent,
+        [fieldName]: value,
+      }));
+    } else {
+      setEditedStudent((prevStudent) => ({
+        ...prevStudent,
+        [fieldName]: ' ',
+      }));
+    }
   };
 
   const handleUpdateStudent = async () => {
@@ -79,8 +83,7 @@ function StudentProfile() {
 
       // Handle the response as needed, e.g., show a success message or reset the form
       console.log('Ogrenci updated successfully:', response.data);
-      setIsEditing(false);
-      setStudent(response.data);
+      navigate(0);
     } catch (error) {
       console.error('Error updating Ogrenci:', error);
       // Handle the error, e.g., show an error message to the user
