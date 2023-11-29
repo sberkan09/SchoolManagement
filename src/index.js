@@ -92,26 +92,10 @@ app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
 
 	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI) {
 		const query1 = `INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`;
+		const query2 = `INSERT INTO aktif (TC_NO) VALUES ('${TC_NO}');`;
+		db.query(query1);
 
-		db.query(query1, (error, results) => {
-			if (error) {
-				console.error(error);
-				res.status(500).send("Error while inserting into ogrenci");
-				return;
-			}
-
-			const query2 = `INSERT INTO aktif (TC_NO) VALUES ('${TC_NO}');`;
-
-			db.query(query2, (error, results) => {
-				if (error) {
-					console.error(error);
-					res.status(500).send("Error while inserting into aktif");
-					return;
-				}
-
-				res.status(200).send("Student added successfully");
-			});
-		});
+		db.query(query2);
 	} else {
 		res.status(400).send("Missing or invalid parameters");
 	}
@@ -161,7 +145,6 @@ app.get("/api/ogrenci/mezunEt", (req, res) => {
         res.status(400).json({ success: false, error: "TC_NO veya MEZUNIYET_TARIHI parametresi eksik." });
     }
 });
-
 
 //Ogrenci sil
 app.get("/api/ogrenci/aktifOgrenciSil", (req, res) => {
@@ -476,46 +459,29 @@ app.get("/api/calisan/ogretmenGetir", (req, res) => {
 });
 ///api/calisan/fullTime/ogretmenEkle
 app.get("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS} =
-		req.query;
-	const PART_MI = "0"; // Tam zamanlı ogretmenler icin false olarak ayarlanır
-		
-	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
-		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
+    const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS } = req.query;
+    const PART_MI = 0; // Tam zamanli 0
+    console.log(req.query);
 
-		db.query(query1, (error, results) => {
-			if (error) {
-				console.error(error);
-				res.status(500).send("Error while inserting into calisan");
-				return;
-			}
+    if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
+            // Calisan tablosuna ekleme yap
+        const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}')`;
+        const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}')`;
+        const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES (${TC_NO}, ${MAAS})`;
 
-			const query2 = `INSERT INTO ogretmen (TC_NO, PART_MI) VALUES ('${TC_NO}', '${PART_MI}');`;
+		db.query(`SELECT * FROM ogrenci WHERE TC_NO = '${TC_NO}'`, results)
+		.then((results) => {
+		if (results.length <= 0) {
+			db.query(query1, [TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA]);
+			db.query(query2, [TC_NO, PART_MI]);
+			db.query(query3, [TC_NO, MAAS]);
 
-			db.query(query2, (error, results) => {
-				if (error) {
-					console.error(error);
-					res.status(500).send("Error while inserting into ogretmen");
-					return;
-				}
-
-				const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES ('${TC_NO}', '${MAAS}');`;
-				db.query(query2, (error, results) => {
-					if (error) {
-						console.error(error);
-						res.status(500).send("Error while inserting into full_timer");
-						return;
-					}
-					res.status(200).send("Full_time ogretmen added successfully");
-				});
-
-			});
+    	} else {
+            res.status(400).send("Ayni ogretmen birden fazla kaydedilemez.");
+    	}
 		});
-	} else {
-		res.status(400).send("Missing or invalid parameters");
 	}
 });
-
 
 //api/calisan/partTime/ogretmenEkle
 app.get("/api/calisan/partTime/OgretmenEkle", (req, res) => {
@@ -974,20 +940,20 @@ app.get("/api/ders/dersEkle", (req, res) => {
 
 //Kapali dersleri getir
 app.get("/api/ders/kapaliDersGetir", (req, res) => {
-	db.query(`select * from ders where AKTIF_MI = "0"';`)
-		.then((data) => {
-			res.json(data[0]);
-		})
-		.catch((error) => console.error("/api/ders/kapaliDersGetir", error));
+    db.query("select * from ders where AKTIF_MI = false;")
+        .then((data) => {
+            res.json(data[0]);
+        })
+        .catch((error) => console.error("/api/ders/kapaliDersGetir", error));
 });
 
 //Acik dersleri getir
 app.get("/api/ders/acikDersGetir", (req, res) => {
-	db.query(`select * from ders where AKTIF_MI = "1"';`)
-		.then((data) => {
-			res.json(data[0]);
-		})
-		.catch((error) => console.error("/api/ders/acikDersGetir", error));
+    db.query("select * from ders where AKTIF_MI = true';")
+        .then((data) => {
+            res.json(data[0]);
+        })
+        .catch((error) => console.error("/api/ders/acikDersGetir", error));
 });
 
 
