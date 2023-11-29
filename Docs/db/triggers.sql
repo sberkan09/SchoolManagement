@@ -12,7 +12,7 @@ BEGIN
     END IF;
 END
 
-#2) stok 1 degerinin altina duserse
+#2) stok 5 degerinin altina duserse
 CREATE DEFINER=`u828725825_root`@`%` TRIGGER Stok
 BEFORE UPDATE ON malzeme 
 FOR EACH ROW
