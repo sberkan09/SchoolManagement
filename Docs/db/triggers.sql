@@ -1,10 +1,9 @@
-#1
-#Gider negatif girilirse 
+#1) Gider negatif girilmesi durumu 
 CREATE DEFINER=`u828725825_root`@`%` TRIGGER giderPositive
 BEFORE INSERT ON gider 
 FOR EACH ROW
 BEGIN
-    DECLARE message VARCHAR(50);
+    DECLARE message VARCHAR(500);
    	SET message = CONCAT('Dikkat!: Gider degeri negatif olamaz.');
 	
    IF NEW.GIDER_TUTAR < 0 THEN
@@ -13,13 +12,12 @@ BEGIN
     END IF;
 END
 
-#2
-#stok 1 degerinin altina duserse
+#2) stok 1 degerinin altina duserse
 CREATE DEFINER=`u828725825_root`@`%` TRIGGER Stok
 BEFORE UPDATE ON malzeme 
 FOR EACH ROW
 BEGIN
-    DECLARE message VARCHAR(50);
+    DECLARE message VARCHAR(500);
    	SET message = CONCAT('Uyari: Malzeme stoku ', NEW.STOK, ' adet kaldi!');
 	
    IF NEW.STOK <= 5 THEN
@@ -31,8 +29,7 @@ END
 
 
 
-#3
-#ogrenci silme
+#3) ogrenci silme durumu
 DELIMITER //
 CREATE DEFINER=`u828725825_root`@`%` TRIGGER ogrenciSil
 BEFORE DELETE ON ogrenci 
@@ -56,14 +53,13 @@ BEGIN
     END IF;
 END
 
-#4
-#Talep degeri 10dan buyuk olan dersler icin uyari mesaji yolla
+#4) Talep degeri 10dan buyuk olan dersler icin uyari mesaji yolla
 CREATE DEFINER=`u828725825_root`@`%` TRIGGER talep
 AFTER INSERT ON talep 
 FOR EACH ROW
 BEGIN
     DECLARE toplam_talep INT;
-    DECLARE message VARCHAR(50);
+    DECLARE message VARCHAR(500);
 
     -- Güncellenen DERS_ID için toplam talep sayısını hesapla
     SELECT COUNT(*) INTO toplam_talep FROM talep WHERE DERS_ID = NEW.DERS_ID;
