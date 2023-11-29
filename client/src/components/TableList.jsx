@@ -27,7 +27,7 @@ async function handleDelete(deleteEndpoint, deletedItemUniqueKey) {
 }
 
 function FilterableTableList({
-  rows, visibleColumns, compFilter, manageTo, addTo, unique,
+  rows, visibleColumns, compFilter, manageTo, addTo, unique, compAfter,
 }) {
   const [filteredData, setFilteredData] = useState(rows);
   const [filterTCNO, setFilterTCNO] = useState('');
@@ -313,6 +313,7 @@ function FilterableTableList({
               {visibleColumns.includes('DERS_NO') && <td>{item.DERS_NO}</td>}
               {visibleColumns.includes('SINIF') && <td>{item.SINIF}</td>}
               {visibleColumns.includes('SUBE_NO') && <td>{item.SUBE_NO}</td>}
+              {compAfter}
             </tr>
           ))}
         </tbody>
@@ -326,6 +327,7 @@ FilterableTableList.defaultProps = {
   manageTo: '/',
   addTo: '/',
   unique: 'TC_NO',
+  compAfter: null,
 };
 
 FilterableTableList.propTypes = {
@@ -354,6 +356,7 @@ FilterableTableList.propTypes = {
   manageTo: PropTypes.string,
   addTo: PropTypes.string,
   unique: PropTypes.string,
+  compAfter: PropTypes.element,
 };
 
 Add.propTypes = {

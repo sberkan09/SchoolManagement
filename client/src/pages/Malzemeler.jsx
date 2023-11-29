@@ -17,14 +17,8 @@ function Malzemeler() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const endpoint = 'http://localhost:3006/api/malzeme/tumMalzemeleriGetir';
-      setvisibleColumns([
-        'MALZEME_ADI',
-        'MALZEME_ID',
-        'MALZEME_BIRIM',
-        'STOK',
-        'SUBE_ID',
-      ]);
+      const endpoint = 'http://localhost:3006/api/malzeme/subeMalzemeGetir';
+      setvisibleColumns();
 
       try {
         const response = await axios.get(endpoint);
@@ -41,7 +35,7 @@ function Malzemeler() {
     <div>
       <TableList2
         rows={rows}
-        visibleColumns={visibleColumns}
+        visibleColumns={['MALZEME_ADI', 'MALZEME_ID', 'MALZEME_BIRIM', 'STOK', 'SUBE_ID']}
         manageTo="/MalzemeManage/"
         unique="MALZEME_ID"
       />

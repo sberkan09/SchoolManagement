@@ -952,7 +952,7 @@ app.get("/api/ders/dersEkle", (req, res) => {
 
 //Kapali dersleri getir
 app.get("/api/ders/kapaliDersGetir", (req, res) => {
-	db.query(`select * from ders where AKTIF_MI = "0"';`)
+	db.query(`select * from ders where AKTIF_MI = false;`)
 		.then((data) => {
 			res.json(data[0]);
 		})
@@ -961,7 +961,7 @@ app.get("/api/ders/kapaliDersGetir", (req, res) => {
 
 //Acik dersleri getir
 app.get("/api/ders/acikDersGetir", (req, res) => {
-	db.query(`select * from ders where AKTIF_MI = "1"';`)
+	db.query(`select * from ders where AKTIF_MI = true';`)
 		.then((data) => {
 			res.json(data[0]);
 		})

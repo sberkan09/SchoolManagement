@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
+import TableList from '../components/TableList';
 
 function Delete(TC_NO) {
   const navigate = useNavigate();
@@ -29,6 +30,38 @@ function Delete(TC_NO) {
   );
 }
 
+function DersTypeSelect(dersType, setDersType) {
+  return (
+    <div className="filters">
+      <label htmlFor="ogrenciTypeDropdown">
+        <select
+          id="ogrenciTypeDropdown"
+          value={dersType}
+          onChange={(e) => setDersType(e.target.value)}
+        >
+          <option value="aktif">Aktif</option>
+          <option value="mezun">Mezun</option>
+        </select>
+        Mezun Öğrencileri Göster
+      </label>
+    </div>
+  );
+}
+
+function Dersler() {
+  const [rows, setRows] = React.useState([]);
+  const [dersType, setDersType] = useState('aktif');
+  React.useEffect(() => {
+    (async function getData() {
+      await axios.get('http://localhost:3006/api/ders/kapaliDersGetir').then((response) => {
+        setRows(response.data);
+      });
+    }());
+  }, []);
+
+  return <TableList rows={rows} visibleColumns={['DERS_ID', 'DERS_ADI', 'DERS_SAATI', 'DERS TALEP']} manageTo="/DersManage/" unique="DERS_ID" addTo="/DersEkle/" />;
+}
+
 function StudentProfile() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,6 +70,7 @@ function StudentProfile() {
   const [schedule, setSchedule] = useState([]);
   const [editedStudent, setEditedStudent] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [isDersTalep, setisDersTalep] = useState(false);
 
   useEffect(() => {
     axios.get('http://localhost:3006/api/ogrenci/ogrencileriGetir', { params: { TC_NO } })
@@ -153,7 +187,8 @@ function StudentProfile() {
                   onChange={(e) => handleInputChange('E_POSTA', e.target.value)}
                 />
               </label>
-              <button type="button" onClick={handleUpdateStudent}>Update</button>
+              <button type="button" onClick={handleUpdateStudent}>Güncelle</button>
+              <button type="button" onClick={(e) => { setIsEditing(false); }}>İptal</button>
             </>
           ) : (
             <>
@@ -163,13 +198,14 @@ function StudentProfile() {
               <p>TC No: {student.TC_NO}</p>
               <p>Telefon: {student.TEL_NO}</p>
               <p>Email: {student.E_POSTA}</p>
-              <button type="button" onClick={handleEditBtn}>Edit</button>
+              <button type="button" onClick={handleEditBtn}>Öğrenci Bilgilerini Güncelle</button>
+              <button type="button" onClick={(e) => setisDersTalep(true)}>Ders Talep Et</button>
             </>
           )}
         </div>
       )}
 
-      {schedule && (
+      {!isDersTalep && schedule && (
         <div>
           <h2>Ders Programı</h2>
           <table>
@@ -201,6 +237,13 @@ function StudentProfile() {
             </tbody>
           </table>
         </div>
+      )}
+
+      {isDersTalep && (
+        <>
+          <button type="button" onClick={(e) => setisDersTalep(false)}>Ders Talep İptal</button>
+          <Dersler />
+        </>
       )}
 
     </div>
