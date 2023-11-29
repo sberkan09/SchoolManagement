@@ -948,26 +948,14 @@ app.get("/api/veli/guncelle", (req, res) => {
 
 // /api/ders/tumDersleriGetir
 app.get("/api/ders/tumDersleriGetir", (req, res) => {
-	const { DERS_ID } = req.query;
-	if (DERS_ID != undefined) {
-		db.query(
-			`select * from ders WHERE DERS_ID = ${DERS_ID};`
-		)
-			.then((data) => {
-				res.json(data[0]);
-			})
-			.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
-		
-	} else {
-		db.query(
-			//Tum derslerin taleplerini getir
-			`select * from ders as d group by d.DERS_ADI;`
-		)
-			.then((data) => {
-				res.json(data[0]);
-			})
-			.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
-	}
+	db.query(
+		//Tum derslerin taleplerini getir
+		`select * from ders as d group by d.DERS_ADI;`
+	)
+		.then((data) => {
+			res.json(data[0]);
+		})
+		.catch((error) => console.error("/api/ders/tumDersleriGetir", error));
 });
 
 app.get("/api/ders/subeleriGetir", (req, res) => {
@@ -1159,6 +1147,73 @@ app.get("/api/ders/dersSaatiUygunGetir", (req, res) => {
 	}
 });
 
+//Sube ekle
+app.get("/api/sube/subeEkle", (req, res) => {
+    const {GUN, DERS_NO, SINIF, SUBE_NO} = req.query;
+
+    if (GUN && DERS_NO && SINIF && SUBE_NO) {
+        // İşlemleri sırayla gerçekleştirmek için transaction başlat
+        db.transaction().then((transaction) => {
+            // Mezun tablosuna ekle
+            return db.query(
+                `INSERT INTO sube (GUN, DERS_NO, SINIF, SUBE_NO) VALUES ('${GUN}', '${DERS_NO}', '${SINIF}', '${SUBE_NO}')`,
+                { transaction: transaction }
+            )
+            .then(() => {
+                // İşlemleri onayla
+                return transaction.commit();
+            })
+            .then(() => {
+                res.json({ success: true, message: "Yeni sube eklendi." });
+            })
+            .catch((error) => {
+                // Hata olursa işlemleri geri al
+                transaction.rollback();
+                console.error("/api/sube/subeEkle'", error);
+                res.status(500).json({ success: false, error: "Bir hata oluştu." });
+            });
+        });
+    } else {
+        res.status(400).json({
+            success: false,
+            error: "Parametre eksik veya hatali.",
+        });
+    }
+});
+
+//Ders sube bagla
+app.get("/api/ders/subeDersBagla", (req, res) => {
+    const {SUBE_ID, DERS_ID} = req.query;
+
+    if (SUBE_ID && DERS_ID) {
+        // İşlemleri sırayla gerçekleştirmek için transaction başlat
+        db.transaction().then((transaction) => {
+            // Mezun tablosuna ekle
+            return db.query(
+                `INSERT INTO ders_sube (SUBE_ID, DERS_ID) VALUES ('${SUBE_ID}', '${DERS_ID}')`,
+                { transaction: transaction }
+            )
+            .then(() => {
+                // İşlemleri onayla
+                return transaction.commit();
+            })
+            .then(() => {
+                res.json({ success: true, message: "Yeni ders-sube iliskisi eklendi." });
+            })
+            .catch((error) => {
+                // Hata olursa işlemleri geri al
+                transaction.rollback();
+                console.error("/api/ders/subeDersBagla ='" + `'${SUBE_ID}'`+ " " + `'${DERS_ID}'`, error);
+                res.status(500).json({ success: false, error: "Bir hata oluştu." });
+            });
+        });
+    } else {
+        res.status(400).json({
+            success: false,
+            error: "Parametre eksik veya hatali.",
+        });
+    }
+});
 
 // /api/gider/tumGiderleriGetir
 app.get("/api/gider/tumGiderleriGetir", (req, res) => {
@@ -1266,6 +1321,6 @@ app.get("/api/malzeme/subeMalzemeGetir", (req, res) => {
 	}
 });
 
-app.listen(3006, () => {
+app.listen(3007, () => {
 	console.log("this is develop branch");
 });
