@@ -1266,6 +1266,6 @@ app.get("/api/malzeme/subeMalzemeGetir", (req, res) => {
 	}
 });
 
-app.listen(3007, () => {
+app.listen(3006, () => {
 	console.log("this is develop branch");
 });
