@@ -7,7 +7,7 @@ import '../style/FilterableTableList.css';
 function Veliler() {
   const [rows, setRows] = useState([]);
   const [veliType, setVeliType] = useState('all');
-  const [visibleColumns, setvisibleColumns] = useState(['TC_NO', 'OTC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'YAKINLIK']);
+  const [visibleColumns, setvisibleColumns] = useState(['TC_NO', 'OTC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA']);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,8 +30,9 @@ function Veliler() {
       <TableList
         rows={rows}
         visibleColumns={['TC_NO', 'OTC_NO', 'ISIM', 'SOYISIM', 'ADRES', 'TEL_NO', 'E_POSTA', 'YAKINLIK']}
-        manageTo="/VeliManage/"
+        manageTo="/VeliProfili/"
         unique="TC_NO"
+        addTo="/VeliEkle/"
       />
     </div>
   );
