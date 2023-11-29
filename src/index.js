@@ -95,7 +95,7 @@ app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
             return db.query(`SELECT TC_NO FROM ogrenci WHERE TC_NO = '${TC_NO}';`, { transaction: transaction })
                 .then((results) => {
                     // Eğer öğrenci zaten varsa, ekleme işlemi yapma
-                    if (results.length > 0) {
+                    if (results.length > 2) {
                         throw new Error('Öğrenci zaten mevcut.');
                     }
                     // Öğrenci yoksa, ekleme işlemini sürdür
