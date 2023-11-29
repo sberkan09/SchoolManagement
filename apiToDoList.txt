@@ -2,7 +2,7 @@ Yapılma Durumu | api url | açıklama
 + | api/ogrenci/ogrencileriGetir | tüm öğrenci listesini ve TC_NOsuna gore ogrenciyi getir
 + | api/ogrenci/aktifOgrencileriGetir | tüm aktif öğrencileri TC_NOsuna gore ogrenciyi getir
 + | api/ogrenci/mezunOgrencileriGetir | tüm mezun öğrencileri TC_NOsuna gore ogrenciyi getir
-+ | api/ogrenci/aktifOgrenciEkle | yeni ogrenci ekler
++ | api/ogrenci/aktifOgrenciEkle | yeni ogrenci ve velisini ekler 
 + | api/ogrenci/mezunEt | aktif ogrenciyi mezun eder
 + | api/ogrenci/aktifOgrenciSil | aktif ogrenciyi sil (TC_NOya gore) VELI TABLOSUNDAN SILINMIYOR(TRIGGER)
 + | api/calisan/calisanGetir | tüm calisan listesini ve TC_NOsuna gore calisani getir
@@ -41,6 +41,5 @@ Yapılma Durumu | api url | açıklama
 + | api/ders/kapaliDersGetir | aktif olmayan dersleri getir
 + | api/ders/acikDersGetir | aktif olan dersleri getir
 - | api/ogrenci/dersTalepEt | ogrenci ders talep eder
-- | api/veli/aileiliskisiEkle | aile ilişkisi ekle
 - | api/ogrenci/MusaitlikEkle | öğrenci müsaitlik ekler
 - | api/ogretmen/MusaitlikEkle | öğretmen müsaitlik ekler

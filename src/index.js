@@ -87,35 +87,42 @@ app.get("/api/ogrenci/mezunOgrencileriGetir", (req, res) => {
 
 //ogrenci ekle
 app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI } =
-		req.query;
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI, VTC_NO, VISIM,VSOYISIM, VADRES, VTEL_NO, VE_POSTA, YAKINLIK} = req.query;
 
-	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI) {
-		const query1 = `INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`;
 
-		db.query(query1, (error, results) => {
-			if (error) {
-				console.error(error);
-				res.status(500).send("Error while inserting into ogrenci");
-				return;
-			}
-
-			const query2 = `INSERT INTO aktif (TC_NO) VALUES ('${TC_NO}');`;
-
-			db.query(query2, (error, results) => {
-				if (error) {
-					console.error(error);
-					res.status(500).send("Error while inserting into aktif");
-					return;
-				}
-
-				res.status(200).send("Student added successfully");
-			});
+	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && DOGUM_YILI && VTC_NO && VISIM && VSOYISIM && VADRES && VTEL_NO && VE_POSTA && YAKINLIK) {
+		db.transaction().then((transaction) => {
+			return db.query(`INSERT INTO ogrenci (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}', '${DOGUM_YILI}');`, { transaction: transaction })
+                .then(() => {
+                    // aktif tablosuna ekle
+                    return db.query(`INSERT INTO aktif (TC_NO) VALUES ('${TC_NO}');`, { transaction: transaction });
+                })
+                .then(() => {
+					return db.query(`INSERT INTO veli (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${VTC_NO}', '${VISIM}', '${VSOYISIM}', '${VADRES}', '${VTEL_NO}', '${VE_POSTA}');`, { transaction: transaction })
+                    .then(() => {
+						return db.query(`INSERT INTO aile_iliskisi (OTC_NO, VTC_NO, YAKINLIK) VALUES ('${TC_NO}', '${VTC_NO}', '${YAKINLIK}' );`, { transaction: transaction })
+						.then(() =>{
+							// İşlemi onayla
+							return transaction.commit();
+						})
+					})
+                })
+                .then(() => {
+                    res.json({ success: true, message: "Ogrenci ve velisi veritabanina eklendi." });
+                })
+                .catch((error) => {
+                    // Hata olursa işlemi geri al
+                    transaction.rollback();
+                    console.error(`/api/ogrenci/aktifOgrenciEkle TC_NO='${TC_NO}'`, error);
+                    res.status(500).json({ success: false, error: "Bir hata oluştu." });
+                });
 		});
+		
 	} else {
 		res.status(400).send("Missing or invalid parameters");
 	}
 });
+
 
 // Ogrenciyi mezun et
 app.get("/api/ogrenci/mezunEt", (req, res) => {

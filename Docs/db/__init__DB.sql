@@ -68,6 +68,7 @@ SOYISIM VARCHAR(25) not null,
 ADRES VARCHAR(100),
 TEL_NO VARCHAR(10) not NULL,
 E_POSTA VARCHAR(50),
+DOGUM_YILI YEAR not null,
 PRIMARY KEY (TC_NO)
 );
 
@@ -116,6 +117,7 @@ create table ders(
 DERS_ID int not null auto_increment,
 DERS_ADI varchar(15) not null,
 DERS_SAATI int not null,
+Aktif_mi bool not null,
 primary key(DERS_ID)
 );
 
