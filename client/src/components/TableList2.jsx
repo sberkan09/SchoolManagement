@@ -4,6 +4,16 @@ import { Link } from 'react-router-dom';
 
 import '../style/FilterableTableList.css';
 
+function Add({
+  addTo, unique,
+}) {
+  return (
+    <Link to={addTo} state={unique}>
+      <button type="button" className="ogrenci-button">Add</button>
+    </Link>
+  );
+}
+
 function FilterableTableList({
   rows, visibleColumns, comp, manageTo, unique,
 }) {
@@ -175,10 +185,16 @@ function FilterableTableList({
   );
 }
 
+Add.propTypes = {
+  addTo: PropTypes.string.isRequired,
+  unique: PropTypes.string.isRequired,
+};
+
 FilterableTableList.defaultProps = {
   comp: null,
   manageTo: '/',
   unique: ' ',
+  addTo: '/',
 };
 
 FilterableTableList.propTypes = {
@@ -198,6 +214,7 @@ FilterableTableList.propTypes = {
   comp: PropTypes.element,
   manageTo: PropTypes.string,
   unique: PropTypes.string,
+  addTo: PropTypes.string,
 };
 
 export default FilterableTableList;

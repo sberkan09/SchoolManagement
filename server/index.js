@@ -1164,76 +1164,53 @@ app.get("/api/ders/dersSaatiUygunGetir", (req, res) => {
 app.get("/api/gider/tumGiderleriGetir", (req, res) => {
 	db.query(`SELECT * FROM gider;`)
 		.then((data) => {
-			res.json(data[0]);
+			res.json(data);
 		})
 		.catch((error) => console.error("/api/gider/tumGiderleriGetir", error));
 });
 
 //sabit giderleri getir
 app.get("/api/gider/sabitGiderGetir", (req, res) => {
-	const { GIDER_SABIT_MI } = req.query;
-	if (GIDER_SABIT_MI == "1") {
-		db.query(`select * FROM gider where GIDER_SABIT_MI = 1;`)
-			.then((data) => {
-				res.json(data[0]);
-			})
-			.catch((error) => console.error("/api/gider/sabitGiderGetir", error));
-	} else {
-		console.error(`/api/gider/sabitGiderGetir => Sabit Gider Yok!`, error);
-	}
+	db.query(`select * FROM gider where GIDER_SABIT_MI = 1;`)
+		.then((data) => {
+			res.json(data);
+		})
+		.catch((error) => console.error("/api/gider/sabitGiderGetir", error));
 });
 
 //sabit gider ekle
 app.get("/api/gider/sabitGiderEkle", (req, res) => {
-    const { GIDER_ID, GIDER_ADI, GIDER_TUTAR, GIDER_TARIH, GIDER_SABIT_MI } = req.query;
-
-    if (GIDER_SABIT_MI === "1") {
-        db.query(`INSERT INTO gider (GIDER_ID, GIDER_ADI, GIDER_TUTAR, GIDER_TARIH, GIDER_SABIT_MI) VALUES ('${GIDER_ID}', '${GIDER_ADI}', '${GIDER_TUTAR}', '${GIDER_TARIH}', '${GIDER_SABIT_MI}')`)
-            .then((data) => {
-                res.json({ success: true, message: "Sabit gider başarıyla eklendi." });
-            })
-            .catch((error) => {
-                console.error(`/api/gider/sabitGiderEkle = '${GIDER_ID}'`, error);
-                res.status(500).json({ success: false, error: "Bir hata oluştu." });
-            });
-    } else {
-        res.status(400).json({ success: false, error: `Gider ID '${GIDER_ID}' sabit bir gider değil.` });
-    }
+	const { GIDER_ADI, GIDER_TUTAR, GIDER_TARIH } = req.query;
+		db.query(`INSERT INTO gider (GIDER_ADI, GIDER_TUTAR, GIDER_TARIH, GIDER_SABIT_MI) VALUES ('${GIDER_ADI}', '${GIDER_TUTAR}', '${GIDER_TARIH}', 1)`)
+				.then((data) => {
+						res.json({ success: true, message: "Sabit gider başarıyla eklendi." });
+				})
+				.catch((error) => {
+						console.error(`/api/gider/sabitGiderEkle = '${GIDER_ID}'`, error);
+						res.status(500).json({ success: false, error: "Bir hata oluştu." });
+				});
 });
 
 //degisken giderleri getir
 app.get("/api/gider/degiskenGiderGetir", (req, res) => {
-	const { GIDER_SABIT_MI } = req.query;
-	if (GIDER_SABIT_MI == "0") {
-		db.query(`select * FROM gider where GIDER_SABIT_MI = 0;`)
-			.then((data) => {
-				res.json(data[0]);
-			})
-			.catch((error) => console.error("/api/gider/degiskenGiderGetir", error));
-	} else {
-		console.error(
-			`/api/gider/degiskenGiderGetir => Degisken Gider Yok!`,
-			error
-		);
-	}
+	db.query(`select * FROM gider where GIDER_SABIT_MI = 0;`)
+		.then((data) => {
+			res.json(data);
+		})
+		.catch((error) => console.error("/api/gider/degiskenGiderGetir", error));
 });
 
 //degisken gider ekle
 app.get("/api/gider/degiskenGiderEkle", (req, res) => {
-    const { GIDER_ID, GIDER_ADI, GIDER_TUTAR, GIDER_TARIH, GIDER_SABIT_MI } = req.query;
-
-    if (GIDER_SABIT_MI === "0") {
-        db.query(`INSERT INTO gider (GIDER_ID, GIDER_ADI, GIDER_TUTAR, GIDER_TARIH, GIDER_SABIT_MI) VALUES ('${GIDER_ID}', '${GIDER_ADI}', '${GIDER_TUTAR}', '${GIDER_TARIH}', '${GIDER_SABIT_MI}')`)
-            .then((data) => {
-                res.json({ success: true, message: "Değişken gider başarıyla eklendi." });
-            })
-            .catch((error) => {
-                console.error(`/api/gider/degiskenGiderEkle = '${GIDER_ID}'`, error);
-                res.status(500).json({ success: false, error: "Bir hata oluştu." });
-            });
-    } else {
-        res.status(400).json({ success: false, error: `Gider ID '${GIDER_ID}' değişken bir gider değil.` });
-    }
+    const { GIDER_ADI, GIDER_TUTAR, GIDER_TARIH } = req.query;
+		db.query(`INSERT INTO gider (GIDER_ADI, GIDER_TUTAR, GIDER_TARIH, GIDER_SABIT_MI) VALUES ('${GIDER_ADI}', '${GIDER_TUTAR}', '${GIDER_TARIH}', 0)`)
+				.then((data) => {
+						res.json({ success: true, message: "Değişken gider başarıyla eklendi." });
+				})
+				.catch((error) => {
+						console.error(`/api/gider/degiskenGiderEkle = '${GIDER_ID}'`, error);
+						res.status(500).json({ success: false, error: "Bir hata oluştu." });
+				});
 });
 
 //sube malzeme listelerini getir
