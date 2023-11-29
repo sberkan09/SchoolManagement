@@ -1,32 +1,32 @@
 #1
 #Gider negatif girilirse 
-DELIMITER //
-
-CREATE TRIGGER before_insert_gider
-BEFORE INSERT ON gider
+CREATE DEFINER=`u828725825_root`@`%` TRIGGER giderPositive
+BEFORE INSERT ON gider 
 FOR EACH ROW
 BEGIN
-    IF NEW.GIDER_TUTAR < 0 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Gider tutari negatif olamaz';
+    DECLARE message VARCHAR(50);
+   	SET message = CONCAT('Dikkat!: Gider degeri negatif olamaz.');
+	
+   IF NEW.GIDER_TUTAR < 0 THEN
+        -- Uyarı mesajını yazdır
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = message;
     END IF;
-END //
-
-DELIMITER ;
+END
 
 #2
 #stok 1 degerinin altina duserse
-DELIMITER //
-
-CREATE TRIGGER before_update_malzeme_stok
-BEFORE UPDATE ON malzeme
+CREATE DEFINER=`u828725825_root`@`%` TRIGGER Stok
+BEFORE UPDATE ON malzeme 
 FOR EACH ROW
 BEGIN
-    IF NEW.STOK <= 5 THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = CONCAT('Uyari: Malzeme stoku ', NEW.STOK, ' adet kaldi!');
+    DECLARE message VARCHAR(50);
+   	SET message = CONCAT('Uyari: Malzeme stoku ', NEW.STOK, ' adet kaldi!');
+	
+   IF NEW.STOK <= 5 THEN
+        -- Uyarı mesajını yazdır
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = message;
     END IF;
-END //
-
-DELIMITER ;
+END
 
 
 
@@ -34,9 +34,8 @@ DELIMITER ;
 #3
 #ogrenci silme
 DELIMITER //
-
-CREATE TRIGGER before_delete_ogrenci
-BEFORE DELETE ON ogrenci
+CREATE DEFINER=`u828725825_root`@`%` TRIGGER ogrenciSil
+BEFORE DELETE ON ogrenci 
 FOR EACH ROW
 BEGIN
     DECLARE veli_tc_no CHAR(11);
@@ -55,29 +54,25 @@ BEGIN
     IF veli_linked_other_student = 0 THEN
         DELETE FROM veli WHERE TC_NO = veli_tc_no;
     END IF;
-END //
-
-DELIMITER ;
+END
 
 #4
 #Talep degeri 10dan buyuk olan dersler icin uyari mesaji yolla
-DELIMITER //
-
-CREATE TRIGGER after_update_talep
-AFTER UPDATE ON talep
+CREATE DEFINER=`u828725825_root`@`%` TRIGGER talep
+AFTER INSERT ON talep 
 FOR EACH ROW
 BEGIN
     DECLARE toplam_talep INT;
+    DECLARE message VARCHAR(50);
 
     -- Güncellenen DERS_ID için toplam talep sayısını hesapla
     SELECT COUNT(*) INTO toplam_talep FROM talep WHERE DERS_ID = NEW.DERS_ID;
+    
+    SET message = CONCAT('Dikkat!: ', NEW.DERS_ID, ' dersine ait talep sayısı 10\'dan büyük! Ders açılabilir.');
 
     -- Eğer toplam talep sayısı 10'dan büyükse
     IF toplam_talep > 10 THEN
         -- Uyarı mesajını yazdır
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = CONCAT('Dikkat!: ', NEW.DERS_ID, ' dersine ait talep sayisi 10dan büyük! Ders acilabilir.');
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = message;
     END IF;
-END //
-
-DELIMITER ;
-
+END
