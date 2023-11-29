@@ -103,47 +103,56 @@ app.get("/api/ogrenci/aktifOgrenciEkle", (req, res) => {
 
 // Ogrenciyi mezun et
 app.get("/api/ogrenci/mezunEt", (req, res) => {
-    const { TC_NO, MEZUNIYET_TARIHI } = req.query;
+	const { TC_NO, MEZUNIYET_TARIHI } = req.query;
 
-    if (TC_NO && MEZUNIYET_TARIHI) {
-        // İşlemleri sırayla gerçekleştirmek için transaction başlat
-        db.beginTransaction((transactionError) => {
-            if (transactionError) {
-                console.error(transactionError);
-                res.status(500).json({ success: false, error: "Islem baslatilirken bir hata olustu." });
-                return;
-            }
+	if (TC_NO && MEZUNIYET_TARIHI) {
+		// İşlemleri sırayla gerçekleştirmek için transaction başlat
+		db.beginTransaction((transactionError) => {
+			if (transactionError) {
+				console.error(transactionError);
+				res.status(500).json({
+					success: false,
+					error: "Islem baslatilirken bir hata olustu.",
+				});
+				return;
+			}
 
-            // Mezun tablosuna ekle
-            db.query(
-                `INSERT INTO mezun (TC_NO, MEZUNIYET_TARIHI) VALUES ('${TC_NO}', '${MEZUNIYET_TARIHI}' )`
-            )
-            .then(() => {
-                // Aktif tablosundan sil
-                return db.query(`DELETE FROM aktif WHERE TC_NO = '${TC_NO}'`)
-            })
-            .then(() => {
-                // İşlemleri onayla
-                db.commit((commitError) => {
-                    if (commitError) {
-                        console.error(commitError);
-                        res.status(500).json({ success: false, error: "Islem onaylanirken bir hata olustu." });
-                        return;
-                    }
-                    res.json({ success: true, message: "Ogrenci mezun edildi." });
-                });
-            })
-            .catch((error) => {
-                // Hata olursa işlemleri geri al
-                db.rollback(() => {
-                    console.error("/api/ogrenci/mezunEt TC_NO='" + TC_NO + "'", error);
-                    res.status(500).json({ success: false, error: "Bir hata oluştu." });
-                });
-            });
-        });
-    } else {
-        res.status(400).json({ success: false, error: "TC_NO veya MEZUNIYET_TARIHI parametresi eksik." });
-    }
+			// Mezun tablosuna ekle
+			db.query(
+				`INSERT INTO mezun (TC_NO, MEZUNIYET_TARIHI) VALUES ('${TC_NO}', '${MEZUNIYET_TARIHI}' )`
+			)
+				.then(() => {
+					// Aktif tablosundan sil
+					return db.query(`DELETE FROM aktif WHERE TC_NO = '${TC_NO}'`);
+				})
+				.then(() => {
+					// İşlemleri onayla
+					db.commit((commitError) => {
+						if (commitError) {
+							console.error(commitError);
+							res.status(500).json({
+								success: false,
+								error: "Islem onaylanirken bir hata olustu.",
+							});
+							return;
+						}
+						res.json({ success: true, message: "Ogrenci mezun edildi." });
+					});
+				})
+				.catch((error) => {
+					// Hata olursa işlemleri geri al
+					db.rollback(() => {
+						console.error("/api/ogrenci/mezunEt TC_NO='" + TC_NO + "'", error);
+						res.status(500).json({ success: false, error: "Bir hata oluştu." });
+					});
+				});
+		});
+	} else {
+		res.status(400).json({
+			success: false,
+			error: "TC_NO veya MEZUNIYET_TARIHI parametresi eksik.",
+		});
+	}
 });
 
 //Ogrenci sil
@@ -166,23 +175,25 @@ app.get("/api/ogrenci/aktifOgrenciSil", (req, res) => {
 
 //Ogrenci guncelle
 app.get("/api/ogrenci/guncelle", (req, res) => {
-    const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI } = req.query;
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, DOGUM_YILI } =
+		req.query;
 
-	if(TC_NO !== undefined){
-	  db.query(
-        `UPDATE ogrenci SET ISIM = '${ISIM}', SOYISIM = '${SOYISIM}', ADRES = '${ADRES}', TEL_NO = '${TEL_NO}', E_POSTA = '${E_POSTA}', DOGUM_YILI = '${DOGUM_YILI}' WHERE TC_NO = '${TC_NO}';`,
-    )
-    .then(() => {
-        res.status(200).send('Ogrenci bilgileri başariyla güncellendi');
-    })
-    .catch((error) => {
-        console.error("/api/ogrenci/guncelle", error);
-        res.status(500).send('Ogrenci bilgileri güncellenirken bir hata oluştu');
-    });	
-	}else {
+	if (TC_NO !== undefined) {
+		db.query(
+			`UPDATE ogrenci SET ISIM = '${ISIM}', SOYISIM = '${SOYISIM}', ADRES = '${ADRES}', TEL_NO = '${TEL_NO}', E_POSTA = '${E_POSTA}', DOGUM_YILI = '${DOGUM_YILI}' WHERE TC_NO = '${TC_NO}';`
+		)
+			.then(() => {
+				res.status(200).send("Ogrenci bilgileri başariyla güncellendi");
+			})
+			.catch((error) => {
+				console.error("/api/ogrenci/guncelle", error);
+				res
+					.status(500)
+					.send("Ogrenci bilgileri güncellenirken bir hata oluştu");
+			});
+	} else {
 		res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
 	}
-  
 });
 
 //api/ogrenci/filtre
@@ -358,9 +369,8 @@ app.get("/api/calisan/idareciGetir", (req, res) => {
 
 //idareci ekle
 app.get("/api/calisan/idareciEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS} =
-		req.query;
-		
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS } = req.query;
+
 	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
 		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
 
@@ -389,7 +399,6 @@ app.get("/api/calisan/idareciEkle", (req, res) => {
 					}
 					res.status(200).send("Idareci added successfully");
 				});
-
 			});
 		});
 	} else {
@@ -397,52 +406,55 @@ app.get("/api/calisan/idareciEkle", (req, res) => {
 	}
 });
 
-
 //ogretmenleri getir
 app.get("/api/calisan/ogretmenGetir", (req, res) => {
-    const { TC_NO, PART_MI } = req.query;
+	const { TC_NO, PART_MI } = req.query;
 
-	if(TC_NO == undefined){
-	  db.query(
-        `SELECT *, CASE WHEN o.PART_MI = 1 THEN "Part-Time" ELSE "Full-Time" END AS PART_MI FROM ogretmen AS o LEFT OUTER JOIN calisan AS c ON o.TC_NO = c.TC_NO`,
-    	)
-    .then((data) => {
-        res.json(data[0]);
-    })
-    .catch((error) => {
-        console.error("/api/calisan/ogretmenGetir", error);
-        res.status(500).send('Ogretmenler getirilemedi.');
-    });	
-	}if(PART_MI === "1") { //partTimerlar
+	if (TC_NO == undefined) {
+		db.query(
+			`SELECT *, CASE WHEN o.PART_MI = 1 THEN "Part-Time" ELSE "Full-Time" END AS PART_MI FROM ogretmen AS o LEFT OUTER JOIN calisan AS c ON o.TC_NO = c.TC_NO`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error("/api/calisan/ogretmenGetir", error);
+				res.status(500).send("Ogretmenler getirilemedi.");
+			});
+	}
+	if (PART_MI === "1") {
+		//partTimerlar
 		db.query(
 			`SELECT o.TC_NO, o.PART_MI, c.ISIM, c.SOYISIM, c.ADRES, c.TEL_NO, c.E_POSTA, pt.SAAT, ut.UCRET, pt.SAAT*ut.UCRET as "MAAS"
 			CASE WHEN o.PART_MI = 1 THEN "Part-Time" ELSE "Full-Time" END AS PART_MI 
 			FROM ((ogretmen o LEFT OUTER JOIN calisan c ON (o.TC_NO = c.TC_NO)) left outer join part_timer pt on (o.TC_NO = pt.TC_NO))
 				left outer join ucret_tablosu ut on (pt.SAAT=ut.SAAT)
-			WHERE o.PART_MI = 1`,
-			)
-		.then((data) => {
-			res.json(data[0]);
-		})
-		.catch((error) => {
-			console.error("/api/calisan/ogretmenGetir", error);
-			res.status(500).send('Part time ogretmenler getirilemedi.');
-		});
-	}if(PART_MI === "0") { //fullTimerlar
+			WHERE o.PART_MI = 1`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error("/api/calisan/ogretmenGetir", error);
+				res.status(500).send("Part time ogretmenler getirilemedi.");
+			});
+	}
+	if (PART_MI === "0") {
+		//fullTimerlar
 		db.query(
 			`SELECT o.TC_NO, o.PART_MI, c.ISIM, c.SOYISIM, c.ADRES, c.TEL_NO, c.E_POSTA, ft.MAAS  
 			CASE WHEN o.PART_MI = 1 THEN "Part-Time" ELSE "Full-Time" END AS PART_MI 
 			FROM ((ogretmen o LEFT OUTER JOIN calisan c ON (o.TC_NO = c.TC_NO)) left outer join full_timer ft on (o.TC_NO = ft.TC_NO) 
-			WHERE o.PART_MI = 0`,
-			)
-		.then((data) => {
-			res.json(data[0]);
-		})
-		.catch((error) => {
-			console.error("/api/calisan/ogretmenGetir", error);
-			res.status(500).send('full time ogretmenler getirilemedi.');
-		});
-	}else if(TC_NO !== undefined){
+			WHERE o.PART_MI = 0`
+		)
+			.then((data) => {
+				res.json(data[0]);
+			})
+			.catch((error) => {
+				console.error("/api/calisan/ogretmenGetir", error);
+				res.status(500).send("full time ogretmenler getirilemedi.");
+			});
+	} else if (TC_NO !== undefined) {
 		db.query(
 			`SELECT * FROM ogretmen AS o LEFT OUTER JOIN calisan AS c ON o.TC_NO = c.TC_NO WHERE o.TC_NO = '${TC_NO}'`
 		)
@@ -453,15 +465,21 @@ app.get("/api/calisan/ogretmenGetir", (req, res) => {
 				console.error(`/api/calisan/ogretmenGetir = '${TC_NO}'`, error);
 				res.status(500).json({ error: "Veritabani hatasi" });
 			});
-
 	}
-  
 });
 ///api/calisan/fullTime/ogretmenEkle
 app.get("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
+<<<<<<< HEAD
     const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS } = req.query;
     const PART_MI = 0; // Tam zamanli 0
     console.log(req.query);
+=======
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS } = req.query;
+	const PART_MI = "0"; // Tam zamanlı ogretmenler icin false olarak ayarlanır
+
+	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
+		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
+>>>>>>> 1d4957075750b0c5e0549a23a7f0a1bfa258d57d
 
     if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
             // Calisan tablosuna ekleme yap
@@ -476,19 +494,38 @@ app.get("/api/calisan/fullTime/OgretmenEkle", (req, res) => {
 			db.query(query2, [TC_NO, PART_MI]);
 			db.query(query3, [TC_NO, MAAS]);
 
+<<<<<<< HEAD
     	} else {
             res.status(400).send("Ayni ogretmen birden fazla kaydedilemez.");
     	}
+=======
+			db.query(query2, (error, results) => {
+				if (error) {
+					console.error(error);
+					res.status(500).send("Error while inserting into ogretmen");
+					return;
+				}
+
+				const query3 = `INSERT INTO full_timer (TC_NO, MAAS) VALUES ('${TC_NO}', '${MAAS}');`;
+				db.query(query2, (error, results) => {
+					if (error) {
+						console.error(error);
+						res.status(500).send("Error while inserting into full_timer");
+						return;
+					}
+					res.status(200).send("Full_time ogretmen added successfully");
+				});
+			});
+>>>>>>> 1d4957075750b0c5e0549a23a7f0a1bfa258d57d
 		});
 	}
 });
 
 //api/calisan/partTime/ogretmenEkle
 app.get("/api/calisan/partTime/OgretmenEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, SAAT} =
-		req.query;
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, SAAT } = req.query;
 	const PART_MI = "1"; // Part_time ogretmenler icin true olarak ayarlanır
-		
+
 	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && SAAT) {
 		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
 
@@ -517,7 +554,6 @@ app.get("/api/calisan/partTime/OgretmenEkle", (req, res) => {
 					}
 					res.status(200).send("Part_time ogretmen added successfully");
 				});
-
 			});
 		});
 	} else {
@@ -527,23 +563,24 @@ app.get("/api/calisan/partTime/OgretmenEkle", (req, res) => {
 
 //Calisan guncelle
 app.get("/api/calisan/guncelle", (req, res) => {
-    const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = req.query;
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = req.query;
 
-	if(TC_NO !== undefined){
-	  db.query(
-        `UPDATE calisan SET ISIM = '${ISIM}', SOYISIM = '${SOYISIM}', ADRES = '${ADRES}', TEL_NO = '${TEL_NO}', E_POSTA = '${E_POSTA}' WHERE TC_NO = '${TC_NO}';`,
-    )
-    .then(() => {
-        res.status(200).send('Ogrenci bilgileri başariyla güncellendi');
-    })
-    .catch((error) => {
-        console.error("/api/ogrenci/guncelle", error);
-        res.status(500).send('Ogrenci bilgileri güncellenirken bir hata oluştu');
-    });	
-	}else {
+	if (TC_NO !== undefined) {
+		db.query(
+			`UPDATE calisan SET ISIM = '${ISIM}', SOYISIM = '${SOYISIM}', ADRES = '${ADRES}', TEL_NO = '${TEL_NO}', E_POSTA = '${E_POSTA}' WHERE TC_NO = '${TC_NO}';`
+		)
+			.then(() => {
+				res.status(200).send("Ogrenci bilgileri başariyla güncellendi");
+			})
+			.catch((error) => {
+				console.error("/api/ogrenci/guncelle", error);
+				res
+					.status(500)
+					.send("Ogrenci bilgileri güncellenirken bir hata oluştu");
+			});
+	} else {
 		res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
 	}
-  
 });
 
 //temizlik personellerini getir
@@ -572,9 +609,8 @@ app.get("/api/calisan/temizlikGetir", (req, res) => {
 
 // api/calisan/temizlikciEkle
 app.get("/api/calisan/temizlikciEkle", (req, res) => {
-	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS} =
-		req.query;
-		
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA, MAAS } = req.query;
+
 	if (TC_NO && ISIM && SOYISIM && ADRES && TEL_NO && E_POSTA && MAAS) {
 		const query1 = `INSERT INTO calisan (TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA) VALUES ('${TC_NO}', '${ISIM}', '${SOYISIM}', '${ADRES}', '${TEL_NO}', '${E_POSTA}');`;
 
@@ -603,7 +639,6 @@ app.get("/api/calisan/temizlikciEkle", (req, res) => {
 					}
 					res.status(200).send("Temizlik personeli added successfully");
 				});
-
 			});
 		});
 	} else {
@@ -613,67 +648,71 @@ app.get("/api/calisan/temizlikciEkle", (req, res) => {
 
 //Full_timer calisanlarin maaslarin guncelle
 app.get("/api/fullTime/guncelle", (req, res) => {
-    const { TC_NO, MAAS} = req.query;
+	const { TC_NO, MAAS } = req.query;
 
-	if(TC_NO !== undefined){
-	  db.query(
-        `UPDATE full_timer SET TC_NO = '${TC_NO}', MAAS = '${MAAS}' WHERE TC_NO = '${TC_NO}';`,
-    )
-    .then(() => {
-        res.status(200).send('FullTime maas bilgileri başariyla güncellendi');
-    })
-    .catch((error) => {
-        console.error("/api/fullTime/guncelle", error);
-        res.status(500).send('FullTime maas bilgileri güncellenirken bir hata oluştu');
-    });	
-	}else {
+	if (TC_NO !== undefined) {
+		db.query(
+			`UPDATE full_timer SET TC_NO = '${TC_NO}', MAAS = '${MAAS}' WHERE TC_NO = '${TC_NO}';`
+		)
+			.then(() => {
+				res.status(200).send("FullTime maas bilgileri başariyla güncellendi");
+			})
+			.catch((error) => {
+				console.error("/api/fullTime/guncelle", error);
+				res
+					.status(500)
+					.send("FullTime maas bilgileri güncellenirken bir hata oluştu");
+			});
+	} else {
 		res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
 	}
-  
 });
 
 //Part_timer calisanlarin maaslarin guncelle
 app.get("/api/partTime/guncelle", (req, res) => {
-    const { TC_NO, SAAT } = req.query;
+	const { TC_NO, SAAT } = req.query;
 
-	if(TC_NO !== undefined){
-	  db.query(
-        `UPDATE part_timer SET TC_NO = '${TC_NO}', SAAT = '${SAAT}' WHERE TC_NO = '${TC_NO}';`,
-    )
-    .then(() => {
-        res.status(200).send('PartTime calisma saati bilgileri başariyla güncellendi');
-    })
-    .catch((error) => {
-        console.error("/api/partTime/guncelle", error);
-        res.status(500).send('partTime saat bilgileri güncellenirken bir hata oluştu');
-    });	
-	}else {
+	if (TC_NO !== undefined) {
+		db.query(
+			`UPDATE part_timer SET TC_NO = '${TC_NO}', SAAT = '${SAAT}' WHERE TC_NO = '${TC_NO}';`
+		)
+			.then(() => {
+				res
+					.status(200)
+					.send("PartTime calisma saati bilgileri başariyla güncellendi");
+			})
+			.catch((error) => {
+				console.error("/api/partTime/guncelle", error);
+				res
+					.status(500)
+					.send("partTime saat bilgileri güncellenirken bir hata oluştu");
+			});
+	} else {
 		res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
 	}
-  
 });
 
 //Saatlik ucretleri guncelle
 app.get("/api/ucret/guncelle", (req, res) => {
-    const { SAAT, UCRET } = req.query;
+	const { SAAT, UCRET } = req.query;
 
-	if(SAAT !== undefined){
-	  db.query(
-        `UPDATE ucret_tablosu SET SAAT = '${SAAT}', UCRET = '${UCRET}' WHERE SAAT = '${SAAT}';`,
-    )
-    .then(() => {
-        res.status(200).send('Saatlik ucret bilgileri başariyla güncellendi');
-    })
-    .catch((error) => {
-        console.error("/api/ucret/guncelle", error);
-        res.status(500).send('Saatlik ucret bilgileri güncellenirken bir hata oluştu');
-    });	
-	}else {
+	if (SAAT !== undefined) {
+		db.query(
+			`UPDATE ucret_tablosu SET SAAT = '${SAAT}', UCRET = '${UCRET}' WHERE SAAT = '${SAAT}';`
+		)
+			.then(() => {
+				res.status(200).send("Saatlik ucret bilgileri başariyla güncellendi");
+			})
+			.catch((error) => {
+				console.error("/api/ucret/guncelle", error);
+				res
+					.status(500)
+					.send("Saatlik ucret bilgileri güncellenirken bir hata oluştu");
+			});
+	} else {
 		res.status(400).json({ success: false, error: "SAAT parametresi eksik." });
 	}
-  
 });
-
 
 //Ogrenci TC_NOya gore velilerini getir
 app.get("/api/veli/veliGetir", (req, res) => {
@@ -759,23 +798,22 @@ app.get("/api/veli/ogrencileriGetir", (req, res) => {
 
 //Veli Guncelle
 app.get("/api/veli/guncelle", (req, res) => {
-    const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA} = req.query;
+	const { TC_NO, ISIM, SOYISIM, ADRES, TEL_NO, E_POSTA } = req.query;
 
-	if(TC_NO !== undefined){
-	  db.query(
-        `UPDATE veli SET ISIM = '${ISIM}', SOYISIM = '${SOYISIM}', ADRES = '${ADRES}', TEL_NO = '${TEL_NO}', E_POSTA = '${E_POSTA}' WHERE TC_NO = '${TC_NO}';`,
-    )
-    .then(() => {
-        res.status(200).send('Veli bilgileri başariyla güncellendi');
-    })
-    .catch((error) => {
-        console.error("/api/veli/guncelle", error);
-        res.status(500).send('Veli bilgileri güncellenirken bir hata oluştu');
-    });	
-	}else {
+	if (TC_NO !== undefined) {
+		db.query(
+			`UPDATE veli SET ISIM = '${ISIM}', SOYISIM = '${SOYISIM}', ADRES = '${ADRES}', TEL_NO = '${TEL_NO}', E_POSTA = '${E_POSTA}' WHERE TC_NO = '${TC_NO}';`
+		)
+			.then(() => {
+				res.status(200).send("Veli bilgileri başariyla güncellendi");
+			})
+			.catch((error) => {
+				console.error("/api/veli/guncelle", error);
+				res.status(500).send("Veli bilgileri güncellenirken bir hata oluştu");
+			});
+	} else {
 		res.status(400).json({ success: false, error: "TC_NO parametresi eksik." });
 	}
-  
 });
 
 // /api/ders/tumDersleriGetir
@@ -917,11 +955,11 @@ app.get("/api/ogretmen/ogretmenMusaitlikGetir ", (req, res) => {
 
 //Ders ekle
 app.get("/api/ders/dersEkle", (req, res) => {
-	const { DERS_ID, DERS_ADI, DERS_SAATI } = req.query;
+	const { DERS_ADI, DERS_SAATI } = req.query;
 	const { AKTIF_MI } = "0";
 
 	if (DERS_ADI && DERS_SAATI) {
-		const query1 = `INSERT INTO ders (DERS_ID, DERS_ADI, DERS_SAATI, AKTIF_MI) VALUES ('${DERS_ID}', '${DERS_ADI}', '${DERS_SAATI}', '${AKTIF_MI}');`;
+		const query1 = `INSERT INTO ders (DERS_ADI, DERS_SAATI, AKTIF_MI) VALUES ('${DERS_ADI}', '${DERS_SAATI}', '${AKTIF_MI}');`;
 
 		db.query(query1, (error, results) => {
 			if (error) {
@@ -929,9 +967,8 @@ app.get("/api/ders/dersEkle", (req, res) => {
 				res.status(500).send("Error while inserting into ders");
 				return;
 			}
-		
+
 			res.status(200).send("Ders added successfully");
-			
 		});
 	} else {
 		res.status(400).send("Missing or invalid parameters");
@@ -956,6 +993,18 @@ app.get("/api/ders/acikDersGetir", (req, res) => {
         .catch((error) => console.error("/api/ders/acikDersGetir", error));
 });
 
+// /api/ders/dersiGetir
+app.get("/api/ders/dersiGetir", (req, res) => {
+	const { DERS_ID } = req.query;
+	db.query(
+		//Tum derslerin taleplerini getir
+		`select * from ders WHERE DERS_ID = '${DERS_ID}';`
+	)
+		.then((data) => {
+			res.json(data[0]);
+		})
+		.catch((error) => console.error("/api/ders/dersiGetir", error));
+});
 
 //Tum derslerin taleplerini getirir
 app.get("/api/ders/dersSaatiUygunGetir", (req, res) => {
