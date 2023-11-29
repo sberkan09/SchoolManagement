@@ -1,0 +1,2 @@
+/api/ogrenci/aktifOgrenciEkle -> duplicate hatalı onun dışında çalışıyor
+/api/veli/subeVeliGetir DENENMEDI
